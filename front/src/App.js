@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Layout from './components/Layout';
-import MueblesList from './components/MuebleList';
-import MuebleForm from './components/MuebleForm';
-import MuebleDetails from './components/MuebleDetails';
-import StockManagement from './components/StockManagement';
+import Layout from './components/js/Layout';
+import MueblesList from './components/js/MuebleList';
+import MuebleForm from './components/js/MuebleForm';
+import MuebleDetails from './components/js/MuebleDetails';
+import StockManagement from './components/js/StockManagement';
 
 function App() {
   return (
