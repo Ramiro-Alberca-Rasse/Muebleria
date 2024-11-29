@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Button, Row, Col } from 'react-bootstrap';
-import api from '../../services/api';
-
+import { Card, Row, Col } from 'react-bootstrap'; // Eliminamos Button de la importación
+import api from '../../../services/api';
 
 function MueblesList() {
   const [muebles, setMuebles] = useState([]);
@@ -21,15 +20,6 @@ function MueblesList() {
     }
   };
 
-  const eliminarMueble = async (id) => {
-    try {
-      await api.delete(`/muebles/${id}`);
-      fetchMuebles();
-    } catch (error) {
-      console.error('Error al eliminar el mueble:', error);
-    }
-  };
-
   return (
     <div>
       <h2>Lista de Muebles</h2>
@@ -45,20 +35,11 @@ function MueblesList() {
                   Precio: ${mueble.precio} <br />
                   Stock: {mueble.stock}
                 </Card.Text>
-                <Button variant="primary" onClick={() => navigate(`/mueble/${mueble.id}`)}>
-                  Ver Detalles
-                </Button>{' '}
-                <Button variant="danger" onClick={() => eliminarMueble(mueble.id)}>
-                  Eliminar
-                </Button>
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
-      <Button variant="success" onClick={() => navigate('/mueble/nuevo')}>
-        Agregar Mueble
-      </Button>
     </div>
   );
 }

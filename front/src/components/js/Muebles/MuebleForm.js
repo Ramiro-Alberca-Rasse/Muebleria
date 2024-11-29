@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
-import api from '../../services/api';
+import api from '../../../services/api';
 import { useNavigate } from 'react-router-dom';
 
 function MuebleForm({ muebleData, onSuccess }) {
