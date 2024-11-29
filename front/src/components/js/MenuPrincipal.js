@@ -5,40 +5,35 @@ import "../css/MenuPrincipal.css"; // Archivo para los estilos
 const MenuPrincipal = () => {
   return (
     <nav className="menu-principal">
+      {/* Nombre de la empresa en la esquina izquierda */}
+      <div className="empresa-nombre">
+        Sitios Muebles
+      </div>
+
       <ul className="menu-lista">
         <li className="menu-item">
           <Link to="/muebles">Gestionar Muebles</Link>
-          <ul className="submenu">
-            <li><Link to="/muebles/listar">Listar Muebles</Link></li>
-            <li><Link to="/muebles/buscar">Buscar Muebles</Link></li>
-            <li><Link to="/muebles/agregar">Agregar Mueble</Link></li>
-            <li><Link to="/muebles/eliminar">Eliminar Mueble</Link></li>
-          </ul>
         </li>
         <li className="menu-item">
           <Link to="/stock">Gestionar Stock</Link>
-          <ul className="submenu">
-            <li><Link to="/stock/agregar">Agregar Stock</Link></li>
-            <li><Link to="/stock/notificar">Notificar Stock</Link></li>
-            <li><Link to="/stock/reportes">Generar Reportes</Link></li>
-          </ul>
         </li>
         <li className="menu-item">
           <Link to="/ventas">Gestionar Ventas</Link>
-          <ul className="submenu">
-            <li><Link to="/ventas/registrar">Registrar Venta</Link></li>
-            <li><Link to="/ventas/listar">Listar Ventas</Link></li>
-          </ul>
         </li>
         <li className="menu-item">
           <Link to="/clientes">Gestionar Clientes</Link>
-          <ul className="submenu">
-            <li><Link to="/clientes/registrar">Registrar Cliente</Link></li>
-            <li><Link to="/clientes/listar">Listar Clientes</Link></li>
-            <li><Link to="/clientes/buscar">Buscar Cliente</Link></li>
-          </ul>
         </li>
       </ul>
+
+      {/* Botón de notificaciones (sin el <a> y con el mismo estilo que los demás) */}
+      <div className="notificaciones">
+        Notificaciones
+        <div className="menu-notificaciones">
+          <ul>
+            <li>No hay notificaciones</li>
+          </ul>
+        </div>
+      </div>
     </nav>
   );
 };
