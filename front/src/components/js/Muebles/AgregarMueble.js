@@ -9,6 +9,7 @@ function AgregarMueble() {
   const [fabricante, setFabricante] = useState('');
   const [precio, setPrecio] = useState('');
   const [stock, setStock] = useState('');
+  const [categoria, setCategoria] = useState(''); // Estado para la categoría
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,6 +21,7 @@ function AgregarMueble() {
       fabricante,
       precio: parseFloat(precio),
       stock: parseInt(stock, 10),
+      categoria, // Incluye la categoría en el objeto
     };
 
     try {
@@ -92,6 +94,17 @@ function AgregarMueble() {
               placeholder="Ingresa el stock disponible"
               value={stock}
               onChange={(e) => setStock(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group as={Col} controlId="formCategoria">
+            <Form.Label>Categoría</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingresa la categoría del mueble"
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value)}
               required
             />
           </Form.Group>

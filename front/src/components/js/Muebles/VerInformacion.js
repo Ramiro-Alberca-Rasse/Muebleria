@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import api from '../../../services/api';
 import MuebleForm from './MuebleForm';
 
-function MuebleDetails() {
+function VerInformacion() {
     const { id } = useParams(); // Obtenemos el ID desde la URL
     const [mueble, setMueble] = useState(null); // Estado para almacenar los detalles del mueble
 
@@ -34,4 +34,4 @@ function MuebleDetails() {
     );
 }
 
-export default MuebleDetails;
+export default VerInformacion;

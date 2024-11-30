@@ -7,7 +7,7 @@ function GestionarClientes() {
     <div className="container my-4">
       <h2 className="text-center mb-4">Gestionar Clientes</h2>
       <Row>
-        <Col md={4} className="mb-4">
+        <Col md={6} className="mb-4">
           <Card className="shadow-sm">
             <Card.Body>
               <Card.Title>Registrar Cliente</Card.Title>
@@ -22,7 +22,7 @@ function GestionarClientes() {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4} className="mb-4">
+        <Col md={6} className="mb-4">
           <Card className="shadow-sm">
             <Card.Body>
               <Card.Title>Listar Clientes</Card.Title>
@@ -32,21 +32,6 @@ function GestionarClientes() {
               <Link to="/clientes/listar">
                 <Button variant="info" className="w-100">
                   Ver Clientes
-                </Button>
-              </Link>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4} className="mb-4">
-          <Card className="shadow-sm">
-            <Card.Body>
-              <Card.Title>Buscar Cliente</Card.Title>
-              <Card.Text>
-                Busca un cliente por su información.
-              </Card.Text>
-              <Link to="/clientes/buscar">
-                <Button variant="warning" className="w-100">
-                  Buscar Cliente
                 </Button>
               </Link>
             </Card.Body>

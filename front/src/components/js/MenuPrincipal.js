@@ -5,9 +5,9 @@ import "../css/MenuPrincipal.css"; // Archivo para los estilos
 const MenuPrincipal = () => {
   return (
     <nav className="menu-principal">
-      {/* Nombre de la empresa en la esquina izquierda */}
+      {/* Nombre de la empresa en la esquina izquierda con enlace */}
       <div className="empresa-nombre">
-        Sitios Muebles
+        <Link to="/">Sitios Muebles</Link>
       </div>
 
       <ul className="menu-lista">
@@ -25,7 +25,7 @@ const MenuPrincipal = () => {
         </li>
       </ul>
 
-      {/* Botón de notificaciones (sin el <a> y con el mismo estilo que los demás) */}
+      {/* Botón de notificaciones */}
       <div className="notificaciones">
         Notificaciones
         <div className="menu-notificaciones">

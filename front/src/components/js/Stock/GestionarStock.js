@@ -25,9 +25,9 @@ function GestionarStock() {
         <Col md={6} className="mb-4">
           <Card className="stock-card h-100 shadow-sm">
             <Card.Body>
-              <Card.Title>Generar Reportes</Card.Title>
+              <Card.Title>Generar Reporte</Card.Title>
               <Card.Text>
-                Genera un reporte de stock disponible.
+                Genera un reporte de stock actual o cambios de stock.
               </Card.Text>
               <Link to="/stock/reportes">
                 <Button variant="info" className="w-100">

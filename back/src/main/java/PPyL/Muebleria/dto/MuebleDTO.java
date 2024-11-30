@@ -21,6 +21,9 @@ public class MuebleDTO {
         this.stock = mueble.getStock();
     }
 
+    public MuebleDTO() {
+    }
+
     public Mueble toEntity() {
         Mueble mueble = new Mueble();
         mueble.setNombre(this.nombre);

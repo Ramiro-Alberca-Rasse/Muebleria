@@ -1,112 +1,117 @@
-/* Estilo general del menú */
+/* ====== Estilo general del menú ====== */
 .menu-principal {
-  background-color: #2c3e50;
-  padding: 10px 20px; /* Asegura que haya espacio a la izquierda y derecha */
+  background-color: #2c3e50; /* Color de fondo del menú */
+  padding: 10px 20px; /* Espaciado interno */
   display: flex;
-  align-items: center; /* Centra verticalmente todos los elementos */
-  justify-content: space-between; /* Espacio entre los elementos */
-  width: 100%; /* Asegura que ocupe todo el ancho */
+  align-items: center; /* Centrado vertical de los elementos */
+  justify-content: space-between; /* Distribución horizontal */
+  width: 100%; /* Ocupa todo el ancho */
 }
 
-/* Nombre de la empresa en la esquina izquierda */
+/* ====== Nombre de la empresa ====== */
 .empresa-nombre {
-  color: #ecf0f1;
-  font-size: 22px;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-right: auto; /* Asegura que el nombre se quede a la izquierda */
+  color: #ecf0f1; /* Color de texto blanco */
+  font-size: 22px; /* Tamaño de texto */
+  font-weight: bold; /* Texto en negrita */
+  text-transform: uppercase; /* Texto en mayúsculas */
+  letter-spacing: 2px; /* Espaciado entre letras */
+  margin-right: auto; /* Mantiene el texto a la izquierda */
 }
 
-/* Lista de elementos del menú */
+.empresa-nombre a {
+  text-decoration: none; /* Quita subrayado */
+  color: inherit; /* Hereda el color del contenedor */
+}
+
+/* ====== Lista de elementos del menú ====== */
 .menu-lista {
-  list-style: none;
+  list-style: none; /* Quita los puntos de lista */
   margin: 0;
   padding: 0;
-  display: flex;
-  gap: 20px;
+  display: flex; /* Alineación horizontal */
+  gap: 20px; /* Espaciado entre los elementos */
   justify-content: center; /* Centra los elementos del menú */
-  flex-grow: 1; /* Permite que los elementos de la lista ocupen el espacio disponible */
+  flex-grow: 1; /* Permite que el menú se ajuste al espacio disponible */
 }
 
-/* Contenedor de cada item del menú */
+/* ====== Contenedor de cada ítem del menú ====== */
 .menu-item {
-  position: relative;
+  position: relative; /* Necesario para el submenú */
   display: flex;
-  align-items: center; /* Asegura que los enlaces estén alineados correctamente */
+  align-items: center; /* Alineación vertical */
 }
 
-/* Estilo de los enlaces del menú */
+/* ====== Estilo de los enlaces del menú ====== */
 .menu-item a {
-  text-decoration: none;
-  color: #ecf0f1; /* Asegura que el color sea blanco */
-  font-size: 18px;
-  font-weight: bold;
-  padding: 10px 15px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-  display: block;
+  text-decoration: none; /* Quita subrayado */
+  color: #ecf0f1; /* Color de texto blanco */
+  font-size: 18px; /* Tamaño de texto */
+  font-weight: bold; /* Negrita */
+  padding: 10px 15px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  transition: background-color 0.3s; /* Efecto de transición */
+  display: block; /* Hace que el enlace ocupe todo el área clickeable */
 }
 
-/* Efecto al pasar el mouse sobre los enlaces */
+/* Efecto hover para los enlaces */
 .menu-item a:hover {
-  background-color: #34495e;
+  background-color: #34495e; /* Color de fondo al pasar el mouse */
 }
 
-/* Estilo para el contenedor de Notificaciones */
+/* ====== Botón de notificaciones ====== */
 .notificaciones {
-  position: relative;
-  background-color: #2c3e50;
-  padding: 10px 15px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  color: #ecf0f1; /* Asegura que el color sea blanco */
-  transition: background-color 0.3s;
-  text-decoration: none; /* Elimina el subrayado del enlace */
-  display: flex; /* Asegura que se vea como un elemento bloque */
+  position: relative; /* Necesario para el submenú emergente */
+  background-color: #2c3e50; /* Fondo igual al menú */
+  padding: 10px 15px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  display: flex; /* Hace que el botón sea un contenedor flexible */
+  align-items: center; /* Centrado vertical */
+  justify-content: center; /* Centrado horizontal */
+  cursor: pointer; /* Cursor de mano al pasar */
+  font-size: 18px; /* Tamaño de texto */
+  font-weight: bold; /* Texto en negrita */
+  color: #ecf0f1; /* Texto blanco */
+  transition: background-color 0.3s; /* Efecto de transición */
+  text-decoration: none; /* Quita el subrayado */
 }
 
-/* Efecto hover para el botón de notificaciones */
+/* Efecto hover para notificaciones */
 .notificaciones:hover {
-  background-color: #34495e;
+  background-color: #34495e; /* Color de fondo al pasar el mouse */
 }
 
-/* Submenú de notificaciones */
+/* ====== Submenú de notificaciones ====== */
 .menu-notificaciones {
-  position: absolute;
-  left: 0;
+  position: absolute; /* Posición absoluta respecto a .notificaciones */
+  left: 0; /* Alineado al lado izquierdo del botón */
   top: 100%; /* Justo debajo del botón */
-  background-color: #34495e;
-  padding: 10px;
-  border-radius: 5px;
-  width: 200px;
-  display: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: #34495e; /* Fondo del submenú */
+  padding: 10px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  width: 200px; /* Ancho del submenú */
+  display: none; /* Ocultamos inicialmente */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para un efecto flotante */
 }
 
-/* Mostrar el submenú cuando el item o el submenú están en hover */
+/* Mostrar el submenú al pasar el mouse */
 .notificaciones:hover .menu-notificaciones {
-  display: block;
+  display: block; /* Hace visible el submenú */
 }
 
-/* Estilo de los items dentro del submenú de notificaciones */
+/* ====== Items del submenú de notificaciones ====== */
 .menu-notificaciones ul {
-  list-style: none;
+  list-style: none; /* Quita los puntos de lista */
   margin: 0;
   padding: 0;
 }
 
 .menu-notificaciones li {
-  padding: 8px 10px;
-  color: #ecf0f1;
-  border-bottom: 1px solid #2c3e50;
+  padding: 8px 10px; /* Espaciado interno de los ítems */
+  color: #ecf0f1; /* Texto blanco */
+  border-bottom: 1px solid #2c3e50; /* Línea divisoria */
 }
 
+/* Efecto hover para los ítems del submenú */
 .menu-notificaciones li:hover {
-  background-color: #2c3e50;
+  background-color: #2c3e50; /* Fondo al pasar el mouse */
 }
