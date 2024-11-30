@@ -14,6 +14,7 @@ import ListarVentas from './components/js/Ventas/ListarVentas';
 import RegistrarVenta from './components/js/Ventas/RegistrarVenta';
 import ListarClientes from './components/js/Clientes/ListarClientes';
 import RegistrarCliente from './components/js/Clientes/RegistrarCliente';
+import './App.css';
 
 function App() {
   return (

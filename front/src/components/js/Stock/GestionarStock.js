@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Row, Col } from 'react-bootstrap';
+import '../../css/Gestionar.css';  // Asegúrate de importar el archivo CSS
 
 function GestionarStock() {
   return (
     <div className="container my-4">
-      <h2 className="text-center mb-4">Gestionar Stock</h2>
+      <h2 className="text-center mb-4 titulo-blanco">Gestionar Stock</h2>
       <Row>
         <Col md={6} className="mb-4">
           <Card className="stock-card h-100 shadow-sm">
