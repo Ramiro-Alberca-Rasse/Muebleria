@@ -1,0 +1,65 @@
+/* Estilos generales del modal */
+.modal-dialog {
+    max-width: 600px;  /* Ajusta el tamaño del modal */
+}
+
+.modal-body {
+    padding: 20px; /* Espaciado interior del modal */
+}
+
+/* Estilo de los campos del formulario */
+.form-control {
+    margin-bottom: 15px; /* Espaciado entre los campos del formulario */
+}
+
+/* Estilo del botón de actualizar stock */
+.update-stock-btn {
+    margin-top: 15px; /* Espacio entre el campo de cantidad y el botón */
+    background-color: #28a745; /* Verde */
+    border-color: #28a745; /* Verde */
+    color: white; /* Texto blanco */
+}
+
+.update-stock-btn:hover {
+    background-color: #218838; /* Verde más oscuro cuando se pasa el mouse */
+    border-color: #1e7e34; /* Borde más oscuro cuando se pasa el mouse */
+}
+
+/* Estilos para el spinner */
+.spinner-border {
+    margin-right: 10px; /* Espacio a la derecha del spinner */
+}
+
+/* Si quieres personalizar el select o inputs de manera más específica */
+select.form-control {
+    font-size: 16px; /* Ajuste de tamaño de la fuente en el select */
+}
+
+/* Para el texto dentro de los campos del formulario */
+input.form-control,
+select.form-control {
+    font-size: 16px; /* Ajuste del tamaño de texto dentro de los campos */
+}
+
+/* Estilo para el modal cuando esté abierto */
+.modal-content {
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+}
+
+/* Si deseas ajustar el padding del modal */
+.modal-header {
+    padding: 15px 20px;
+}
+
+.modal-body {
+    padding: 25px 20px;
+}
+
+/* Títulos del modal */
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+

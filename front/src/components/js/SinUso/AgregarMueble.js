@@ -34,7 +34,7 @@ function AgregarMuebleModal({ show, handleClose, onMuebleAdded }) {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg"> {/* Tamaño grande */}
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Agregar Nuevo Mueble</Modal.Title>
       </Modal.Header>

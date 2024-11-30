@@ -15,6 +15,8 @@ import RegistrarVenta from './components/js/Ventas/RegistrarVenta';
 import ListarClientes from './components/js/Clientes/ListarClientes';
 import RegistrarCliente from './components/js/Clientes/RegistrarCliente';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   return (
