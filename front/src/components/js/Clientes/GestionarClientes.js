@@ -16,7 +16,7 @@ function GestionarClientes() {
                 Agrega nuevos clientes al sistema.
               </Card.Text>
               <Link to="/clientes/registrar">
-                <Button variant="primary" className="w-100">
+                <Button variant="success" className="w-100"> {/* Botón verde */}
                   Registrar Cliente
                 </Button>
               </Link>
@@ -31,7 +31,7 @@ function GestionarClientes() {
                 Consulta todos los clientes registrados.
               </Card.Text>
               <Link to="/clientes/listar">
-                <Button variant="info" className="w-100">
+                <Button variant="primary" className="w-100"> {/* Botón azul */}
                   Ver Clientes
                 </Button>
               </Link>

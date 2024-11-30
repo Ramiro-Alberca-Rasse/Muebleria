@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MenuPrincipal from './components/js/MenuPrincipal';
 import GestionarMuebles from './components/js/Muebles/GestionarMuebles';
-import GestionarStock from './components/js/Stock/GestionarStock';
+import GestionarStock from './components/js/Stock/GestionarStocks';
 import GestionarVentas from './components/js/Ventas/GestionarVentas';
 import GestionarClientes from './components/js/Clientes/GestionarClientes';
 import ListarMuebles from './components/js/Muebles/ListarMuebles';
