@@ -2,6 +2,8 @@ package PPyL.Muebleria.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,8 @@ import PPyL.Muebleria.service.MuebleService;
 @RequestMapping("/api/muebles")
 public class MuebleController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MuebleController.class);
+
     @Autowired
     private MuebleService muebleService;
 
@@ -33,8 +37,9 @@ public class MuebleController {
         return muebleService.obtenerMueble(id);
     }
 
-    @PostMapping
+    @PostMapping("/crear")
     public MuebleDTO crearMueble(@RequestBody MuebleDTO muebleDTO) {
+        logger.info("Mandando a servicio");
         return muebleService.crearMueble(muebleDTO);
     }
 

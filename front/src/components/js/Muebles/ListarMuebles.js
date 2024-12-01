@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Table } from 'react-bootstrap';
 import api from '../../../services/api'; // Asegúrate de que la API está correctamente configurada
 
-function ListarMueblesModal({ show, handleClose }) {
+function ListarMuebles({ show, handleClose }) {
   const [muebles, setMuebles] = useState([]);
 
   useEffect(() => {
@@ -66,4 +66,4 @@ function ListarMueblesModal({ show, handleClose }) {
   );
 }
 
-export default ListarMueblesModal;
+export default ListarMuebles;

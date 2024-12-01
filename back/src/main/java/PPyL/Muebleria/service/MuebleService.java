@@ -28,7 +28,11 @@ public class MuebleService {
     }
 
     public MuebleDTO crearMueble(MuebleDTO muebleDTO) {
+        
         Mueble mueble = muebleDTO.toEntity();
+        if (mueble.getNombre() == null || mueble.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del mueble no puede estar vacío.");
+        }
         muebleRepository.save(mueble);
         return new MuebleDTO(mueble);
     }

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Card, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';  // Asegúrate de importar Link aquí
-import AgregarMuebleModal from './AgregarMueble';  // Importa tu componente modal
-import ListarMueblesModal from './ListarMuebles'; // Importamos el nuevo modal
+import AgregarMuebleModal from './AgregarMueble';  // Importa el componente modal de agregar
+import ListarMueblesModal from './ListarMuebles'; // Importa el componente modal de listar
 
 import '../../css/Gestionar.css';  // Asegúrate de importar el archivo CSS
 
@@ -22,19 +21,13 @@ function GestionarMuebles() {
   // Función para cerrar el modal de listar
   const handleCloseListar = () => setShowListarModal(false);
 
-  // Función para manejar el evento cuando un mueble es agregado
-  const handleMuebleAdded = () => {
-    console.log("Nuevo mueble agregado.");
-    // Aquí puedes realizar acciones adicionales, como actualizar una lista de muebles
-  };
-
   return (
     <div className="container my-4">
       <h2 className="text-center mb-4 titulo-blanco">Gestionar Muebles</h2>
-      <Row>
-        <Col md={4} className="mb-4">
-          <Card className="shadow-sm">
-            <Card.Body>
+      <Row className="justify-content-center">
+        <Col md={4} className="mb-4 d-flex justify-content-center">
+          <Card className="shadow-sm w-100">
+            <Card.Body className="text-center">
               <Card.Title>Listar Muebles</Card.Title>
               <Card.Text>
                 Consulta todos los muebles disponibles en el sistema.
@@ -46,9 +39,9 @@ function GestionarMuebles() {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4} className="mb-4">
-          <Card className="shadow-sm">
-            <Card.Body>
+        <Col md={4} className="mb-4 d-flex justify-content-center">
+          <Card className="shadow-sm w-100">
+            <Card.Body className="text-center">
               <Card.Title>Agregar Mueble</Card.Title>
               <Card.Text>
                 Añadir un nuevo mueble al inventario.
@@ -60,28 +53,12 @@ function GestionarMuebles() {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4} className="mb-4">
-          <Card className="shadow-sm">
-            <Card.Body>
-              <Card.Title>Eliminar Mueble</Card.Title>
-              <Card.Text>
-                Elimina un mueble del inventario.
-              </Card.Text>
-              <Link to="/muebles/eliminar">
-                <Button variant="danger" className="w-100">
-                  Eliminar Mueble
-                </Button>
-              </Link>
-            </Card.Body>
-          </Card>
-        </Col>
       </Row>
 
       {/* Aquí se renderiza el modal de agregar mueble */}
       <AgregarMuebleModal
         show={showAgregarModal}
         handleClose={handleCloseAgregar}
-        onMuebleAdded={handleMuebleAdded}
       />
 
       {/* Aquí se renderiza el modal de listar muebles */}
