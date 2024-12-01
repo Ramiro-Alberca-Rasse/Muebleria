@@ -43,12 +43,12 @@ public class MuebleController {
         return muebleService.crearMueble(muebleDTO);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/actualizar/{id}")
     public MuebleDTO actualizarMueble(@PathVariable Long id, @RequestBody MuebleDTO muebleDTO) {
         return muebleService.actualizarMueble(id, muebleDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/eliminar/{id}")
     public void eliminarMueble(@PathVariable Long id) {
         muebleService.eliminarMueble(id);
     }

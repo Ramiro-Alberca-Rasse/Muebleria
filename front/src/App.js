@@ -7,7 +7,6 @@ import GestionarVentas from './components/js/Ventas/GestionarVentas';
 import GestionarClientes from './components/js/Clientes/GestionarClientes';
 import ListarMuebles from './components/js/Muebles/ListarMuebles';
 import AgregarMueble from './components/js/Muebles/AgregarMueble';
-import EliminarMueble from './components/js/Muebles/EliminarMueble';
 import ReportesStock from './components/js/Stock/ReportesStock';
 import AgregarStock from './components/js/Stock/AgregarStock';
 import ListarVentas from './components/js/Ventas/ListarVentas';
@@ -33,7 +32,6 @@ function App() {
         {/* Subrutas de muebles */}
         <Route path="/muebles/listar" element={<ListarMuebles />} />
         <Route path="/muebles/agregar" element={<AgregarMueble />} />
-        <Route path="/muebles/eliminar" element={<EliminarMueble />} />
 
         {/* Subrutas de stock */}
         <Route path="/stock/reportes" element={<ReportesStock />} />
