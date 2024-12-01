@@ -9,5 +9,5 @@ import PPyL.Muebleria.model.Mueble;
 
 @Repository
 public interface MuebleRepository extends JpaRepository<Mueble, Long> {
-    List<Mueble> findByCategoria(String categoria);
+    List<Mueble> findByTipo(String Tipo);
 }

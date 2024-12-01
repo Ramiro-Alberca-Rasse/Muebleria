@@ -28,8 +28,8 @@ public class MuebleController {
     private MuebleService muebleService;
 
     @GetMapping
-    public List<MuebleDTO> listarMuebles(@RequestParam(required = false) String categoria) {
-        return muebleService.listarMuebles(categoria);
+    public List<MuebleDTO> listarMuebles(@RequestParam(required = false) String Tipo) {
+        return muebleService.listarMuebles(Tipo);
     }
 
     @GetMapping("/{id}")

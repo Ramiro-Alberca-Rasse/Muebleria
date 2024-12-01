@@ -16,8 +16,8 @@ public class MuebleService {
     @Autowired
     private MuebleRepository muebleRepository;
 
-    public List<MuebleDTO> listarMuebles(String categoria) {
-        return muebleRepository.findByCategoria(categoria).stream()
+    public List<MuebleDTO> listarMuebles(String Tipo) {
+        return muebleRepository.findByTipo(Tipo).stream()
             .map(mueble -> new MuebleDTO(mueble))
             .collect(Collectors.toList());
     }

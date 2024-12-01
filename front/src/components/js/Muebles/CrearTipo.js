@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import api from '../../../services/api';
 
-function CrearCategoria({ show, handleClose, handleCreateCategory }) {
+function CrearTipo({ show, handleClose, handleCreateCategory }) {
   const [categoryName, setCategoryName] = useState('');
 
   // Reseteamos el formulario al cerrar el modal
@@ -22,7 +22,7 @@ function CrearCategoria({ show, handleClose, handleCreateCategory }) {
 
     try {
       // Llamar a la API para crear la nueva categoría
-      const response = await api.post('/categorias', { nombre: categoryName });
+      const response = await api.post('/Tipos', { nombre: categoryName });
 
       // Agregar la nueva categoría al estado de ListarMuebles
       handleCreateCategory(response.data);
@@ -38,15 +38,15 @@ function CrearCategoria({ show, handleClose, handleCreateCategory }) {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Crear Nueva Categoría</Modal.Title>
+        <Modal.Title>Crear Nuevo Tipo</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Nombre de la categoría</Form.Label>
+            <Form.Label>Nombre del tipo</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ingrese el nombre de la categoría"
+              placeholder="Ingrese el nombre del tipo"
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
             />
@@ -65,4 +65,4 @@ function CrearCategoria({ show, handleClose, handleCreateCategory }) {
   );
 }
 
-export default CrearCategoria;
+export default CrearTipo;

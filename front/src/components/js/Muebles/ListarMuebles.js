@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Table, Form } from 'react-bootstrap';
 import api from '../../../services/api';
-import CrearCategoria from './CrearCategoria';
+import CrearTipo from './CrearTipo';
 
 function ListarMuebles({ show, handleClose }) {
   const [muebles, setMuebles] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedTipo, setSelectedTipo] = useState('');
   const [filteredMuebles, setFilteredMuebles] = useState([]);
-  const [categorias, setCategorias] = useState([]);
-  const [showCrearCategoria, setShowCrearCategoria] = useState(false);
+  const [Tipos, setTipos] = useState([]);
+  const [showCrearTipo, setShowCrearTipo] = useState(false);
 
   // Resetear los formularios cuando el modal se cierra
   useEffect(() => {
     if (!show) {
       setSearchTerm('');
-      setSelectedCategory('');
+      setSelectedTipo('');
       setFilteredMuebles(muebles);  // Resetear la lista filtrada a la original
     }
   }, [show, muebles]);
@@ -33,9 +33,9 @@ function ListarMuebles({ show, handleClose }) {
       setFilteredMuebles(response.data);
 
       const uniqueCategories = [
-        ...new Set(response.data.map((mueble) => mueble.categoria)),
+        ...new Set(response.data.map((mueble) => mueble.Tipo)),
       ];
-      setCategorias(uniqueCategories);
+      setTipos(uniqueCategories);
     } catch (error) {
       console.error('Error al obtener los muebles:', error);
     }
@@ -50,9 +50,9 @@ function ListarMuebles({ show, handleClose }) {
       );
     }
 
-    if (selectedCategory !== '') {
+    if (selectedTipo !== '') {
       filtered = filtered.filter((mueble) =>
-        mueble.categoria.toLowerCase().includes(selectedCategory.toLowerCase())
+        mueble.Tipo.toLowerCase().includes(selectedTipo.toLowerCase())
       );
     }
 
@@ -71,8 +71,8 @@ function ListarMuebles({ show, handleClose }) {
     }
   };
 
-  const handleCreateCategory = (newCategory) => {
-    setCategorias((prevCategorias) => [...prevCategorias, newCategory.nombre]);
+  const handleCreateTipo = (newTipo) => {
+    setTipos((prevTipos) => [...prevTipos, newTipo.nombre]);
   };
 
   return (
@@ -83,19 +83,22 @@ function ListarMuebles({ show, handleClose }) {
         </Modal.Header>
         <Modal.Body>
 
+        <Form.Group controlId="Tipo">
+          <Form.Label className="fw-bold">Tipo</Form.Label> {/* Agregar la clase fw-bold para negrita */}
           <Form.Control
             as="select"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            value={selectedTipo}
+            onChange={(e) => setSelectedTipo(e.target.value)}
             onBlur={handleSearch}
           >
-            <option value="">Todas las categorías</option>
-            {categorias.map((categoria, index) => (
-              <option key={index} value={categoria}>
-                {categoria}
-              </option>
-            ))}
+          <option value="">Todos los tipos</option>
+          {Tipos.map((Tipo, index) => (
+            <option key={index} value={Tipo}>
+            {Tipo}
+            </option>
+          ))}
           </Form.Control>
+        </Form.Group>
 
           <div className="d-flex mb-2" style={{ alignItems: 'flex-start' }}>
             <Form.Control
@@ -117,7 +120,7 @@ function ListarMuebles({ show, handleClose }) {
                 <th>Nombre</th>
                 <th>Tipo de Madera</th>
                 <th>Fabricante</th>
-                <th>Categoría</th>
+                <th>Tipo</th>
                 <th>Precio</th>
                 <th>Stock</th>
                 <th>Acciones</th>
@@ -130,7 +133,7 @@ function ListarMuebles({ show, handleClose }) {
                     <td>{mueble.nombre}</td>
                     <td>{mueble.tipoMadera}</td>
                     <td>{mueble.fabricante}</td>
-                    <td>{mueble.categoria}</td>
+                    <td>{mueble.Tipo}</td>
                     <td>${mueble.precio}</td>
                     <td>{mueble.stock}</td>
                     <td>
@@ -158,10 +161,10 @@ function ListarMuebles({ show, handleClose }) {
       </Modal>
 
       {/* Modal Crear Categoría */}
-      <CrearCategoria
-        show={showCrearCategoria}
-        handleClose={() => setShowCrearCategoria(false)}
-        handleCreateCategory={handleCreateCategory}
+      <CrearTipo
+        show={showCrearTipo}
+        handleClose={() => setShowCrearTipo(false)}
+        handleCreateTipo={handleCreateTipo}
       />
     </>
   );

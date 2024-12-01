@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Col, Row, Toast, ToastContainer } from 'react-bootstrap';
 import api from '../../../services/api'; // Asegúrate de que esta ruta sea correcta
-import CrearCategoria from './CrearCategoria'; // Importar el componente CrearCategoria
+import CrearTipo from './CrearTipo'; // Importar el componente CrearTipo
 
 function AgregarMueble({ show, handleClose, onMuebleAdded }) {
   const [nombre, setNombre] = useState('');
@@ -9,24 +9,24 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
   const [fabricante, setFabricante] = useState('');
   const [precio, setPrecio] = useState('');
   const [stock, setStock] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [categorias, setCategorias] = useState([]); // Estado para las categorías
+  const [Tipo, setTipo] = useState('');
+  const [Tipos, setTipos] = useState([]); // Estado para las categorías
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
-  const [showCrearCategoria, setShowCrearCategoria] = useState(false); // Estado para mostrar el modal de CrearCategoria
+  const [showCrearTipo, setShowCrearTipo] = useState(false); // Estado para mostrar el modal de CrearTipo
 
   // Función para cargar las categorías
-  const fetchCategorias = async () => {
+  const fetchTipos = async () => {
     try {
-      const response = await api.get('/categorias'); // Asegúrate de que la ruta de la API sea correcta
-      setCategorias(response.data);
+      const response = await api.get('/Tipos'); // Asegúrate de que la ruta de la API sea correcta
+      setTipos(response.data);
     } catch (error) {
       console.error('Error al obtener las categorías:', error);
     }
   };
 
   useEffect(() => {
-    fetchCategorias(); // Cargar las categorías cuando el componente se monta
+    fetchTipos(); // Cargar las categorías cuando el componente se monta
   }, []);
 
   const handleSubmit = async (e) => {
@@ -38,7 +38,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
       fabricante: fabricante || null,
       precio: parseFloat(precio),
       stock: stock === '' ? 0 : parseInt(stock, 10),
-      categoria: categoria || null,
+      Tipo: Tipo || null,
     };
 
     try {
@@ -62,7 +62,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
     setFabricante('');
     setPrecio('');
     setStock('');
-    setCategoria('');
+    setTipo('');
   };
 
   const handleCloseModal = () => {
@@ -147,17 +147,17 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                 />
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formCategoria">
-                <Form.Label>Categoría</Form.Label>
+              <Form.Group as={Col} controlId="formTipo">
+                <Form.Label>Tipo</Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     as="select"
-                    value={categoria}
-                    onChange={(e) => setCategoria(e.target.value)}
+                    value={Tipo}
+                    onChange={(e) => setTipo(e.target.value)}
                     className="me-2" // Espacio entre el select y el botón
                   >
-                    <option value="">Selecciona una categoría</option>
-                    {categorias.map((cat) => (
+                    <option value="">Selecciona un tipo</option>
+                    {Tipos.map((cat) => (
                       <option key={cat.id} value={cat.nombre}>
                         {cat.nombre}
                       </option>
@@ -166,7 +166,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                   <Button
                     variant="success"
                     size="sm" // Botón pequeño
-                    onClick={() => setShowCrearCategoria(true)}
+                    onClick={() => setShowCrearTipo(true)}
                     className="align-self-stretch" // Asegura que el botón tenga la misma altura que el campo
                   >
                     Crear
@@ -183,11 +183,11 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
       </Modal>
 
       {/* Modal Crear Categoría */}
-      <CrearCategoria
-        show={showCrearCategoria}
-        handleClose={() => setShowCrearCategoria(false)}
+      <CrearTipo
+        show={showCrearTipo}
+        handleClose={() => setShowCrearTipo(false)}
         handleCreateCategory={(newCategory) => {
-          setCategorias((prevCategorias) => [...prevCategorias, newCategory]);
+          setTipos((prevTipos) => [...prevTipos, newCategory]);
         }}
       />
     </>
