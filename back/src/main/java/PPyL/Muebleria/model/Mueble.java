@@ -22,8 +22,8 @@ public class Mueble {
 
     @Column(name = "tipo_madera")
     private String tipoMadera;
-
-    private String Tipo;
+    
+    private String tipo;
 
     private String fabricante;
 
@@ -32,13 +32,13 @@ public class Mueble {
     private int stock;
     
         // Constructor
-    public Mueble(String nombre, String tipoMadera, String fabricante, double precio, int stock, String Tipo) {
+    public Mueble(String nombre, String tipoMadera, String fabricante, double precio, int stock, String tipo) {
         this.nombre = nombre;
         this.tipoMadera = tipoMadera;
         this.fabricante = fabricante;
         this.precio = precio;
         this.stock = stock;
-        this.Tipo = Tipo;
+        this.tipo = tipo;
     }
 
     public Mueble() {}
@@ -60,7 +60,7 @@ public class Mueble {
         }
 
         public String getTipo() {
-            return Tipo;
+            return tipo;
         }
     
         public String getFabricante() {
@@ -89,8 +89,8 @@ public class Mueble {
             this.tipoMadera = tipoMadera;
         }
 
-        public void setTipo(String Tipo) {
-            this.Tipo = Tipo;
+        public void setTipo(String tipo) {
+            this.tipo = this.tipo;
         }
     
         public void setFabricante(String fabricante) {

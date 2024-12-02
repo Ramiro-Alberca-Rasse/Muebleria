@@ -1,0 +1,16 @@
+/* Fondo oscuro para todos los modales */
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.1); /* Fondo oscuro predeterminado */
+  }
+  
+/* Personalización de modal */
+.custom-modal .modal-dialog {
+  max-width: 600px; /* O cualquier tamaño adecuado */
+  width: 100%;
+}
+
+/* Estilo para hacer que el encabezado del modal sea arrastrable */
+.modal-header {
+  cursor: move; /* Indica que el encabezado puede ser movido */
+}
+

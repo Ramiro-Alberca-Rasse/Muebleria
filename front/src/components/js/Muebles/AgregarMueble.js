@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Col, Row, Toast, ToastContainer } from 'react-bootstrap';
 import api from '../../../services/api'; // Asegúrate de que esta ruta sea correcta
-import CrearTipo from './CrearTipo'; // Importar el componente CrearTipo
+import RegistrarTipo from './RegistrarTipo'; // Modal para registrar nuevos "Tipo"
+import RegistrarTipoMadera from './RegistrarTipoDeMadera'; // Modal para registrar nuevos "Tipo de Madera"
+import RegistrarFabricante from './RegistrarFabricante'; // Modal para registrar nuevos fabricantes
 
 function AgregarMueble({ show, handleClose, onMuebleAdded }) {
   const [nombre, setNombre] = useState('');
@@ -9,25 +11,53 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
   const [fabricante, setFabricante] = useState('');
   const [precio, setPrecio] = useState('');
   const [stock, setStock] = useState('');
-  const [Tipo, setTipo] = useState('');
-  const [Tipos, setTipos] = useState([]); // Estado para las categorías
+  const [tipo, setTipo] = useState('');
+  const [tipos, setTipos] = useState([]); // Tipos de muebles
+  const [tiposDeMadera, setTiposDeMadera] = useState([]); // Tipos de madera
+  const [fabricantes, setFabricantes] = useState([]); // Fabricantes
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
-  const [showCrearTipo, setShowCrearTipo] = useState(false); // Estado para mostrar el modal de CrearTipo
+  const [showRegistrarTipo, setShowRegistrarTipo] = useState(false); // Modal para "Tipo"
+  const [showRegistrarTipoMadera, setShowRegistrarTipoMadera] = useState(false); // Modal para "Tipo de Madera"
+  const [showRegistrarFabricante, setShowRegistrarFabricante] = useState(false); // Modal para "Fabricante"
 
-  // Función para cargar las categorías
+  // Cargar los tipos de muebles
   const fetchTipos = async () => {
     try {
-      const response = await api.get('/Tipos'); // Asegúrate de que la ruta de la API sea correcta
+      const response = await api.get('/tipos'); // Ruta correcta en tu backend
       setTipos(response.data);
     } catch (error) {
-      console.error('Error al obtener las categorías:', error);
+      console.error('Error al obtener los tipos:', error);
+    }
+  };
+
+  // Cargar los tipos de madera
+  const fetchTiposDeMadera = async () => {
+    try {
+      const response = await api.get('/tiposdemadera'); // Ruta correcta en tu backend
+      setTiposDeMadera(response.data);
+    } catch (error) {
+      console.error('Error al obtener los tipos de madera:', error);
+    }
+  };
+
+  // Cargar los fabricantes
+  const fetchFabricantes = async () => {
+    try {
+      const response = await api.get('/fabricantes'); // Ruta correcta en tu backend
+      setFabricantes(response.data);
+    } catch (error) {
+      console.error('Error al obtener los fabricantes:', error);
     }
   };
 
   useEffect(() => {
-    fetchTipos(); // Cargar las categorías cuando el componente se monta
-  }, []);
+    if (show) {
+      fetchTipos();
+      fetchTiposDeMadera();
+      fetchFabricantes();
+    }
+  }, [show]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,11 +68,11 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
       fabricante: fabricante || null,
       precio: parseFloat(precio),
       stock: stock === '' ? 0 : parseInt(stock, 10),
-      Tipo: Tipo || null,
+      tipo: tipo || null,
     };
 
     try {
-      const response = await api.post('/muebles/crear', nuevoMueble);
+      const response = await api.post('/muebles/Registrar', nuevoMueble);
       if (response.status === 200) {
         setMensajeExito('¡Mueble agregado exitosamente!');
         setShowSuccessToast(true);
@@ -102,28 +132,35 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                 />
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formTipoMadera">
-                <Form.Label>Tipo de Madera</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Ingresa el tipo de madera"
-                  value={tipoMadera}
-                  onChange={(e) => setTipoMadera(e.target.value)}
-                />
+              <Form.Group as={Col} controlId="formFabricante">
+                <Form.Label>Fabricante</Form.Label>
+                <div className="d-flex align-items-center">
+                  <Form.Control
+                    as="select"
+                    value={fabricante}
+                    onChange={(e) => setFabricante(e.target.value)}
+                    className="me-2"
+                  >
+                    <option value="">Selecciona un fabricante</option>
+                    {fabricantes.map((fab) => (
+                      <option key={fab.id} value={fab.id}>
+                        {fab.nombre}
+                      </option>
+                    ))}
+                  </Form.Control>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    className="align-self-start"
+                    onClick={() => setShowRegistrarFabricante(true)}
+                  >
+                    Registrar
+                  </Button>
+                </div>
               </Form.Group>
             </Row>
 
             <Row className="mb-3">
-              <Form.Group as={Col} controlId="formFabricante">
-                <Form.Label>Fabricante</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Ingresa el fabricante"
-                  value={fabricante}
-                  onChange={(e) => setFabricante(e.target.value)}
-                />
-              </Form.Group>
-
               <Form.Group as={Col} controlId="formPrecio">
                 <Form.Label>Precio</Form.Label>
                 <Form.Control
@@ -134,9 +171,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                   required
                 />
               </Form.Group>
-            </Row>
 
-            <Row className="mb-3">
               <Form.Group as={Col} controlId="formStock">
                 <Form.Label>Stock</Form.Label>
                 <Form.Control
@@ -146,30 +181,59 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                   onChange={(e) => setStock(e.target.value)}
                 />
               </Form.Group>
+            </Row>
 
+            <Row className="mb-3">
               <Form.Group as={Col} controlId="formTipo">
-                <Form.Label>Tipo</Form.Label>
+                <Form.Label>Tipo de mueble</Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     as="select"
-                    value={Tipo}
+                    value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
-                    className="me-2" // Espacio entre el select y el botón
+                    className="me-2"
                   >
-                    <option value="">Selecciona un tipo</option>
-                    {Tipos.map((cat) => (
-                      <option key={cat.id} value={cat.nombre}>
+                    <option value="">Selecciona un tipo de mueble</option>
+                    {tipos.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
                         {cat.nombre}
                       </option>
                     ))}
                   </Form.Control>
                   <Button
                     variant="success"
-                    size="sm" // Botón pequeño
-                    onClick={() => setShowCrearTipo(true)}
-                    className="align-self-stretch" // Asegura que el botón tenga la misma altura que el campo
+                    size="sm"
+                    className="align-self-start"
+                    onClick={() => setShowRegistrarTipo(true)}
                   >
-                    Crear
+                    Registrar
+                  </Button>
+                </div>
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="formTipoMadera">
+                <Form.Label>Tipo de madera</Form.Label>
+                <div className="d-flex align-items-center">
+                  <Form.Control
+                    as="select"
+                    value={tipoMadera}
+                    onChange={(e) => setTipoMadera(e.target.value)}
+                    className="me-2"
+                  >
+                    <option value="">Selecciona un tipo de madera</option>
+                    {tiposDeMadera.map((tipo) => (
+                      <option key={tipo.id} value={tipo.id}>
+                        {tipo.nombre}
+                      </option>
+                    ))}
+                  </Form.Control>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    className="align-self-start"
+                    onClick={() => setShowRegistrarTipoMadera(true)}
+                  >
+                    Registrar
                   </Button>
                 </div>
               </Form.Group>
@@ -182,12 +246,30 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
         </Modal.Body>
       </Modal>
 
-      {/* Modal Crear Categoría */}
-      <CrearTipo
-        show={showCrearTipo}
-        handleClose={() => setShowCrearTipo(false)}
-        handleCreateCategory={(newCategory) => {
-          setTipos((prevTipos) => [...prevTipos, newCategory]);
+      {/* Modal para Registrar Tipo */}
+      <RegistrarTipo
+        show={showRegistrarTipo}
+        handleClose={() => setShowRegistrarTipo(false)}
+        handleCreateCategory={(nuevoTipo) => {
+          setTipos((prevTipos) => [...prevTipos, nuevoTipo]);
+        }}
+      />
+
+      {/* Modal para Registrar Tipo de Madera */}
+      <RegistrarTipoMadera
+        show={showRegistrarTipoMadera}
+        handleClose={() => setShowRegistrarTipoMadera(false)}
+        handleCreateMadera={(nuevaMadera) => {
+          setTiposDeMadera((prevMaderas) => [...prevMaderas, nuevaMadera]);
+        }}
+      />
+
+      {/* Modal para Registrar Fabricante */}
+      <RegistrarFabricante
+        show={showRegistrarFabricante}
+        handleClose={() => setShowRegistrarFabricante(false)}
+        handleCreateFabricante={(nuevoFabricante) => {
+          setFabricantes((prevFabricantes) => [...prevFabricantes, nuevoFabricante]);
         }}
       />
     </>

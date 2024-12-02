@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Table, Form } from 'react-bootstrap';
 import api from '../../../services/api';
-import CrearTipo from './CrearTipo';
+import RegistrarTipo from './RegistrarTipo';
 
 function ListarMuebles({ show, handleClose }) {
   const [muebles, setMuebles] = useState([]);
@@ -9,7 +9,7 @@ function ListarMuebles({ show, handleClose }) {
   const [selectedTipo, setSelectedTipo] = useState('');
   const [filteredMuebles, setFilteredMuebles] = useState([]);
   const [Tipos, setTipos] = useState([]);
-  const [showCrearTipo, setShowCrearTipo] = useState(false);
+  const [showRegistrarTipo, setShowRegistrarTipo] = useState(false);
 
   // Resetear los formularios cuando el modal se cierra
   useEffect(() => {
@@ -161,9 +161,9 @@ function ListarMuebles({ show, handleClose }) {
       </Modal>
 
       {/* Modal Crear Categoría */}
-      <CrearTipo
-        show={showCrearTipo}
-        handleClose={() => setShowCrearTipo(false)}
+      <RegistrarTipo
+        show={showRegistrarTipo}
+        handleClose={() => setShowRegistrarTipo(false)}
         handleCreateTipo={handleCreateTipo}
       />
     </>
