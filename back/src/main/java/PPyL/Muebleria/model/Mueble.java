@@ -90,7 +90,7 @@ public class Mueble {
         }
 
         public void setTipo(String tipo) {
-            this.tipo = this.tipo;
+            this.tipo = tipo;
         }
     
         public void setFabricante(String fabricante) {
