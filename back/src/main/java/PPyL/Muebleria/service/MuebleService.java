@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import PPyL.Muebleria.dto.MuebleDTO;
 import PPyL.Muebleria.model.Mueble;
+import PPyL.Muebleria.model.Tipo;
 import PPyL.Muebleria.repository.MuebleRepository;
 
 @Service
@@ -16,7 +17,7 @@ public class MuebleService {
     @Autowired
     private MuebleRepository muebleRepository;
 
-    public List<MuebleDTO> listarMuebles(String Tipo) {
+    public List<MuebleDTO> listarMuebles(Tipo Tipo) {
         return muebleRepository.findByTipo(Tipo).stream()
             .map(mueble -> new MuebleDTO(mueble))
             .collect(Collectors.toList());

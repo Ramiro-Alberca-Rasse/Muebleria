@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,21 +22,29 @@ public class Mueble {
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "tipo_madera")
-    private String tipoMadera;
     
-    private String tipo;
+    @ManyToOne
+    @JoinColumn(name = "tipoDeMadera_id")
+    private TipoDeMadera tipoDeMadera;
+    
+    
+    @ManyToOne
+    @JoinColumn(name = "tipo_id")
+    private Tipo tipo;
 
-    private String fabricante;
+    
+    @ManyToOne
+    @JoinColumn(name = "fabricante_id")
+    private Fabricante fabricante;
 
     private double precio;
 
     private int stock;
     
         // Constructor
-    public Mueble(String nombre, String tipoMadera, String fabricante, double precio, int stock, String tipo) {
+    public Mueble(String nombre, TipoDeMadera tipoMadera, Fabricante fabricante, double precio, int stock, Tipo tipo) {
         this.nombre = nombre;
-        this.tipoMadera = tipoMadera;
+        this.tipoDeMadera = tipoMadera;
         this.fabricante = fabricante;
         this.precio = precio;
         this.stock = stock;
@@ -55,15 +65,15 @@ public class Mueble {
             return nombre;
         }
     
-        public String getTipoMadera() {
-            return tipoMadera;
+        public TipoDeMadera getTipoMadera() {
+            return tipoDeMadera;
         }
 
-        public String getTipo() {
+        public Tipo getTipo() {
             return tipo;
         }
     
-        public String getFabricante() {
+        public Fabricante getFabricante() {
             return fabricante;
         }
     
@@ -85,15 +95,15 @@ public class Mueble {
             this.nombre = nombre;
         }
     
-        public void setTipoMadera(String tipoMadera) {
-            this.tipoMadera = tipoMadera;
+        public void setTipoMadera(TipoDeMadera tipoMadera) {
+            this.tipoDeMadera = tipoMadera;
         }
 
-        public void setTipo(String tipo) {
+        public void setTipo(Tipo tipo) {
             this.tipo = tipo;
         }
     
-        public void setFabricante(String fabricante) {
+        public void setFabricante(Fabricante fabricante) {
             this.fabricante = fabricante;
         }
     
@@ -108,7 +118,7 @@ public class Mueble {
         // Método para actualizar datos desde un DTO
         public void updateFromDTO(MuebleDTO dto) {
             this.nombre = dto.getNombre();
-            this.tipoMadera = dto.getTipoMadera();
+            this.tipoDeMadera = dto.getTipoMadera();
             this.fabricante = dto.getFabricante();
             this.precio = dto.getPrecio();
         }

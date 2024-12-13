@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import PPyL.Muebleria.dto.MuebleDTO;
+import PPyL.Muebleria.model.Tipo;
 import PPyL.Muebleria.service.MuebleService;
 
 @RestController
@@ -28,7 +29,7 @@ public class MuebleController {
     private MuebleService muebleService;
 
     @GetMapping
-    public List<MuebleDTO> listarMuebles(@RequestParam(required = false) String Tipo) {
+    public List<MuebleDTO> listarMuebles(@RequestParam(required = false) Tipo Tipo) {
         return muebleService.listarMuebles(Tipo);
     }
 
