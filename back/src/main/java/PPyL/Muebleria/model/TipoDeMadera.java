@@ -22,6 +22,9 @@ public class TipoDeMadera {
     @OneToMany(mappedBy = "tipoDeMadera", cascade = CascadeType.ALL)
     private List<Mueble> muebles;
 
+    public TipoDeMadera() {
+    }
+
     public TipoDeMadera(String nombre) {
         this.nombre = nombre;
     }

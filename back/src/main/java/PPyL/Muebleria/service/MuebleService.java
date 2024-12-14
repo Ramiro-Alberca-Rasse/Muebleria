@@ -34,6 +34,7 @@ public class MuebleService {
         if (mueble.getNombre() == null || mueble.getNombre().isEmpty()) {
             throw new IllegalArgumentException("El nombre del mueble no puede estar vacío.");
         }
+
         muebleRepository.save(mueble);
         return new MuebleDTO(mueble);
     }

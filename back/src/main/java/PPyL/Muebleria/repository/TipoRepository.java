@@ -1,7 +1,6 @@
-
 package PPyL.Muebleria.repository;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,6 +9,9 @@ import PPyL.Muebleria.model.Tipo;
 
 @Repository
 public interface TipoRepository extends JpaRepository<Tipo, Long> {
-    List<Tipo> findAll();
+
+    Optional<Tipo> findByNombreIgnoreCase(String nombre);
+
     Tipo findByNombre(String nombre);
+    
 }

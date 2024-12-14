@@ -118,7 +118,7 @@ function ListarMuebles({ show, handleClose }) {
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Tipo de Madera</th>
+                <th>Madera</th>
                 <th>Fabricante</th>
                 <th>Tipo</th>
                 <th>Precio</th>

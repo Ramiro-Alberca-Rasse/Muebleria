@@ -1,4 +1,3 @@
-
 package PPyL.Muebleria.service;
 
 import java.util.List;
@@ -25,5 +24,9 @@ public class TipoService {
 
     public Tipo getTipo(String nombre) {
         return tipoRepository.findByNombre(nombre);
+    }
+
+    public Tipo crearTipo(Tipo tipo) {
+        return tipoRepository.save(tipo);
     }
 }

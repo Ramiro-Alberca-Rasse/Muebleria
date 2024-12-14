@@ -1,4 +1,3 @@
-
 package PPyL.Muebleria.service;
 
 import java.util.List;
@@ -25,5 +24,9 @@ public class TipoDeMaderaService {
 
     public TipoDeMadera getTipoDeMadera(String nombre) {
         return tipoDeMaderaRepository.findByNombre(nombre);
+    }
+
+    public TipoDeMadera crearTipoDeMadera(TipoDeMadera tipoDeMadera) {
+        return tipoDeMaderaRepository.save(tipoDeMadera);
     }
 }

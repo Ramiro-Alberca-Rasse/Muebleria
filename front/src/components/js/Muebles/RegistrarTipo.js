@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import api from '../../../services/api';
 import '../../css/Modal.css';
+import '../../css/Notification.css';
 
-function RegistrarTipo({ show, handleClose, handleCreateCategory }) {
+function RegistrarTipo({ show, handleClose}) {
   const [categoryName, setCategoryName] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Reseteamos el formulario al cerrar el modal
   useEffect(() => {
@@ -23,41 +26,70 @@ function RegistrarTipo({ show, handleClose, handleCreateCategory }) {
 
     try {
       // Llamar a la API para Registrar la nueva categoría
-      const response = await api.post('/Tipos', { nombre: categoryName });
-
+      const response = await api.post('/tipos/registrar', categoryName, {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      });
+      if (response.status === 201) {
       // Agregar la nueva categoría al estado de ListarMuebles
-      handleCreateCategory(response.data);
-
-      // Cerrar el modal
-      handleClose();
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        handleClose();
+      }, 7000);
+    }
     } catch (error) {
-      console.error('Error al Registrar la categoría:', error);
-      alert('No se pudo Registrar la categoría. Intenta nuevamente.');
+      if (error.response && error.response.status === 409) {
+        setErrorMessage('El tipo de mueble ya existe.');
+      } else {
+        setErrorMessage(
+          'Ocurrió un error al registrar el tipo de mueble. Intente nuevamente.'
+        );
+      }
     }
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Registrar Nuevo Tipo de Mueble</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <>
+      <Modal show={show} onHide={handleClose}>
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label>Nombre del tipo</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese el nombre del tipo"
-              value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)}
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit" className="mt-3 w-100">
-            Registrar Tipo de Mueble
+          <Modal.Header closeButton>
+            <Modal.Title>Registrar Nuevo Tipo de Mueble</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Nombre del tipo</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ingrese el nombre del tipo"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                isInvalid={!!errorMessage} // Muestra el feedback de error
+              />
+              <Form.Control.Feedback type="invalid">
+                {errorMessage}
+              </Form.Control.Feedback>
+            </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cerrar
           </Button>
-        </Form>
-      </Modal.Body>
-    </Modal>
+          <Button variant="primary" type="submit">
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Form>
+      </Modal>
+      {showSuccess && (
+        <div className="notification-container">
+          <Alert variant="success" className="notification">
+            Tipo de mueble registrado con éxito!
+          </Alert>
+        </div>
+      )}
+    </>
   );
 }
 

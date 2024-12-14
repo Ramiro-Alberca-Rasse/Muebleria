@@ -38,7 +38,7 @@ public class MuebleController {
         return muebleService.obtenerMueble(id);
     }
 
-    @PostMapping("/crear")
+    @PostMapping("/registrar")
     public MuebleDTO crearMueble(@RequestBody MuebleDTO muebleDTO) {
         logger.info("Mandando a servicio");
         return muebleService.crearMueble(muebleDTO);

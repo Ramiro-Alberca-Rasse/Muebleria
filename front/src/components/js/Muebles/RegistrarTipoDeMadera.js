@@ -1,63 +1,98 @@
-import React, { useState } from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
-import api from '../../../services/api'; // Importa el servicio de API para realizar solicitudes
+import React, { useState, useEffect } from 'react';
+import { Modal, Form, Button, Alert } from 'react-bootstrap';
+import api from '../../../services/api';
 import '../../css/Modal.css';
+import '../../css/Notification.css';
 
-function RegistrarTipoDeMadera({ show, handleClose, agregarTipoMadera }) {
+function RegistrarTipoDeMadera({ show, handleClose}) {
   const [nombreTipo, setNombreTipo] = useState(''); // Estado para el nombre del tipo de madera
-  const [descripcion, setDescripcion] = useState(''); // Estado para la descripción
+  const [showSuccess, setShowSuccess] = useState(false); // Estado para el mensaje de éxito
+  const [errorMessage, setErrorMessage] = useState(''); // Estado para mensajes de error
 
-  // Maneja el envío del formulario
+  useEffect(() => {
+    if (!show) {
+      setNombreTipo(''); // Resetea el valor del formulario al cerrar el modal
+      setErrorMessage(''); // Limpia mensajes de error al cerrar
+    }
+  }, [show]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (nombreTipo.trim() === '') {
-      alert('Por favor, ingrese el nombre del tipo de madera.');
+
+    if (!nombreTipo.trim()) {
+      setErrorMessage('El nombre del tipo de madera no puede estar vacío.');
       return;
     }
 
     try {
       // Llama a la API para registrar el nuevo tipo de madera
-      const response = await api.post('/tiposdemadera', {
-        nombre: nombreTipo,
-        descripcion,
-      });
+      const response = await api.post(
+        '/tiposdemadera/registrar',
+        nombreTipo,
+        {
+          headers: { 'Content-Type': 'text/plain' },
+        }
+      );
 
-      // Llama a la función para agregar el nuevo tipo al estado principal
+      // Verifica que la respuesta sea exitosa
       if (response.status === 201) {
-        agregarTipoMadera(response.data); // Agregar el nuevo tipo al estado principal
-        handleClose(); // Cierra el modal después de agregar
-        setNombreTipo(''); // Resetea los campos
-        setDescripcion('');
+        setShowSuccess(true); // Mostrar mensaje de éxito
+        setTimeout(() => {
+          setShowSuccess(false);
+          handleClose(); // Cierra el modal después de agregar
+        }, 7000); // Ocultar mensaje después de 3 segundos
       }
     } catch (error) {
-      console.error('Error al registrar el tipo de madera:', error);
-      alert('No se pudo registrar el tipo de madera. Intente nuevamente.');
+      if (error.response && error.response.status === 409) {
+        setErrorMessage('El tipo de madera ya existe.');
+      } else {
+        setErrorMessage(
+          'Ocurrió un error al registrar el tipo de madera. Intente nuevamente.'
+        );
+      }
     }
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Registrar Tipo de Madera</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <>
+      <Modal show={show} onHide={handleClose}>
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="nombreTipoMadera">
-            <Form.Label>Nombre del Tipo de Madera</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ingrese el nombre del tipo de madera"
-              value={nombreTipo}
-              onChange={(e) => setNombreTipo(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit" className="mt-3 w-100">
-            Registrar Tipo de Madera
-          </Button>
+          <Modal.Header closeButton>
+            <Modal.Title>Registrar Tipo de Madera</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group controlId="nombreTipoMadera">
+              <Form.Label>Nombre de la Madera</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ingrese el nombre de la madera"
+                value={nombreTipo}
+                onChange={(e) => setNombreTipo(e.target.value)}
+                isInvalid={!!errorMessage} // Muestra el feedback de error
+              />
+              <Form.Control.Feedback type="invalid">
+                {errorMessage}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Cerrar
+            </Button>
+            <Button variant="primary" onClick={handleSubmit}>
+              Guardar
+            </Button>
+          </Modal.Footer>
         </Form>
-      </Modal.Body>
-    </Modal>
+      </Modal>
+      {showSuccess && (
+        <div className="notification-container">
+          <Alert variant="success" className="notification">
+            Tipo de madera registrado con éxito!
+          </Alert>
+        </div>
+      )}
+    </>
   );
 }
 

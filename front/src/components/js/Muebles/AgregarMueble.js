@@ -72,7 +72,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
     };
 
     try {
-      const response = await api.post('/muebles/Registrar', nuevoMueble);
+      const response = await api.post('/muebles/registrar', nuevoMueble);
       if (response.status === 200) {
         setMensajeExito('¡Mueble agregado exitosamente!');
         setShowSuccessToast(true);
@@ -220,7 +220,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                     onChange={(e) => setTipoMadera(e.target.value)}
                     className="me-2"
                   >
-                    <option value="">Selecciona un tipo de madera</option>
+                    <option value="">Selecciona el tipo de madera</option>
                     {tiposDeMadera.map((tipo) => (
                       <option key={tipo.id} value={tipo.id}>
                         {tipo.nombre}
@@ -249,27 +249,27 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
       {/* Modal para Registrar Tipo */}
       <RegistrarTipo
         show={showRegistrarTipo}
-        handleClose={() => setShowRegistrarTipo(false)}
-        handleCreateCategory={(nuevoTipo) => {
-          setTipos((prevTipos) => [...prevTipos, nuevoTipo]);
+        handleClose={() => {
+          setShowRegistrarTipo(false);
+          fetchTipos(); // Actualiza la lista desde el backend
         }}
       />
 
       {/* Modal para Registrar Tipo de Madera */}
       <RegistrarTipoMadera
         show={showRegistrarTipoMadera}
-        handleClose={() => setShowRegistrarTipoMadera(false)}
-        handleCreateMadera={(nuevaMadera) => {
-          setTiposDeMadera((prevMaderas) => [...prevMaderas, nuevaMadera]);
+        handleClose={() => {
+          setShowRegistrarTipoMadera(false);
+          fetchTiposDeMadera(); // Actualiza la lista desde el backend
         }}
       />
 
       {/* Modal para Registrar Fabricante */}
       <RegistrarFabricante
         show={showRegistrarFabricante}
-        handleClose={() => setShowRegistrarFabricante(false)}
-        handleCreateFabricante={(nuevoFabricante) => {
-          setFabricantes((prevFabricantes) => [...prevFabricantes, nuevoFabricante]);
+        handleClose={() => {
+          setShowRegistrarFabricante(false);
+          fetchFabricantes(); // Actualiza la lista desde el backend
         }}
       />
     </>

@@ -22,6 +22,9 @@ public class Tipo {
     @OneToMany(mappedBy = "tipo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mueble> muebles;
 
+    public Tipo() {
+    }
+
     public Tipo(String nombre) {
         this.nombre = nombre;
     }

@@ -23,6 +23,9 @@ public class Fabricante {
     @OneToMany(mappedBy = "fabricante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mueble> muebles;
 
+    public Fabricante() {
+    }
+
     public Fabricante(String nombre) {
         this.nombre = nombre;
     }
