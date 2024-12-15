@@ -2,6 +2,10 @@ package PPyL.Muebleria.model;
 
 
 import PPyL.Muebleria.dto.MuebleDTO;
+import PPyL.Muebleria.repository.FabricanteRepository;
+import PPyL.Muebleria.repository.MuebleRepository;
+import PPyL.Muebleria.repository.TipoDeMaderaRepository;
+import PPyL.Muebleria.repository.TipoRepository;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,6 +44,7 @@ public class Mueble {
     private double precio;
 
     private int stock;
+
     
         // Constructor
     public Mueble(String nombre, TipoDeMadera tipoMadera, Fabricante fabricante, double precio, int stock, Tipo tipo) {
@@ -114,12 +119,19 @@ public class Mueble {
         public void setStock(int stock) {
             this.stock = stock;
         }
-    
-        // Método para actualizar datos desde un DTO
-        public void updateFromDTO(MuebleDTO dto) {
-            this.nombre = dto.getNombre();
-            this.tipoDeMadera = dto.getTipoMadera();
-            this.fabricante = dto.getFabricante();
-            this.precio = dto.getPrecio();
+
+
+
+        @Override
+        public String toString() {
+            return "Mueble{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", precio=" + precio +
+                ", stock=" + stock +
+                ", fabricante=" + (fabricante != null ? fabricante.getNombre() : "null") +
+                ", tipoMadera=" + (tipoDeMadera != null ? tipoDeMadera.getNombre() : "null") +
+                ", tipo=" + (tipo != null ? tipo.getNombre() : "null") +
+                '}';
         }
     }

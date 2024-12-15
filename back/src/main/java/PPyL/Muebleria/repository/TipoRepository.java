@@ -13,5 +13,7 @@ public interface TipoRepository extends JpaRepository<Tipo, Long> {
     Optional<Tipo> findByNombreIgnoreCase(String nombre);
 
     Tipo findByNombre(String nombre);
+
+    Tipo findById(long id);
     
 }

@@ -37,5 +37,13 @@ public class Fabricante {
     public List<Mueble> getMuebles() {
         return muebles;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
     
 }

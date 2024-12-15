@@ -36,5 +36,9 @@ public class Tipo {
     public List<Mueble> getMuebles() {
         return muebles;
     }
+
+    public Long getId() {
+        return id;
+    }
     
 }

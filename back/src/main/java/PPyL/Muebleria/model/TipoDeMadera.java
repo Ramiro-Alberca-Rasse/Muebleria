@@ -36,4 +36,8 @@ public class TipoDeMadera {
     public List<Mueble> getMuebles() {
         return muebles;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

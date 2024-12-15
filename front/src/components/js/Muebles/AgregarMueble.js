@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Button, Col, Row, Toast, ToastContainer } from 'react-bootstrap';
+import { Modal, Form, Button, Col, Row, Toast, ToastContainer, Alert } from 'react-bootstrap';
 import api from '../../../services/api'; // Asegúrate de que esta ruta sea correcta
 import RegistrarTipo from './RegistrarTipo'; // Modal para registrar nuevos "Tipo"
 import RegistrarTipoMadera from './RegistrarTipoDeMadera'; // Modal para registrar nuevos "Tipo de Madera"
@@ -20,6 +20,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
   const [showRegistrarTipo, setShowRegistrarTipo] = useState(false); // Modal para "Tipo"
   const [showRegistrarTipoMadera, setShowRegistrarTipoMadera] = useState(false); // Modal para "Tipo de Madera"
   const [showRegistrarFabricante, setShowRegistrarFabricante] = useState(false); // Modal para "Fabricante"
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Cargar los tipos de muebles
   const fetchTipos = async () => {
@@ -36,6 +37,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
     try {
       const response = await api.get('/tiposdemadera'); // Ruta correcta en tu backend
       setTiposDeMadera(response.data);
+      
     } catch (error) {
       console.error('Error al obtener los tipos de madera:', error);
     }
@@ -64,21 +66,25 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
 
     const nuevoMueble = {
       nombre,
-      tipoMadera: tipoMadera || null,
-      fabricante: fabricante || null,
+      tipoMaderaId: tipoMadera || null,
+      fabricanteId: fabricante || null,
       precio: parseFloat(precio),
       stock: stock === '' ? 0 : parseInt(stock, 10),
-      tipo: tipo || null,
+      tipoId: tipo || null,
     };
+
+    // Log para verificar los datos antes de enviarlos
+    console.log("Datos que se enviarán al servidor:", nuevoMueble);
 
     try {
       const response = await api.post('/muebles/registrar', nuevoMueble);
-      if (response.status === 200) {
-        setMensajeExito('¡Mueble agregado exitosamente!');
-        setShowSuccessToast(true);
+      if (response.status === 201) {
+        setShowSuccess(true); // Mostrar mensaje de éxito
         handleReset();
-        handleClose();
-        onMuebleAdded(); // Notificar a la lista de muebles que se ha agregado un nuevo mueble
+        setTimeout(() => {
+          setShowSuccess(false);
+          handleClose();        
+        }, 4000); // Ocultar mensaje después de 3 segundos
       }
     } catch (error) {
       console.error('Error al agregar el mueble:', error);
@@ -113,6 +119,14 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
           <Toast.Body>{mensajeExito}</Toast.Body>
         </Toast>
       </ToastContainer>
+
+      {showSuccess && (
+        <div className="notification-container">
+          <Alert variant="success" className="notification">
+            Mueble registrado con éxito!
+          </Alert>
+        </div>
+      )}
 
       <Modal show={show} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
@@ -238,6 +252,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                 </div>
               </Form.Group>
             </Row>
+
 
             <Button variant="success" type="submit">
               Agregar Mueble

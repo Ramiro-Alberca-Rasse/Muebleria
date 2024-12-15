@@ -15,6 +15,8 @@ public interface TipoDeMaderaRepository extends JpaRepository<TipoDeMadera, Long
 
     TipoDeMadera findByNombre(String nombre);
 
+    TipoDeMadera findById(long id);
+
     // Optional
 
     
