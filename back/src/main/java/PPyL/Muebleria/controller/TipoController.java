@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import PPyL.Muebleria.model.Tipo;
 import PPyL.Muebleria.repository.TipoRepository;
+import PPyL.Muebleria.dto.TipoDTO;
 
 @RestController
 @RequestMapping("/api/tipos")
@@ -37,12 +38,21 @@ public class TipoController {
     }
 
     @GetMapping
-    public List<Tipo> getTipos() {
-        return tipoRepository.findAll();
+    public List<TipoDTO> getTipos() {
+        return tipoRepository.findAll().stream()
+            .map(tipo -> new TipoDTO(tipo.getId(), tipo.getNombre()))
+            .toList();
     }
 
-    @GetMapping("/{nombre}")
+    /* @GetMapping("/{nombre}")
     public Tipo getTipo(@PathVariable String nombre) {
         return tipoRepository.findByNombreIgnoreCase(nombre).orElse(null);
+    } */
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTipoById(@PathVariable Long id) {
+        return tipoRepository.findById(id)
+            .map(tipo -> ResponseEntity.ok(new TipoDTO(tipo.getId(), tipo.getNombre())))
+            .orElse(ResponseEntity.notFound().build());
     }
 }

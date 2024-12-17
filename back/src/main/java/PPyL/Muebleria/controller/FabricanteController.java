@@ -1,7 +1,7 @@
 package PPyL.Muebleria.controller;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import PPyL.Muebleria.dto.FabricanteDTO;
 import PPyL.Muebleria.model.Fabricante;
 import PPyL.Muebleria.repository.FabricanteRepository;
 
@@ -38,12 +39,22 @@ public class FabricanteController {
     }
 
     @GetMapping
-    public List<Fabricante> getFabricantes() {
-        return fabricanteRepository.findAll();
+    public List<FabricanteDTO> getFabricantes() {
+        List<Fabricante> fabricantes = fabricanteRepository.findAll();
+        return fabricantes.stream()
+                .map(fabricante -> new FabricanteDTO(fabricante.getId(), fabricante.getNombre()))
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/{nombre}")
+    /* @GetMapping("/{nombre}")
     public Fabricante getFabricante(@PathVariable String nombre) {
         return fabricanteRepository.findByNombreIgnoreCase(nombre).orElse(null);
+    } */
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FabricanteDTO> getFabricante(@PathVariable Long id) {
+        return fabricanteRepository.findById(id)
+            .map(fabricante -> ResponseEntity.ok(new FabricanteDTO(fabricante.getId(), fabricante.getNombre())))
+            .orElse(ResponseEntity.notFound().build());
     }
 }

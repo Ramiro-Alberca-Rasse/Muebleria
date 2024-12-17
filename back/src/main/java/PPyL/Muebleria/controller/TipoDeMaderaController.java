@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import PPyL.Muebleria.dto.TipoDeMaderaDTO;
 import PPyL.Muebleria.model.TipoDeMadera;
 import PPyL.Muebleria.repository.TipoDeMaderaRepository;
 
@@ -37,14 +38,24 @@ public class TipoDeMaderaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TipoDeMadera>> getTiposDeMadera() {
-        return new ResponseEntity<>(tipoDeMaderaRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<TipoDeMaderaDTO>> getTiposDeMadera() {
+        List<TipoDeMaderaDTO> dtos = tipoDeMaderaRepository.findAll().stream()
+            .map(tipo -> new TipoDeMaderaDTO(tipo.getId(), tipo.getNombre()))
+            .toList();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/{nombre}")
+    /* @GetMapping("/{nombre}")
     public ResponseEntity<TipoDeMadera> getTipoDeMadera(@PathVariable String nombre) {
         return tipoDeMaderaRepository.findByNombreIgnoreCase(nombre)
             .map(tipo -> new ResponseEntity<>(tipo, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    } */
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TipoDeMaderaDTO> getTipoDeMadera(@PathVariable Long id) {
+        return tipoDeMaderaRepository.findById(id)
+            .map(madera -> ResponseEntity.ok(new TipoDeMaderaDTO(madera.getId(), madera.getNombre())))
+            .orElse(ResponseEntity.notFound().build());
     }
 }

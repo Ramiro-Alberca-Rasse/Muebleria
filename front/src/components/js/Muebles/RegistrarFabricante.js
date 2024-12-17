@@ -32,15 +32,22 @@ function RegistrarFabricante({ show, handleClose }) {
         }, 7000); // Ocultar mensaje después de 3 segundos
       }
     } catch (error) {
+      setErrorMessage('');
       if (error.response && error.response.status === 409) {
         setErrorMessage('El fabricante ya existe.');
       } else {
-        setErrorMessage(
-          'Ocurrió un error al registrar el fabricante. Intente nuevamente.'
-        );
+        setErrorMessage('Ocurrió un error al registrar el fabricante. Intente nuevamente.'); 
       }
     }
   }
+
+
+  useEffect(() => {
+    if (!show) {
+      setErrorMessage('');
+    }
+  }, [show]);
+
 
   return (
     <>

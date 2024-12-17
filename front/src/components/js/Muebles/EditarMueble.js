@@ -5,7 +5,7 @@ import RegistrarTipo from './RegistrarTipo';
 import RegistrarTipoMadera from './RegistrarTipoDeMadera';
 import RegistrarFabricante from './RegistrarFabricante';
 
-function AgregarMueble({ show, handleClose, onMuebleAdded }) {
+function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
   const [nombre, setNombre] = useState('');
   const [tipoMadera, setTipoMadera] = useState('');
   const [fabricante, setFabricante] = useState('');
@@ -70,30 +70,25 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
     }
   };
 
-  // Resetear todos los valores del formulario
-  const handleReset = () => {
-    setNombre('');
-    setTipoMadera('');
-    setFabricante('');
-    setPrecio('');
-    setStock('');
-    setTipo('');
-  };
-
-  // Cuando el modal se abre, cargar datos y resetear formulario
+  // Cargar los datos del mueble a editar
   useEffect(() => {
-    if (show) {
+    if (show && mueble) {
+      setNombre(mueble.nombre);
+      setTipoMadera(mueble.tipoMaderaId);
+      setFabricante(mueble.fabricanteId);
+      setPrecio(mueble.precio);
+      setStock(mueble.stock);
+      setTipo(mueble.tipoId);
       fetchTipos();
       fetchTiposDeMadera();
       fetchFabricantes();
-      handleReset(); // Resetear valores cada vez que se abre
     }
-  }, [show]);
+  }, [show, mueble]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const nuevoMueble = {
+    const muebleActualizado = {
       nombre,
       tipoMaderaId: tipoMadera || null,
       fabricanteId: fabricante || null,
@@ -103,17 +98,17 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
     };
 
     try {
-      const response = await api.post('/muebles/registrar', nuevoMueble);
-      if (response.status === 201) {
+      const response = await api.put(`/muebles/${mueble.id}`, muebleActualizado);
+      if (response.status === 200) {
         setShowSuccess(true);
-        handleReset();
         setTimeout(() => {
           setShowSuccess(false);
           handleClose();
+          onMuebleUpdated();
         }, 4000);
       }
     } catch (error) {
-      console.error('Error al agregar el mueble:', error);
+      console.error('Error al actualizar el mueble:', error);
       setMensajeExito('');
     }
   };
@@ -140,14 +135,14 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
       {showSuccess && (
         <div className="notification-container">
           <Alert variant="success" className="notification">
-            Mueble registrado con éxito!
+            Mueble actualizado con éxito!
           </Alert>
         </div>
       )}
 
       <Modal show={show} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Agregar Nuevo Mueble</Modal.Title>
+          <Modal.Title>Editar Mueble</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -271,7 +266,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
             </Row>
 
             <Button variant="success" type="submit">
-              Agregar Mueble
+              Actualizar Mueble
             </Button>
           </Form>
         </Modal.Body>
@@ -307,4 +302,4 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
   );
 }
 
-export default AgregarMueble;
+export default EditarMueble;

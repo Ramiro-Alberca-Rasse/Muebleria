@@ -25,6 +25,8 @@ public class Venta {
     @ManyToOne(cascade = CascadeType.ALL)
     private Cliente cliente;
 
+    private double precioTotal;
+
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
     private List<VentaMueble> ventas;
 
@@ -59,5 +61,13 @@ public class Venta {
 
     public void setVentas(List<VentaMueble> ventas) {
         this.ventas = ventas;
+    }
+
+    public double getPrecioTotal() {
+        return precioTotal;
+    }
+
+    public void setPrecioTotal(double precioTotal) {
+        this.precioTotal = precioTotal;
     }
 }

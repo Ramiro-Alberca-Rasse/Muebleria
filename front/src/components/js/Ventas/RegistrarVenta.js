@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Row, Col, Table } from 'react-bootstrap';
 import RegistrarCliente from '../../js/Clientes/RegistrarCliente'; // Importar el modal para Registrar cliente
 import RegistrarSubVenta from './RegistrarSubVenta'; // Importar el modal para Registrar Subventa
+import api from '../../../services/api';
 
 function RegistrarVenta({ show, handleClose }) {
   const [clientes, setClientes] = useState([]); // Lista de clientes desde la API
@@ -19,20 +20,23 @@ function RegistrarVenta({ show, handleClose }) {
       const fechaActual = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
       setFecha(fechaActual);
 
-      // Obtener clientes y muebles desde la API de manera más eficiente
-      Promise.all([
-        fetch('/api/clientes').then((response) => response.json()),
-        fetch('/api/muebles').then((response) => response.json())
-      ])
-        .then(([clientesData, mueblesData]) => {
-          setClientes(clientesData);
-          setMuebles(mueblesData);
-        })
-        .catch((error) => {
+      // Obtener clientes y muebles desde la API usando api.get
+      const fetchData = async () => {
+        try {
+          const [clientesResponse, mueblesResponse] = await Promise.all([
+            api.get('/clientes'),
+            api.get('/muebles')
+          ]);
+          setClientes(clientesResponse.data);
+          setMuebles(mueblesResponse.data);
+        } catch (error) {
           console.error('Error al cargar los datos:', error);
           setClientes([]);
           setMuebles([]);
-        });
+        }
+      };
+
+      fetchData();
     } else {
       // Resetear valores cuando el modal se cierra
       resetForm();
@@ -55,12 +59,76 @@ function RegistrarVenta({ show, handleClose }) {
     setTotal(totalCalculado); // Actualizar el total
   };
 
-  // Función de envío del formulario
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Venta registrada:', { cliente: clienteSeleccionado, fecha, total, ventaParcial });
-    handleClose(); // Cierra el modal después de registrar la venta
+  // Función para eliminar una venta parcial
+  const eliminarVentaParcial = (index) => {
+    const nuevasVentasParciales = ventaParcial.filter((_, i) => i !== index);
+    setVentaParcial(nuevasVentasParciales);
+
+    const totalCalculado = nuevasVentasParciales.reduce((acc, item) => acc + item.subtotal, 0);
+    setTotal(totalCalculado); // Actualizar el total
   };
+
+  // Función de envío del formulario
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const nuevaVenta = {
+      cliente: clienteSeleccionado,
+      fecha,
+      total,
+      ventaParcial
+    };
+  
+    console.log('Datos de nuevaVenta:', nuevaVenta); // Log para revisar el objeto enviado
+  
+    try {
+      // Enviar la venta principal
+      console.log('Enviando POST a /ventas...');
+      const response = await api.post('/ventas', nuevaVenta, {
+        headers: {
+          'Content-Type': 'application/json', // Asegura que se envía como JSON
+        },
+      });
+      console.log('Venta registrada:', response.data); // Log para revisar la respuesta del servidor
+  
+      // Enviar cada subventa al backend
+      for (const subVenta of ventaParcial) {
+        console.log('Enviando subventa:', {
+          ventaId: response.data.id,
+          muebleId: subVenta.mueble.id,
+          cantidad: subVenta.cantidad,
+          subtotal: subVenta.subtotal,
+        });
+  
+        const subVentaResponse = await api.post('/ventaMuebles', {
+          ventaId: response.data.id, // Asumiendo que la respuesta contiene el ID de la venta
+          muebleId: subVenta.mueble.id,
+          cantidad: subVenta.cantidad,
+          subtotal: subVenta.subtotal,
+        });
+  
+        console.log('Subventa registrada:', subVentaResponse.data);
+      }
+  
+      console.log('Todas las ventas y subventas fueron registradas correctamente.');
+      handleClose(); // Cierra el modal después de registrar la venta y subventas
+    } catch (error) {
+      console.error('Error al registrar la venta:', error);
+  
+      if (error.response) {
+        console.error('Detalles del error (response):', {
+          status: error.response.status,
+          data: error.response.data,
+          headers: error.response.headers,
+        });
+      } else if (error.request) {
+        console.error('No se recibió respuesta del servidor (request):', error.request);
+      } else {
+        console.error('Error al configurar la solicitud:', error.message);
+      }
+    }
+  };
+  
 
   // Función para abrir el modal RegistrarCliente
   const handleShowRegistrarCliente = () => setShowRegistrarCliente(true);
@@ -69,7 +137,7 @@ function RegistrarVenta({ show, handleClose }) {
   const handleCloseRegistrarCliente = () => {
     setShowRegistrarCliente(false);
     // Refrescar la lista de clientes después de agregar uno nuevo
-    fetch('/api/clientes')
+    api.fetch('/clientes')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error al obtener los clientes');
@@ -149,6 +217,7 @@ function RegistrarVenta({ show, handleClose }) {
                     <th>Mueble</th>
                     <th>Cantidad</th>
                     <th>Subtotal</th>
+                    <th>Acciones</th> {/* Nueva columna para acciones */}
                   </tr>
                 </thead>
                 <tbody>
@@ -157,6 +226,11 @@ function RegistrarVenta({ show, handleClose }) {
                       <td>{item.mueble.nombre}</td>
                       <td>{item.cantidad}</td>
                       <td>{item.subtotal}</td>
+                      <td>
+                        <Button variant="danger" size="sm" onClick={() => eliminarVentaParcial(index)}>
+                          Eliminar
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

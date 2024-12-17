@@ -2,6 +2,7 @@ package PPyL.Muebleria.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,8 +16,12 @@ public class Cliente {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String apellido;
+
     private String direccion;
     private String telefono;
     private String email;
@@ -24,9 +29,6 @@ public class Cliente {
 
     @OneToMany
     private List<Venta> ventas;
-
-
-
 
     // Constructor vacío
     public Cliente() {}

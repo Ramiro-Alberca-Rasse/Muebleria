@@ -1,6 +1,8 @@
 package PPyL.Muebleria.model;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +22,7 @@ public class TipoDeMadera {
     private String nombre;
 
     @OneToMany(mappedBy = "tipoDeMadera", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Mueble> muebles;
 
     public TipoDeMadera() {

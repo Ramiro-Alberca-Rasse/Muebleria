@@ -1,11 +1,8 @@
 package PPyL.Muebleria.model;
 
 
-import PPyL.Muebleria.dto.MuebleDTO;
-import PPyL.Muebleria.repository.FabricanteRepository;
-import PPyL.Muebleria.repository.MuebleRepository;
-import PPyL.Muebleria.repository.TipoDeMaderaRepository;
-import PPyL.Muebleria.repository.TipoRepository;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,16 +26,19 @@ public class Mueble {
     
     @ManyToOne
     @JoinColumn(name = "tipoDeMadera_id")
+    @JsonBackReference
     private TipoDeMadera tipoDeMadera;
     
     
     @ManyToOne
     @JoinColumn(name = "tipo_id")
+    @JsonBackReference
     private Tipo tipo;
 
     
     @ManyToOne
     @JoinColumn(name = "fabricante_id")
+    @JsonBackReference
     private Fabricante fabricante;
 
     private double precio;

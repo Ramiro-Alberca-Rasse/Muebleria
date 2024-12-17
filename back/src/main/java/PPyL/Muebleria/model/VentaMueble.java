@@ -21,6 +21,8 @@ public class VentaMueble {
 
     private int cantidad;
 
+    private double subTotal;
+
     @ManyToOne
     private Venta venta;
 
@@ -56,4 +58,13 @@ public class VentaMueble {
     public void setVenta(Venta venta) {
         this.venta = venta;
     }
+
+    public double getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(double subTotal) {
+        this.subTotal = subTotal;
+    }
+    
 }

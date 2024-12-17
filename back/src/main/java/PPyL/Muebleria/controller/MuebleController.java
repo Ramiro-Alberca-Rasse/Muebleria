@@ -1,7 +1,6 @@
 package PPyL.Muebleria.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +47,9 @@ public class MuebleController {
 
     @GetMapping
     public List<MuebleDTO> listarMuebles(@RequestParam(required = false) Tipo Tipo) {
+        if (Tipo == null) {
+            return muebleService.listarMuebles();
+        }
         return muebleService.listarMuebles(Tipo);
     }
 

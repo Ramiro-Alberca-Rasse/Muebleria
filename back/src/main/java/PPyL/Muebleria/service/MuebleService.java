@@ -37,6 +37,12 @@ public class MuebleService {
             .collect(Collectors.toList());
     }
 
+    public List<MuebleDTO> listarMuebles() {
+        return muebleRepository.findAll().stream()
+            .map(mueble -> new MuebleDTO(mueble))
+            .collect(Collectors.toList());
+    }
+
     public MuebleDTO obtenerMueble(Long id) {
         Mueble mueble = muebleRepository.findById(id).orElseThrow(() -> new RuntimeException("Mueble no encontrado"));
         return new MuebleDTO(mueble);

@@ -27,7 +27,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
 
   // Calcula el subtotal cuando se selecciona el mueble o se cambia la cantidad
   useEffect(() => {
-    const muebleSeleccionado = muebles.find((mueble) => mueble.id === selectedMueble);
+    const muebleSeleccionado = muebles.find((mueble) => mueble.id === Number(selectedMueble));
     const cantidadNumero = cantidad ? Number(cantidad) : 0; // Aseguramos que la cantidad sea un número
 
     if (muebleSeleccionado && cantidadNumero > 0) {
@@ -39,7 +39,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
 
   // Maneja la adición de la subventa
   const handleAddSubventa = () => {
-    const muebleSeleccionado = muebles.find((mueble) => mueble.id === selectedMueble);
+    const muebleSeleccionado = muebles.find((mueble) => mueble.id === Number(selectedMueble));
     const cantidadNumero = cantidad ? Number(cantidad) : 0;
 
     if (muebleSeleccionado && cantidadNumero > 0) {
