@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import PPyL.Muebleria.dto.VentaMuebleDTO;
 import PPyL.Muebleria.model.VentaMueble;
 import PPyL.Muebleria.service.VentaMuebleService;
 
@@ -33,8 +34,8 @@ public class VentaMuebleController {
     }
 
     @PostMapping
-    public VentaMueble createVentaMueble(@RequestBody VentaMueble ventaMueble) {
-        return ventaMuebleService.createVentaMueble(ventaMueble);
+    public VentaMueble createVentaMueble(@RequestBody VentaMuebleDTO ventaMuebleDTO) {
+        return ventaMuebleService.createVentaMueble(ventaMuebleDTO);
     }
 
     @PutMapping("/{id}")

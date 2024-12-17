@@ -72,14 +72,19 @@ function RegistrarVenta({ show, handleClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    // Reestructurar el objeto para coincidir con VentaDTO
     const nuevaVenta = {
-      cliente: clienteSeleccionado,
+      idCliente: clienteSeleccionado, // Asegúrate de que esto sea el ID del cliente
       fecha,
-      total,
-      ventaParcial
+      precioTotal: total, // 'total' debe coincidir con el precioTotal esperado
+      ventasMuebles: ventaParcial.map((subVenta) => ({
+        idMueble: subVenta.mueble.id, // Ajusta al formato del DTO esperado
+        cantidad: subVenta.cantidad,
+        subTotal: subVenta.subtotal,
+      })),
     };
   
-    console.log('Datos de nuevaVenta:', nuevaVenta); // Log para revisar el objeto enviado
+    console.log('Datos de nuevaVenta:', JSON.stringify(nuevaVenta, null, 2)); // Log para revisar el objeto enviado
   
     try {
       // Enviar la venta principal
@@ -89,31 +94,44 @@ function RegistrarVenta({ show, handleClose }) {
           'Content-Type': 'application/json', // Asegura que se envía como JSON
         },
       });
-      console.log('Venta registrada:', response.data); // Log para revisar la respuesta del servidor
+      console.log('Venta registrada:', response.data);
   
-      // Enviar cada subventa al backend
+      // Ahora, enviar las subventas a /ventaMuebles
+      console.log('Enviando subventas...');
       for (const subVenta of ventaParcial) {
-        console.log('Enviando subventa:', {
-          ventaId: response.data.id,
-          muebleId: subVenta.mueble.id,
+        const subVentaData = {
+          idVenta: response.data.id, // El ID de la venta registrada
+          idMueble: subVenta.mueble.id, // Asegúrate de usar la propiedad correcta (subVenta.mueble.id)
           cantidad: subVenta.cantidad,
-          subtotal: subVenta.subtotal,
-        });
+          subTotal: subVenta.subtotal, // Asegúrate de que 'subtotal' sea la propiedad correcta
+        };
   
-        const subVentaResponse = await api.post('/ventaMuebles', {
-          ventaId: response.data.id, // Asumiendo que la respuesta contiene el ID de la venta
-          muebleId: subVenta.mueble.id,
-          cantidad: subVenta.cantidad,
-          subtotal: subVenta.subtotal,
-        });
+        console.log('Enviando subventa:', subVentaData);
   
-        console.log('Subventa registrada:', subVentaResponse.data);
+        // Enviar cada subventa por separado a /ventaMuebles
+        try {
+          const subVentaResponse = await api.post('/ventaMuebles', subVentaData, {
+            headers: {
+              'Content-Type': 'application/json', // Asegura que se envía como JSON
+            },
+          });
+          console.log('Subventa registrada:', subVentaResponse.data);
+        } catch (subVentaError) {
+          console.error('Error al registrar subventa:', subVentaError);
+          if (subVentaError.response) {
+            console.error('Detalles del error (response):', subVentaError.response.data);
+          } else if (subVentaError.request) {
+            console.error('No se recibió respuesta del servidor (request):', subVentaError.request);
+          } else {
+            console.error('Error al configurar la solicitud:', subVentaError.message);
+          }
+        }
       }
   
       console.log('Todas las ventas y subventas fueron registradas correctamente.');
       handleClose(); // Cierra el modal después de registrar la venta y subventas
     } catch (error) {
-      console.error('Error al registrar la venta:', error);
+      console.error('Error al registrar la venta principal:', error);
   
       if (error.response) {
         console.error('Detalles del error (response):', {
@@ -128,6 +146,11 @@ function RegistrarVenta({ show, handleClose }) {
       }
     }
   };
+  
+  
+  
+  
+  
   
 
   // Función para abrir el modal RegistrarCliente

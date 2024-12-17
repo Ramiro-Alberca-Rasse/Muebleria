@@ -1,4 +1,3 @@
-
 package PPyL.Muebleria.controller;
 
 import java.util.List;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import PPyL.Muebleria.dto.VentaDTO;
 import PPyL.Muebleria.model.Venta;
 import PPyL.Muebleria.service.VentaService;
 
@@ -34,8 +34,8 @@ public class VentaController {
     }
 
     @PostMapping
-    public Venta createVenta(@RequestBody Venta venta) {
-        return ventaService.createVenta(venta);
+    public Venta createVenta(@RequestBody VentaDTO ventaDTO) {
+        return ventaService.createVenta(ventaDTO);
     }
 
     @PutMapping("/{id}")
