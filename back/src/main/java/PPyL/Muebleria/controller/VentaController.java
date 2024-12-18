@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import PPyL.Muebleria.dto.VentaDTO;
 import PPyL.Muebleria.model.Venta;
+import PPyL.Muebleria.model.VentaMueble;
 import PPyL.Muebleria.service.VentaService;
 
 @RestController
@@ -22,6 +23,12 @@ public class VentaController {
 
     @Autowired
     private VentaService ventaService;
+
+    @Autowired
+    private VentaMuebleController ventaMuebleController;
+
+    @Autowired
+    private ClienteController clienteController;
 
     @GetMapping
     public List<Venta> getAllVentas() {
@@ -35,6 +42,7 @@ public class VentaController {
 
     @PostMapping
     public Venta createVenta(@RequestBody VentaDTO ventaDTO) {
+
         return ventaService.createVenta(ventaDTO);
     }
 
@@ -45,6 +53,12 @@ public class VentaController {
 
     @DeleteMapping("/{id}")
     public void deleteVenta(@PathVariable Long id) {
+        Venta venta = getVentaById(id);
+
+        for(VentaMueble subventa : venta.getVentas()) {
+            ventaMuebleController.deleteVentaMueble(subventa.getId());
+        }
+        
         ventaService.deleteVenta(id);
     }
 }

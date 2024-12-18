@@ -43,12 +43,12 @@ function GestionarStock() {
         <Col md={6} className="mb-4">
           <Card className="stock-card h-100 shadow-sm">
             <Card.Body>
-              <Card.Title>Actualizar Stock</Card.Title>
+              <Card.Title>Agregar Stock</Card.Title>
               <Card.Text>
                 Añade más stock a los muebles existentes.
               </Card.Text>
               <Button variant="success" className="w-100" onClick={() => setShowModal(true)}>
-                Actualizar Stock
+                Agregar Stock
               </Button>
             </Card.Body>
           </Card>
@@ -71,7 +71,7 @@ function GestionarStock() {
       {/* Modal para agregar stock */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Actualizar Stock de Mueble</Modal.Title>
+          <Modal.Title>Agregar stock a Mueble</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -104,7 +104,7 @@ function GestionarStock() {
             </Form.Group>
 
             <Button variant="primary" onClick={agregarStock} className="w-100">
-              Actualizar Stock
+              Agregar Stock
             </Button>
           </Form>
         </Modal.Body>

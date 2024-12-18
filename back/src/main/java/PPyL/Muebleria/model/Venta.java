@@ -22,8 +22,9 @@ public class Venta {
 
     private Date fecha;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Cliente cliente;
+
 
     private double precioTotal;
 
