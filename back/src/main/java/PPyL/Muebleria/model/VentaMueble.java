@@ -66,5 +66,15 @@ public class VentaMueble {
     public void setSubTotal(double subTotal) {
         this.subTotal = subTotal;
     }
+
+    @Override
+    public String toString() {
+        return "VentaMueble{" +
+                "id=" + id +
+                ", mueble=" + mueble +
+                ", cantidad=" + cantidad +
+                ", subTotal=" + subTotal +
+                '}';
+    }
     
 }

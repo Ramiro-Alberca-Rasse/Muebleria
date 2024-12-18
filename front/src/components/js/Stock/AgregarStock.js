@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Row, Col, Spinner } from 'react-bootstrap';
 import api from '../../../services/api';
-import '../../css/AgregarStock.css'; // Asegúrate de que este archivo CSS esté importado
+import '../../css/AgregarStock.css';  // Importar el archivo CSS
+
 
 function AgregarStockModal({ show, handleClose, fetchMuebles }) {
     const [muebles, setMuebles] = useState([]);
@@ -60,6 +61,7 @@ function AgregarStockModal({ show, handleClose, fetchMuebles }) {
                                 onChange={(e) => setSelectedMuebleId(e.target.value)}
                                 required
                                 disabled={loading} // Deshabilitar mientras se carga
+                                style={{ borderColor: 'black' }} // Bordes más oscuros
                             >
                                 <option value="">Selecciona un mueble</option>
                                 {loading ? (
@@ -83,6 +85,7 @@ function AgregarStockModal({ show, handleClose, fetchMuebles }) {
                                 onChange={(e) => setCantidad(parseInt(e.target.value))}
                                 required
                                 disabled={loading} // Deshabilitar mientras se carga
+                                style={{ borderColor: 'black' }} // Bordes más oscuros
                             />
                         </Form.Group>
                     </Row>

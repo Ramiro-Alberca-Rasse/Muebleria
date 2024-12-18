@@ -191,11 +191,12 @@ function ListarMuebles({ show, handleClose }) {
                 placeholder="Buscar..."
                 value={searchTerm}
                 onChange={handleSearch}
+                style={{ borderColor: '#343a40' }}
               />
             </Form.Group>
             <Form.Group controlId="filterByTipo">
               <Form.Label>Filtrar por tipo de mueble</Form.Label>
-              <Form.Control as="select" value={selectedTipo} onChange={handleFilterByTipo}>
+              <Form.Control as="select" value={selectedTipo} onChange={handleFilterByTipo} style={{ borderColor: '#343a40' }}>
                 <option value="">Todos</option>
                 {tipos.map((tipo) => (
                   <option key={tipo} value={tipo}>
@@ -206,7 +207,7 @@ function ListarMuebles({ show, handleClose }) {
             </Form.Group>
             <Form.Group controlId="filterByTipoMadera">
               <Form.Label>Filtrar por tipo de madera</Form.Label>
-              <Form.Control as="select" value={selectedTipoMadera} onChange={handleFilterByTipoMadera}>
+              <Form.Control as="select" value={selectedTipoMadera} onChange={handleFilterByTipoMadera} style={{ borderColor: '#343a40' }}>
                 <option value="">Todos</option>
                 {tiposMadera.map((tipoMadera) => (
                   <option key={tipoMadera.id} value={tipoMadera.nombre}>
@@ -217,7 +218,7 @@ function ListarMuebles({ show, handleClose }) {
             </Form.Group>
             <Form.Group controlId="filterByFabricante">
               <Form.Label>Filtrar por fabricante</Form.Label>
-              <Form.Control as="select" value={selectedFabricante} onChange={handleFilterByFabricante}>
+              <Form.Control as="select" value={selectedFabricante} onChange={handleFilterByFabricante} style={{ borderColor: '#343a40' }}>
                 <option value="">Todos</option>
                 {fabricantes.map((fabricante) => (
                   <option key={fabricante.id} value={fabricante.nombre}>
@@ -227,34 +228,34 @@ function ListarMuebles({ show, handleClose }) {
               </Form.Control>
             </Form.Group>
           </Form>
-          <Table striped bordered hover className="mt-3">
-            <thead>
+          <Table striped bordered hover className="mt-3" style={{ borderColor: '#343a40' }}>
+            <thead className="thead-dark">
               <tr>
-                <th>Nombre</th>
-                <th>Tipo</th>
-                <th>Tipo de Madera</th>
-                <th>Fabricante</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Acciones</th>
+                <th style={{ borderColor: '#343a40' }}>Nombre</th>
+                <th style={{ borderColor: '#343a40' }}>Tipo</th>
+                <th style={{ borderColor: '#343a40' }}>Tipo de Madera</th>
+                <th style={{ borderColor: '#343a40' }}>Fabricante</th>
+                <th style={{ borderColor: '#343a40' }}>Precio</th>
+                <th style={{ borderColor: '#343a40' }}>Stock</th>
+                <th style={{ borderColor: '#343a40' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filteredMuebles.map((mueble) => (
                 <tr key={mueble.id}>
-                  <td>{mueble.nombre}</td>
-                  <td>{mueble.tipo ? mueble.tipo.nombre : 'Sin Tipo'}</td>
-                  <td>
+                  <td style={{ borderColor: '#343a40' }}>{mueble.nombre}</td>
+                  <td style={{ borderColor: '#343a40' }}>{mueble.tipo ? mueble.tipo.nombre : 'Sin Tipo'}</td>
+                  <td style={{ borderColor: '#343a40' }}>
                     {mueble.tipoDeMadera
                       ? mueble.tipoDeMadera.nombre
                       : 'Sin Tipo de Madera'}
                   </td>
-                  <td>
+                  <td style={{ borderColor: '#343a40' }}>
                     {mueble.fabricante ? mueble.fabricante.nombre : 'Sin Fabricante'}
                   </td>
-                  <td>{mueble.precio}</td>
-                  <td>{mueble.stock}</td>
-                  <td>
+                  <td style={{ borderColor: '#343a40' }}>{mueble.precio}</td>
+                  <td style={{ borderColor: '#343a40' }}>{mueble.stock}</td>
+                  <td style={{ borderColor: '#343a40' }}>
                     <Button variant="danger" size="sm" onClick={() => confirmDelete(mueble)}>
                       Eliminar
                     </Button>

@@ -1,11 +1,26 @@
 package PPyL.Muebleria.dto;
 
+import PPyL.Muebleria.model.VentaMueble;
+
 public class VentaMuebleDTO {
     private Long id;
     private Long idMueble;
+    private String nombreMueble;
     private Long idVenta;
     private int cantidad;
     private double subTotal;
+
+    public VentaMuebleDTO() {
+    }
+
+    public VentaMuebleDTO(VentaMueble ventaMueble) {
+        this.id = ventaMueble.getId();
+        this.idMueble = ventaMueble.getMueble().getId();
+        this.idVenta = ventaMueble.getVenta().getId();
+        this.cantidad = ventaMueble.getCantidad();
+        this.subTotal = ventaMueble.getSubTotal();
+        this.nombreMueble = ventaMueble.getMueble().getNombre();
+    }
 
     // Getters y Setters
     public Long getId() {
@@ -46,5 +61,13 @@ public class VentaMuebleDTO {
 
     public void setIdVenta(Long idVenta) {
         this.idVenta = idVenta;
+    }
+
+    public String getNombreMueble() {
+        return nombreMueble;
+    }
+
+    public void setNombreMueble(String nombreMueble) {
+        this.nombreMueble = nombreMueble;
     }
 }

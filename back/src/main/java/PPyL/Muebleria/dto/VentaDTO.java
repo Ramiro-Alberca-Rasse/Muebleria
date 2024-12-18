@@ -2,14 +2,33 @@ package PPyL.Muebleria.dto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import PPyL.Muebleria.model.Venta;
 
 public class VentaDTO {
     private Long id;
     private Long idCliente;
+    private String nombreCliente;
+    private String apellidoCliente;
     private Date fecha;
     private double precioTotal;
     private List<VentaMuebleDTO> ventasMuebles;
 
+    public VentaDTO() {
+    }
+
+    public VentaDTO(Venta venta) {
+        this.id = venta.getId();
+        this.idCliente = venta.getCliente().getId();
+        this.nombreCliente = venta.getCliente().getNombre();
+        this.apellidoCliente = venta.getCliente().getApellido();
+        this.fecha = venta.getFecha();
+        this.precioTotal = venta.getPrecioTotal();
+        this.ventasMuebles = venta.getVentas().stream()
+                .map(ventaMueble -> new VentaMuebleDTO(ventaMueble))
+                .collect(Collectors.toList());
+    }
     // Getters y Setters
     public Long getId() {
         return id;
@@ -49,5 +68,21 @@ public class VentaDTO {
 
     public void setVentasMuebles(List<VentaMuebleDTO> ventasMuebles) {
         this.ventasMuebles = ventasMuebles;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public String getApellidoCliente() {
+        return apellidoCliente;
+    }
+
+    public void setApellidoCliente(String apellidoCliente) {
+        this.apellidoCliente = apellidoCliente;
     }
 }

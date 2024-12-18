@@ -27,8 +27,27 @@ function RegistrarVenta({ show, handleClose }) {
             api.get('/clientes'),
             api.get('/muebles')
           ]);
-          setClientes(clientesResponse.data);
-          setMuebles(mueblesResponse.data);
+
+          // Inspeccionar la respuesta completa para ver la estructura de los datos
+          console.log('Respuesta de clientes:', clientesResponse);
+
+          // Verificar si clientesResponse.data es un array
+          if (Array.isArray(clientesResponse.data)) {
+            // Si es un array, mapeamos los clientes
+            const clientesSinVentas = clientesResponse.data.map(cliente => ({
+              id: cliente.id,
+              nombre: cliente.nombre,
+              apellido: cliente.apellido,
+            }));
+            setClientes(clientesSinVentas);
+          } else {
+            // Si no es un array, verificamos la estructura
+            console.error('La respuesta de clientes no es un array:', clientesResponse.data);
+            setClientes([]); // Establecemos como vacío si no es un array
+          }
+
+          // Asegurarnos de que la respuesta de muebles también sea un array
+          setMuebles(Array.isArray(mueblesResponse.data) ? mueblesResponse.data : []);
         } catch (error) {
           console.error('Error al cargar los datos:', error);
           setClientes([]);
@@ -53,9 +72,11 @@ function RegistrarVenta({ show, handleClose }) {
   // Maneja la adición de una venta parcial
   const agregarVentaParcial = (muebleSeleccionado, cantidad, subtotal) => {
     const nuevaVenta = { mueble: muebleSeleccionado, cantidad, subtotal };
-    setVentaParcial([...ventaParcial, nuevaVenta]);
+    const nuevaVentaParcial = [...ventaParcial, nuevaVenta];
+    setVentaParcial(nuevaVentaParcial);
 
-    const totalCalculado = ventaParcial.reduce((acc, item) => acc + item.subtotal, 0) + subtotal;
+    // Calculando el total de ventas después de agregar el nuevo item
+    const totalCalculado = nuevaVentaParcial.reduce((acc, item) => acc + item.subtotal, 0);
     setTotal(totalCalculado); // Actualizar el total
   };
 
@@ -64,6 +85,7 @@ function RegistrarVenta({ show, handleClose }) {
     const nuevasVentasParciales = ventaParcial.filter((_, i) => i !== index);
     setVentaParcial(nuevasVentasParciales);
 
+    // Calculando el total de ventas después de eliminar el item
     const totalCalculado = nuevasVentasParciales.reduce((acc, item) => acc + item.subtotal, 0);
     setTotal(totalCalculado); // Actualizar el total
   };
@@ -71,7 +93,7 @@ function RegistrarVenta({ show, handleClose }) {
   // Función de envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Reestructurar el objeto para coincidir con VentaDTO
     const nuevaVenta = {
       idCliente: clienteSeleccionado, // Asegúrate de que esto sea el ID del cliente
@@ -83,9 +105,9 @@ function RegistrarVenta({ show, handleClose }) {
         subTotal: subVenta.subtotal,
       })),
     };
-  
+
     console.log('Datos de nuevaVenta:', JSON.stringify(nuevaVenta, null, 2)); // Log para revisar el objeto enviado
-  
+
     try {
       // Enviar la venta principal
       console.log('Enviando POST a /ventas...');
@@ -95,7 +117,7 @@ function RegistrarVenta({ show, handleClose }) {
         },
       });
       console.log('Venta registrada:', response.data);
-  
+
       // Ahora, enviar las subventas a /ventaMuebles
       console.log('Enviando subventas...');
       for (const subVenta of ventaParcial) {
@@ -105,9 +127,9 @@ function RegistrarVenta({ show, handleClose }) {
           cantidad: subVenta.cantidad,
           subTotal: subVenta.subtotal, // Asegúrate de que 'subtotal' sea la propiedad correcta
         };
-  
+
         console.log('Enviando subventa:', subVentaData);
-  
+
         // Enviar cada subventa por separado a /ventaMuebles
         try {
           const subVentaResponse = await api.post('/ventaMuebles', subVentaData, {
@@ -118,40 +140,15 @@ function RegistrarVenta({ show, handleClose }) {
           console.log('Subventa registrada:', subVentaResponse.data);
         } catch (subVentaError) {
           console.error('Error al registrar subventa:', subVentaError);
-          if (subVentaError.response) {
-            console.error('Detalles del error (response):', subVentaError.response.data);
-          } else if (subVentaError.request) {
-            console.error('No se recibió respuesta del servidor (request):', subVentaError.request);
-          } else {
-            console.error('Error al configurar la solicitud:', subVentaError.message);
-          }
         }
       }
-  
+
       console.log('Todas las ventas y subventas fueron registradas correctamente.');
       handleClose(); // Cierra el modal después de registrar la venta y subventas
     } catch (error) {
       console.error('Error al registrar la venta principal:', error);
-  
-      if (error.response) {
-        console.error('Detalles del error (response):', {
-          status: error.response.status,
-          data: error.response.data,
-          headers: error.response.headers,
-        });
-      } else if (error.request) {
-        console.error('No se recibió respuesta del servidor (request):', error.request);
-      } else {
-        console.error('Error al configurar la solicitud:', error.message);
-      }
     }
   };
-  
-  
-  
-  
-  
-  
 
   // Función para abrir el modal RegistrarCliente
   const handleShowRegistrarCliente = () => setShowRegistrarCliente(true);
@@ -160,15 +157,13 @@ function RegistrarVenta({ show, handleClose }) {
   const handleCloseRegistrarCliente = () => {
     setShowRegistrarCliente(false);
     // Refrescar la lista de clientes después de agregar uno nuevo
-    api.fetch('/clientes')
+    api.get('/clientes')
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al obtener los clientes');
+        if (response.status === 200) {
+          setClientes(response.data);
+        } else {
+          console.error('Error al refrescar clientes:', response.status);
         }
-        return response.json();
-      })
-      .then((data) => {
-        setClientes(data);
       })
       .catch((error) => console.error('Error al refrescar clientes:', error));
   };
@@ -200,21 +195,22 @@ function RegistrarVenta({ show, handleClose }) {
                     value={clienteSeleccionado}
                     onChange={(e) => setClienteSeleccionado(e.target.value)}
                     required
+                    style={{ borderColor: '#343a40' }}
                   >
                     <option value="">Selecciona un cliente</option>
-                    {clientes.map((cliente) => (
-                      <option key={cliente.id} value={cliente.id}>
-                        {cliente.nombre} {/* Asumimos que cada cliente tiene `id` y `nombre` */}
-                      </option>
-                    ))}
+                    {clientes.length > 0 ? (
+                      clientes.map((cliente) => (
+                        <option key={cliente.id} value={cliente.id}>
+                          {cliente.nombre} {cliente.apellido} {/* Nombre y apellido */}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Cargando clientes...</option>
+                    )}
                   </Form.Control>
                 </Col>
                 <Col xs={3}>
-                  <Button
-                    variant="success"
-                    className="w-100"
-                    onClick={handleShowRegistrarCliente}
-                  >
+                  <Button variant="success" className="w-100" onClick={handleShowRegistrarCliente}>
                     Registrar
                   </Button>
                 </Col>
@@ -224,7 +220,7 @@ function RegistrarVenta({ show, handleClose }) {
             {/* Fecha actual */}
             <Form.Group controlId="Fecha" className="mt-3">
               <Form.Label>Fecha</Form.Label>
-              <Form.Control type="date" value={fecha} readOnly disabled />
+              <Form.Control type="date" value={fecha} readOnly disabled style={{ borderColor: '#343a40' }} />
             </Form.Group>
 
             {/* Botón Registrar Subventa */}
@@ -234,22 +230,22 @@ function RegistrarVenta({ show, handleClose }) {
 
             {/* Tabla de ventas parciales */}
             {ventaParcial.length > 0 && (
-              <Table striped bordered hover className="mt-4">
-                <thead>
+              <Table striped bordered hover className="mt-4" style={{ borderColor: '#343a40' }}>
+                <thead className="thead-dark">
                   <tr>
-                    <th>Mueble</th>
-                    <th>Cantidad</th>
-                    <th>Subtotal</th>
-                    <th>Acciones</th> {/* Nueva columna para acciones */}
+                    <th style={{ borderColor: '#343a40' }}>Mueble</th>
+                    <th style={{ borderColor: '#343a40' }}>Cantidad</th>
+                    <th style={{ borderColor: '#343a40' }}>Subtotal</th>
+                    <th style={{ borderColor: '#343a40' }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {ventaParcial.map((item, index) => (
                     <tr key={index}>
-                      <td>{item.mueble.nombre}</td>
-                      <td>{item.cantidad}</td>
-                      <td>{item.subtotal}</td>
-                      <td>
+                      <td style={{ borderColor: '#343a40' }}>{item.mueble.nombre}</td>
+                      <td style={{ borderColor: '#343a40' }}>{item.cantidad}</td>
+                      <td style={{ borderColor: '#343a40' }}>{item.subtotal}</td>
+                      <td style={{ borderColor: '#343a40' }}>
                         <Button variant="danger" size="sm" onClick={() => eliminarVentaParcial(index)}>
                           Eliminar
                         </Button>
@@ -263,7 +259,7 @@ function RegistrarVenta({ show, handleClose }) {
             {/* Total */}
             <Form.Group controlId="Total" className="mt-3">
               <Form.Label>Total</Form.Label>
-              <Form.Control type="number" value={total} readOnly disabled />
+              <Form.Control type="number" value={total} readOnly disabled style={{ borderColor: '#343a40' }} />
             </Form.Group>
 
             <Button variant="success" type="submit" className="mt-4 w-100">

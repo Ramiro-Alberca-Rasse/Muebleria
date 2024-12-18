@@ -1,6 +1,7 @@
 package PPyL.Muebleria.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,17 +28,17 @@ public class VentaController {
     @Autowired
     private VentaMuebleController ventaMuebleController;
 
-    @Autowired
-    private ClienteController clienteController;
-
     @GetMapping
-    public List<Venta> getAllVentas() {
-        return ventaService.getAllVentas();
+    public List<VentaDTO> getAllVentas() {
+        return ventaService.getAllVentas().stream()
+                .map(venta -> new VentaDTO(venta))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Venta getVentaById(@PathVariable Long id) {
-        return ventaService.getVentaById(id);
+    public VentaDTO getVentaById(@PathVariable Long id) {
+        Venta venta = ventaService.getVentaById(id);
+        return new VentaDTO(venta);
     }
 
     @PostMapping
@@ -53,7 +54,7 @@ public class VentaController {
 
     @DeleteMapping("/{id}")
     public void deleteVenta(@PathVariable Long id) {
-        Venta venta = getVentaById(id);
+        Venta venta = ventaService.getVentaById(id);
 
         for(VentaMueble subventa : venta.getVentas()) {
             ventaMuebleController.deleteVentaMueble(subventa.getId());

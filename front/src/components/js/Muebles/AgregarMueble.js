@@ -5,6 +5,7 @@ import RegistrarTipo from './RegistrarTipo';
 import RegistrarTipoMadera from './RegistrarTipoDeMadera';
 import RegistrarFabricante from './RegistrarFabricante';
 
+
 function AgregarMueble({ show, handleClose, onMuebleAdded }) {
   const [nombre, setNombre] = useState('');
   const [tipoMadera, setTipoMadera] = useState('');
@@ -160,6 +161,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   required
+                  style={{ borderColor: '#343a40' }}
                 />
               </Form.Group>
 
@@ -171,6 +173,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                     value={fabricante}
                     onChange={(e) => setFabricante(e.target.value)}
                     className="me-2"
+                    style={{ borderColor: '#343a40' }}
                   >
                     <option value="">Selecciona un fabricante</option>
                     {fabricantes.map((fab) => (
@@ -200,6 +203,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                   value={precio}
                   onChange={(e) => setPrecio(e.target.value)}
                   required
+                  style={{ borderColor: '#343a40' }}
                 />
               </Form.Group>
 
@@ -210,6 +214,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                   placeholder="Ingresa el stock disponible"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
+                  style={{ borderColor: '#343a40' }}
                 />
               </Form.Group>
             </Row>
@@ -223,6 +228,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
                     className="me-2"
+                    style={{ borderColor: '#343a40' }}
                   >
                     <option value="">Selecciona un tipo de mueble</option>
                     {tipos.map((cat) => (
@@ -250,6 +256,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                     value={tipoMadera}
                     onChange={(e) => setTipoMadera(e.target.value)}
                     className="me-2"
+                    style={{ borderColor: '#343a40' }}
                   >
                     <option value="">Selecciona el tipo de madera</option>
                     {tiposDeMadera.map((tipo) => (

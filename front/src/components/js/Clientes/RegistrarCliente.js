@@ -56,6 +56,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               required
+              style={{ borderColor: '#343a40' }}
             />
           </Form.Group>
           <Form.Group controlId="apellidoCliente" className="mt-3">
@@ -66,6 +67,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               value={apellido}
               onChange={(e) => setApellido(e.target.value)}
               required
+              style={{ borderColor: '#343a40' }}
             />
           </Form.Group>
           <Form.Group controlId="direccionCliente" className="mt-3">
@@ -75,6 +77,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               placeholder="Dirección del cliente"
               value={direccion}
               onChange={(e) => setDireccion(e.target.value)}
+              style={{ borderColor: '#343a40' }}
             />
           </Form.Group>
           <Form.Group controlId="telefonoCliente" className="mt-3">
@@ -84,6 +87,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               placeholder="Teléfono del cliente"
               value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
+              style={{ borderColor: '#343a40' }}
             />
           </Form.Group>
           <Form.Group controlId="emailCliente" className="mt-3">
@@ -93,6 +97,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               placeholder="Email del cliente"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              style={{ borderColor: '#343a40' }}
             />
           </Form.Group>
           <Form.Group controlId="dniCliente" className="mt-3">
@@ -102,6 +107,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               placeholder="DNI del cliente"
               value={dni}
               onChange={(e) => setDni(e.target.value)}
+              style={{ borderColor: '#343a40' }}
             />
           </Form.Group>
           <Button variant="success" className="mt-4 w-100" type="submit">
