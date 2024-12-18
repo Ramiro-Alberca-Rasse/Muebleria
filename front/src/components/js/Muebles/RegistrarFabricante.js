@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap'; // Importar Alert
 import api from '../../../services/api'; // Ruta del backend
-import '../../css/Modal.css';
-import '../../css/Notification.css'; // Importar estilos para la notificación
+
 
 function RegistrarFabricante({ show, handleClose }) {
   const [nombre, setNombre] = useState('');
@@ -51,20 +50,21 @@ function RegistrarFabricante({ show, handleClose }) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} style={{ borderColor: 'darkgray', borderWidth: '2px' }}>
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>Registrar Fabricante</Modal.Title>
+            <Modal.Title><strong>Registrar Fabricante</strong></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group controlId="formNombre">
-              <Form.Label>Nombre</Form.Label>
+              <Form.Label><strong>Nombre del Fabricante</strong></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Ingrese el nombre del fabricante"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 isInvalid={!!errorMessage} // Muestra el feedback de error
+                style={{ borderColor: errorMessage ? 'darkred' : 'black' }}
               />
               <Form.Control.Feedback type="invalid">
                 {errorMessage}

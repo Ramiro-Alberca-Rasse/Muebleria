@@ -53,6 +53,11 @@ public class MuebleController {
         return muebleService.listarMuebles(Tipo);
     }
 
+    @GetMapping("/todos")
+    public List<MuebleDTO> obtenerTodosLosMuebles() {
+        return muebleService.listarMuebles();
+    }
+
     @GetMapping("/{id}")
     public MuebleDTO obtenerMueble(@PathVariable Long id) {
         return muebleService.obtenerMueble(id);

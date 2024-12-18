@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import api from '../../../services/api';
-import '../../css/Modal.css';
-import '../../css/Notification.css';
+
 
 function RegistrarTipo({ show, handleClose}) {
   const [categoryName, setCategoryName] = useState('');
@@ -52,20 +51,21 @@ function RegistrarTipo({ show, handleClose}) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} style={{ borderColor: 'darkgray', borderWidth: '2px' }}>
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>Registrar Nuevo Tipo de Mueble</Modal.Title>
+            <Modal.Title><strong>Registrar Nuevo Tipo de Mueble</strong></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group className="mb-3">
-              <Form.Label>Nombre del tipo</Form.Label>
+              <Form.Label><strong>Nombre del tipo de Mueble</strong></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Ingrese el nombre del tipo"
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
                 isInvalid={!!errorMessage} // Muestra el feedback de error
+                style={{ borderColor: errorMessage ? 'darkred' : 'black' }}
               />
               <Form.Control.Feedback type="invalid">
                 {errorMessage}

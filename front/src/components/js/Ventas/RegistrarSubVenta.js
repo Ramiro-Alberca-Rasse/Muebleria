@@ -62,6 +62,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
               value={selectedMueble}
               onChange={(e) => setSelectedMueble(e.target.value)}
               required
+              style={{ borderColor: '#343a40' }}
             >
               <option value="">Selecciona un mueble</option>
               {muebles.map((mueble) => (
@@ -83,13 +84,14 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
                   min="1"
                   placeholder="Ingresar cantidad"  // Aquí agregamos el texto de fondo
                   required
+                  style={{ borderColor: '#343a40' }}
                 />
               </Form.Group>
             </Col>
             <Col xs={6}>
               <Form.Group controlId="Subtotal" className="mt-3">
                 <Form.Label>Subtotal</Form.Label>
-                <Form.Control type="number" value={subtotal} readOnly disabled />
+                <Form.Control type="number" value={subtotal} readOnly disabled style={{ borderColor: '#343a40' }} />
               </Form.Group>
             </Col>
           </Row>

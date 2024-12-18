@@ -154,7 +154,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
           <Form onSubmit={handleSubmit}>
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formNombre">
-                <Form.Label>Nombre</Form.Label>
+                <Form.Label><strong>Nombre</strong></Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Ingresa el nombre del mueble"
@@ -166,7 +166,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
               </Form.Group>
 
               <Form.Group as={Col} controlId="formFabricante">
-                <Form.Label>Fabricante</Form.Label>
+                <Form.Label><strong>Fabricante</strong></Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     as="select"
@@ -183,7 +183,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                     ))}
                   </Form.Control>
                   <Button
-                    variant="success"
+                    variant="primary"
                     size="sm"
                     className="align-self-start"
                     onClick={() => setShowRegistrarFabricante(true)}
@@ -196,7 +196,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
 
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formPrecio">
-                <Form.Label>Precio</Form.Label>
+                <Form.Label><strong>Precio</strong></Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Ingresa el precio"
@@ -208,7 +208,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
               </Form.Group>
 
               <Form.Group as={Col} controlId="formStock">
-                <Form.Label>Stock</Form.Label>
+                <Form.Label><strong>Stock</strong></Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Ingresa el stock disponible"
@@ -221,7 +221,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
 
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formTipo">
-                <Form.Label>Tipo de mueble</Form.Label>
+                <Form.Label><strong>Tipo de mueble</strong></Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     as="select"
@@ -238,7 +238,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                     ))}
                   </Form.Control>
                   <Button
-                    variant="success"
+                    variant="primary"
                     size="sm"
                     className="align-self-start"
                     onClick={() => setShowRegistrarTipo(true)}
@@ -249,7 +249,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
               </Form.Group>
 
               <Form.Group as={Col} controlId="formTipoMadera">
-                <Form.Label>Tipo de madera</Form.Label>
+                <Form.Label><strong>Tipo de madera</strong></Form.Label>
                 <div className="d-flex align-items-center">
                   <Form.Control
                     as="select"
@@ -266,7 +266,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
                     ))}
                   </Form.Control>
                   <Button
-                    variant="success"
+                    variant="primary"
                     size="sm"
                     className="align-self-start"
                     onClick={() => setShowRegistrarTipoMadera(true)}

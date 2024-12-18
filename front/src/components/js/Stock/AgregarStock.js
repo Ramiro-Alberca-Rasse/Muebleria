@@ -1,109 +1,120 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Form, Row, Col, Spinner } from 'react-bootstrap';
+import { Button, Modal, Form, Alert } from 'react-bootstrap';
 import api from '../../../services/api';
-import '../../css/AgregarStock.css';  // Importar el archivo CSS
 
-
-function AgregarStockModal({ show, handleClose, fetchMuebles }) {
+function AgregarStockModal({ show, handleClose }) {
     const [muebles, setMuebles] = useState([]);
-    const [cantidad, setCantidad] = useState(0);
+    const [cantidad, setCantidad] = useState('');
     const [selectedMuebleId, setSelectedMuebleId] = useState('');
-    const [loading, setLoading] = useState(false);  // Para manejar el estado de carga
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         if (show) {
-            setLoading(true);  // Inicia la carga
-            fetchMuebles().then((data) => {
-                setMuebles(data);
-                setLoading(false);  // Finaliza la carga
-            }).catch((error) => {
-                console.error('Error al obtener los muebles:', error);
-                setLoading(false);  // Finaliza la carga en caso de error
-            });
+            const obtenerMuebles = async () => {
+                try {
+                    const response = await api.get('/muebles/todos');
+                    setMuebles(response.data);
+                    setSelectedMuebleId('');
+                    setCantidad('');
+                    setErrorMessage('');
+                } catch (error) {
+                    console.error('Error al obtener los muebles:', error);
+                }
+            };
+            obtenerMuebles();
+        } else {
+            setSelectedMuebleId('');
+            setCantidad('');
+            setErrorMessage('');
         }
-    }, [show, fetchMuebles]);
+    }, [show]);
 
-    const agregarStock = async () => {
+    const agregarStock = async (e) => {
+        e.preventDefault();
         if (!selectedMuebleId || cantidad <= 0) {
-            alert("Por favor, selecciona un mueble y especifica una cantidad válida.");
+            setErrorMessage("Por favor, selecciona un mueble y especifica una cantidad válida.");
             return;
         }
 
         try {
-            setLoading(true); // Inicia la carga al hacer clic en el botón
             await api.post('/stock/agregar', {
                 muebleId: selectedMuebleId,
                 cantidad: cantidad,
             });
-            alert('Stock actualizado');
-            handleClose(); // Cierra el modal
+            setShowSuccess(true);
+            setTimeout(() => {
+                setShowSuccess(false);
+                handleClose();
+            }, 3000);
         } catch (error) {
             console.error('Error al actualizar el stock:', error);
-            alert('Ocurrió un error al actualizar el stock. Por favor, inténtalo de nuevo.');
-        } finally {
-            setLoading(false); // Finaliza la carga
+            setErrorMessage('Ocurrió un error al actualizar el stock. Por favor, inténtalo de nuevo.');
         }
     };
 
     return (
-        <Modal show={show} onHide={handleClose} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Actualizar Stock de Mueble</Modal.Title>
-            </Modal.Header>
-            <Modal.Body style={{ height: '500px' }}> {/* Aumentamos la altura del modal */}
-                <Form>
-                    <Row className="mb-3">
-                        <Form.Group as={Col} controlId="formMueble">
-                            <Form.Label>Selecciona un Mueble</Form.Label>
-                            <Form.Control 
-                                as="select" 
+        <>
+            <Modal show={show} onHide={handleClose}>
+                <Form onSubmit={agregarStock}>
+                    <Modal.Header closeButton>
+                        <Modal.Title><strong>Agregar Stock</strong></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Group className="mb-4">
+                            <Form.Label><strong>Selecciona un Mueble</strong></Form.Label>
+                            <Form.Control
+                                as="select"
                                 value={selectedMuebleId}
                                 onChange={(e) => setSelectedMuebleId(e.target.value)}
-                                required
-                                disabled={loading} // Deshabilitar mientras se carga
-                                style={{ borderColor: 'black' }} // Bordes más oscuros
+                                isInvalid={!!errorMessage}
+                                style={{ borderColor: errorMessage ? 'darkred' : 'black' }}
                             >
                                 <option value="">Selecciona un mueble</option>
-                                {loading ? (
-                                    <option> Cargando muebles... </option>  // Opcional, si se desea indicar la carga
-                                ) : (
-                                    muebles.map(mueble => (
-                                        <option key={mueble.id} value={mueble.id}>
-                                            {mueble.nombre}
-                                        </option>
-                                    ))
-                                )}
+                                {Array.isArray(muebles) && muebles.map((mueble) => (
+                                    <option key={mueble.id} value={mueble.id}>
+                                        {mueble.nombre}
+                                    </option>
+                                ))}
                             </Form.Control>
+                            <Form.Control.Feedback type="invalid">
+                                {errorMessage}
+                            </Form.Control.Feedback>
                         </Form.Group>
-
-                        <Form.Group as={Col} controlId="formCantidad">
-                            <Form.Label>Cantidad</Form.Label>
+                        <Form.Group className="mb-4">
+                            <Form.Label><strong>Cantidad</strong></Form.Label>
                             <Form.Control
                                 type="number"
-                                placeholder="Cantidad a agregar"
                                 value={cantidad}
-                                onChange={(e) => setCantidad(parseInt(e.target.value))}
-                                required
-                                disabled={loading} // Deshabilitar mientras se carga
-                                style={{ borderColor: 'black' }} // Bordes más oscuros
+                                onChange={(e) => setCantidad(e.target.value)}
+                                isInvalid={!!errorMessage}
+                                placeholder="Ingrese la cantidad" // Agrega el placeholder
+                                style={{ borderColor: errorMessage ? 'darkred' : 'black' }}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errorMessage}
+                            </Form.Control.Feedback>
                         </Form.Group>
-                    </Row>
-
-                    <Button 
-                        className="update-stock-btn"  // Usamos la clase personalizada
-                        onClick={agregarStock}
-                        disabled={loading} // Deshabilitar el botón mientras se carga
-                    >
-                        {loading ? (
-                            <Spinner animation="border" size="sm" />  // Spinner mientras carga
-                        ) : (
-                            'Actualizar Stock'
-                        )}
-                    </Button>
+                        {/* Espaciado extra entre el formulario y los botones */}
+                    </Modal.Body>
+                    <Modal.Footer style={{ paddingTop: '30px' }}>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Cerrar
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Actualizar
+                        </Button>
+                    </Modal.Footer>
                 </Form>
-            </Modal.Body>
-        </Modal>
+            </Modal>
+            {showSuccess && (
+                <div className="notification-container">
+                    <Alert variant="success" className="notification">
+                        Stock agregado con éxito!
+                    </Alert>
+                </div>
+            )}
+        </>
     );
 }
 

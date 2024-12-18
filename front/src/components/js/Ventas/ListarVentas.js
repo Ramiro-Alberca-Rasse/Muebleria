@@ -64,25 +64,25 @@ function ListarVentas({ show, handleClose }) {
           <Modal.Title>Lista de Ventas</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Table striped bordered hover>
+          <Table striped bordered hover style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Acciones</th>
+                <th style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>ID</th>
+                <th style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>Cliente</th>
+                <th style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>Fecha</th>
+                <th style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>Total</th>
+                <th style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {ventas.map((venta) => (
                 <tr key={venta.id}>
-                  <td>{venta.id}</td>
-                  <td>{venta.nombreCliente + " " + venta.apellidoCliente}</td>
-                  <td>{new Date(venta.fecha).toLocaleDateString()}</td>
-                  <td>{venta.precioTotal}</td>
-                  <td>
-                    <Button variant="info" size="sm" onClick={() => handleShowDetalles(venta)}>Detalles</Button>{' '}
+                  <td style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>{venta.id}</td>
+                  <td style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>{venta.nombreCliente + " " + venta.apellidoCliente}</td>
+                  <td style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>{new Date(venta.fecha).toLocaleDateString()}</td>
+                  <td style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>{venta.precioTotal}</td>
+                  <td style={{ borderWidth: '2px', borderColor: 'black', borderStyle: 'solid' }}>
+                    <Button variant="primary" size="sm" onClick={() => handleShowDetalles(venta)}>Detalles</Button>{' '}
                     <Button variant="danger" size="sm" onClick={() => handleDelete(venta.id)}>Eliminar</Button>
                   </td>
                 </tr>

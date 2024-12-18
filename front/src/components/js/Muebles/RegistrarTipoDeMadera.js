@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import api from '../../../services/api';
-import '../../css/Modal.css';
-import '../../css/Notification.css';
+
 
 function RegistrarTipoDeMadera({ show, handleClose}) {
   const [nombreTipo, setNombreTipo] = useState(''); // Estado para el nombre del tipo de madera
@@ -55,20 +54,21 @@ function RegistrarTipoDeMadera({ show, handleClose}) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} style={{ borderColor: 'darkgray', borderWidth: '2px' }}>
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>Registrar Tipo de Madera</Modal.Title>
+            <Modal.Title><strong>Registrar Tipo de Madera</strong></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group controlId="nombreTipoMadera">
-              <Form.Label>Nombre de la Madera</Form.Label>
+              <Form.Label><strong>Nombre de la Madera</strong></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Ingrese el nombre de la madera"
                 value={nombreTipo}
                 onChange={(e) => setNombreTipo(e.target.value)}
                 isInvalid={!!errorMessage} // Muestra el feedback de error
+                style={{ borderColor: errorMessage ? 'darkred' : 'black' }}
               />
               <Form.Control.Feedback type="invalid">
                 {errorMessage}

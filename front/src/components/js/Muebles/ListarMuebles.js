@@ -3,6 +3,7 @@ import { Modal, Button, Form, Table } from 'react-bootstrap';
 import api from '../../../services/api'; // Asegúrate de que esta ruta sea correcta
 import EditarMueble from './EditarMueble'; // Importar el componente EditarMueble
 
+
 function ListarMuebles({ show, handleClose }) {
   const [muebles, setMuebles] = useState([]);
   const [filteredMuebles, setFilteredMuebles] = useState([]);
@@ -185,7 +186,7 @@ function ListarMuebles({ show, handleClose }) {
         <Modal.Body>
           <Form>
             <Form.Group controlId="search">
-              <Form.Label>Buscar por nombre</Form.Label>
+              <Form.Label><strong>Buscar por nombre</strong></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Buscar..."
@@ -195,7 +196,7 @@ function ListarMuebles({ show, handleClose }) {
               />
             </Form.Group>
             <Form.Group controlId="filterByTipo">
-              <Form.Label>Filtrar por tipo de mueble</Form.Label>
+              <Form.Label><strong>Filtrar por tipo de mueble</strong></Form.Label>
               <Form.Control as="select" value={selectedTipo} onChange={handleFilterByTipo} style={{ borderColor: '#343a40' }}>
                 <option value="">Todos</option>
                 {tipos.map((tipo) => (
@@ -206,7 +207,7 @@ function ListarMuebles({ show, handleClose }) {
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="filterByTipoMadera">
-              <Form.Label>Filtrar por tipo de madera</Form.Label>
+              <Form.Label><strong>Filtrar por tipo de madera</strong></Form.Label>
               <Form.Control as="select" value={selectedTipoMadera} onChange={handleFilterByTipoMadera} style={{ borderColor: '#343a40' }}>
                 <option value="">Todos</option>
                 {tiposMadera.map((tipoMadera) => (
@@ -217,7 +218,7 @@ function ListarMuebles({ show, handleClose }) {
               </Form.Control>
             </Form.Group>
             <Form.Group controlId="filterByFabricante">
-              <Form.Label>Filtrar por fabricante</Form.Label>
+              <Form.Label><strong>Filtrar por fabricante</strong></Form.Label>
               <Form.Control as="select" value={selectedFabricante} onChange={handleFilterByFabricante} style={{ borderColor: '#343a40' }}>
                 <option value="">Todos</option>
                 {fabricantes.map((fabricante) => (
@@ -233,7 +234,7 @@ function ListarMuebles({ show, handleClose }) {
               <tr>
                 <th style={{ borderColor: '#343a40' }}>Nombre</th>
                 <th style={{ borderColor: '#343a40' }}>Tipo</th>
-                <th style={{ borderColor: '#343a40' }}>Tipo de Madera</th>
+                <th style={{ borderColor: '#343a40' }}>Madera</th>
                 <th style={{ borderColor: '#343a40' }}>Fabricante</th>
                 <th style={{ borderColor: '#343a40' }}>Precio</th>
                 <th style={{ borderColor: '#343a40' }}>Stock</th>
