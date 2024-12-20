@@ -95,4 +95,11 @@ public class MuebleService {
         mueble.setFabricante(fabricanteRepository.findById(dto.getFabricanteId()).orElseThrow(() -> new RuntimeException("Fabricante no encontrado")));
         muebleRepository.save(mueble);
     }
+
+    public void actualizarStock(Long id, Integer cantidad) {
+        Mueble mueble = muebleRepository.findById(id).orElseThrow(() -> new RuntimeException("Mueble no encontrado"));
+        
+        mueble.setStock(mueble.getStock() + cantidad);
+        muebleRepository.save(mueble);
+    }
 }

@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import PPyL.Muebleria.dto.VentaDTO;
+import PPyL.Muebleria.dto.VentaMuebleDTO;
+import PPyL.Muebleria.model.Cliente;
 import PPyL.Muebleria.model.Venta;
+import PPyL.Muebleria.model.VentaMueble;
 import PPyL.Muebleria.repository.ClienteRepository;
 import PPyL.Muebleria.repository.VentaRepository;
 
@@ -30,10 +33,22 @@ public class VentaService {
     public Venta createVenta(VentaDTO ventaDTO) {
         Venta venta = new Venta();
         // Asignar los valores de ventaDTO a venta
-        venta.setCliente(clienteRepository.findById(ventaDTO.getIdCliente()).get());
+
+        Cliente cliente = clienteRepository.findById(ventaDTO.getIdCliente()).get();
+
+        venta.setCliente(cliente);
         venta.setFecha(ventaDTO.getFecha());
         venta.setPrecioTotal(ventaDTO.getPrecioTotal());
-        // ...asignar otros campos...
+
+        for(VentaMuebleDTO ventaMuebleDTO : ventaDTO.getVentasMuebles()) {
+            VentaMueble ventaMueble = new VentaMueble();
+            ventaMueble = ventaMuebleDTO.convertToEntity();
+            venta.addVenta(ventaMueble);
+        }
+        
+        cliente.addVenta(venta);
+        clienteRepository.save(cliente);
+
         return ventaRepository.save(venta);
     }
 

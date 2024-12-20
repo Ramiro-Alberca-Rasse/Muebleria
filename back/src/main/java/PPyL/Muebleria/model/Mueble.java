@@ -1,6 +1,8 @@
 package PPyL.Muebleria.model;
 
 
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -10,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -44,6 +47,9 @@ public class Mueble {
     private double precio;
 
     private int stock;
+
+    @OneToMany
+    private Set<Venta> ventas;
 
     
         // Constructor
@@ -118,6 +124,10 @@ public class Mueble {
     
         public void setStock(int stock) {
             this.stock = stock;
+        }
+
+        public void addVenta(Venta venta) {
+            this.ventas.add(venta);
         }
 
 

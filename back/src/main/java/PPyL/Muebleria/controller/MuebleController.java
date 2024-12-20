@@ -101,4 +101,9 @@ public class MuebleController {
     public void eliminarMueble(@PathVariable Long id) {
         muebleService.eliminarMueble(id);
     }
+
+    @PutMapping("/stock/{id}")
+    public void actualizarStock(@PathVariable Long id, @RequestBody Integer cantidad) {
+        muebleService.actualizarStock(id, cantidad);
+    }
 }

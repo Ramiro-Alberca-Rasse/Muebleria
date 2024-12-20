@@ -129,7 +129,8 @@ function RegistrarVenta({ show, handleClose }) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <div className={show ? 'modal-backdrop show' : ''}></div> {/* Añadir div para oscurecer el fondo */}
+      <Modal show={show} onHide={handleClose} style={{ marginTop: '100px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Registrar Venta</Modal.Title>
         </Modal.Header>

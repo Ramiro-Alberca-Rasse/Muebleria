@@ -21,6 +21,12 @@ import PPyL.Muebleria.service.VentaService;
 @RestController
 @RequestMapping("/api/ventas")
 public class VentaController {
+/* 
+    @Autowired
+    private ClienteController clienteController;
+
+    @Autowired
+    private MuebleController muebleController; */
 
     @Autowired
     private VentaService ventaService;

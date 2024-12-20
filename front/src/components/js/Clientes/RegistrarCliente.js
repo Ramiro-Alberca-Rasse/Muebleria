@@ -4,6 +4,16 @@ import api from '../../../services/api';
 
 function RegistrarCliente({ show, handleClose, handleSave }) {
   const [nombre, setNombre] = useState('');
+
+
+  const handleReset = () => {
+    setNombre('');
+    setApellido('');
+    setDireccion('');
+    setTelefono('');
+    setEmail('');
+    setDni('');
+  };
   const [apellido, setApellido] = useState('');
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -17,14 +27,12 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
 
     try {
       const response = await api.post('/clientes', nuevoCliente);
-      /* if (response.status === 201) {
-        setShowSuccess(true);
+      if (response.status === 201) {
         handleReset();
         setTimeout(() => {
-          setShowSuccess(false);
           handleClose();
         }, 4000);
-      } */
+      }
     } catch (error) {
       console.error('Error al registrar el cliente:', error);
     }
@@ -49,7 +57,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="nombreCliente">
-            <Form.Label>Nombre</Form.Label>
+            <Form.Label><strong>Nombre</strong></Form.Label>
             <Form.Control
               type="text"
               placeholder="Nombre del cliente"
@@ -60,7 +68,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
             />
           </Form.Group>
           <Form.Group controlId="apellidoCliente" className="mt-3">
-            <Form.Label>Apellido</Form.Label>
+            <Form.Label><strong>Apellido</strong></Form.Label>
             <Form.Control
               type="text"
               placeholder="Apellido del cliente"
@@ -71,7 +79,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
             />
           </Form.Group>
           <Form.Group controlId="direccionCliente" className="mt-3">
-            <Form.Label>Dirección</Form.Label>
+            <Form.Label><strong>Dirección</strong></Form.Label>
             <Form.Control
               type="text"
               placeholder="Dirección del cliente"
@@ -81,7 +89,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
             />
           </Form.Group>
           <Form.Group controlId="telefonoCliente" className="mt-3">
-            <Form.Label>Teléfono</Form.Label>
+            <Form.Label><strong>Teléfono</strong></Form.Label>
             <Form.Control
               type="text"
               placeholder="Teléfono del cliente"
@@ -91,7 +99,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
             />
           </Form.Group>
           <Form.Group controlId="emailCliente" className="mt-3">
-            <Form.Label>Email</Form.Label>
+            <Form.Label><strong>Email</strong></Form.Label>
             <Form.Control
               type="email"
               placeholder="Email del cliente"
@@ -101,7 +109,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
             />
           </Form.Group>
           <Form.Group controlId="dniCliente" className="mt-3">
-            <Form.Label>DNI</Form.Label>
+            <Form.Label><strong>DNI</strong></Form.Label>
             <Form.Control
               type="text"
               placeholder="DNI del cliente"

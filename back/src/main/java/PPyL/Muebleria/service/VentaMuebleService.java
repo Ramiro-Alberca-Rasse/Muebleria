@@ -33,6 +33,7 @@ public class VentaMuebleService {
         return ventaMuebleRepository.findById(id).orElse(null);
     }
 
+    @SuppressWarnings("null")
     public VentaMueble createVentaMueble(VentaMuebleDTO ventaMuebleDTO) {
         VentaMueble ventaMueble = new VentaMueble();
         Mueble mueble = muebleRepository.findById(ventaMuebleDTO.getIdMueble()).orElse(null);
@@ -44,6 +45,9 @@ public class VentaMuebleService {
             ventaMueble.setVenta(venta);
             return ventaMuebleRepository.save(ventaMueble);
         }
+
+        mueble.addVenta(venta);
+        muebleRepository.save(mueble);
         return null;
     }
 

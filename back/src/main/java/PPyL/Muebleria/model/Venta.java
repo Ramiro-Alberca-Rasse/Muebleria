@@ -64,6 +64,10 @@ public class Venta {
         this.ventas = ventas;
     }
 
+    public void addVenta(VentaMueble ventaMueble) {
+        this.ventas.add(ventaMueble);
+    }
+
     public double getPrecioTotal() {
         return precioTotal;
     }
@@ -82,4 +86,6 @@ public class Venta {
                 ", ventas=" + ventas +
                 '}';
     }
+
+
 }

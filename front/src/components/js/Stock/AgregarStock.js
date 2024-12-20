@@ -4,8 +4,8 @@ import api from '../../../services/api';
 
 function AgregarStockModal({ show, handleClose }) {
     const [muebles, setMuebles] = useState([]);
-    const [cantidad, setCantidad] = useState('');
-    const [selectedMuebleId, setSelectedMuebleId] = useState('');
+    const [cantidad, setCantidad] = useState(0);
+    const [selectedMuebleId, setSelectedMuebleId] = useState(0);
     const [showSuccess, setShowSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -38,10 +38,10 @@ function AgregarStockModal({ show, handleClose }) {
         }
 
         try {
-            await api.post('/stock/agregar', {
-                muebleId: selectedMuebleId,
-                cantidad: cantidad,
+            await api.put(`/muebles/stock/${selectedMuebleId}`, cantidad, {
+                headers: { 'Content-Type': 'application/json' },
             });
+            
             setShowSuccess(true);
             setTimeout(() => {
                 setShowSuccess(false);
@@ -108,7 +108,7 @@ function AgregarStockModal({ show, handleClose }) {
                 </Form>
             </Modal>
             {showSuccess && (
-                <div className="notification-container">
+                <div className="notification-container" style={{ position: 'fixed', bottom: '10px', right: '10px' }}>
                     <Alert variant="success" className="notification">
                         Stock agregado con éxito!
                     </Alert>

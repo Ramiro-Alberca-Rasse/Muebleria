@@ -70,4 +70,22 @@ public class VentaMuebleDTO {
     public void setNombreMueble(String nombreMueble) {
         this.nombreMueble = nombreMueble;
     }
+
+    @Override
+    public String toString() {
+        return "VentaMuebleDTO{" +
+                "id=" + id +
+                ", idMueble=" + idMueble +
+                ", nombreMueble='" + nombreMueble + '\'' +
+                ", idVenta=" + idVenta +
+                ", cantidad=" + cantidad +
+                ", subTotal=" + subTotal +
+                '}';
+    }
+
+    public VentaMueble convertToEntity() {
+        VentaMueble ventaMueble = new VentaMueble();
+        ventaMueble.setId(this.id);
+        return ventaMueble;
+    }
 }

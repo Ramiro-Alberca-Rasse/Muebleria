@@ -105,4 +105,13 @@ public class Cliente {
     public List<Venta> getVentas() {
         return ventas;
     }
+
+    public void setVentas(List<Venta> ventas) {
+        this.ventas = ventas;
+    }
+
+    public void addVenta(Venta venta) {
+        this.ventas.add(venta);
+    }
+    
 }
