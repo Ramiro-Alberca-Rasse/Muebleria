@@ -2,21 +2,17 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MenuPrincipal from './components/js/MenuPrincipal';
 import GestionarMuebles from './components/js/Muebles/GestionarMuebles';
-import GestionarStock from './components/js/Stock/GestionarStocks';
-import GestionarVentas from './components/js/Ventas/GestionarVentas';
-import GestionarClientes from './components/js/Clientes/GestionarClientes';
+import GestionVentas from './components/js/Ventas/GestionarVentas'; // Importa el nuevo archivo
 import ListarMuebles from './components/js/Muebles/ListarMuebles';
 import AgregarMueble from './components/js/Muebles/AgregarMueble';
-import ReportesStock from './components/js/Stock/ReportesStock';
-import AgregarStock from './components/js/Stock/AgregarStock';
+import ReportesStock from './components/js/Muebles/ReportesStock';
+import AgregarStock from './components/js/Muebles/AgregarStock';
 import ListarVentas from './components/js/Ventas/ListarVentas';
 import RegistrarVenta from './components/js/Ventas/RegistrarVenta';
-import ListarClientes from './components/js/Clientes/ListarClientes';
-import RegistrarCliente from './components/js/Clientes/RegistrarCliente';
+import ListarClientes from './components/js/Ventas/ListarClientes';
+import RegistrarCliente from './components/js/Ventas/RegistrarCliente';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-
 
 function App() {
   return (
@@ -24,10 +20,8 @@ function App() {
       <MenuPrincipal />
       <Routes>
         {/* Rutas principales */}
-        <Route path="/muebles" element={<GestionarMuebles />} />
-        <Route path="/stock" element={<GestionarStock />} />
-        <Route path="/ventas" element={<GestionarVentas />} />
-        <Route path="/clientes" element={<GestionarClientes />} />
+        <Route path="/" element={<GestionarMuebles/>} />
+        <Route path="/ventas" element={<GestionVentas />} /> {/* Actualiza la ruta */}
 
         {/* Subrutas de muebles */}
         <Route path="/muebles/listar" element={<ListarMuebles />} />
@@ -41,11 +35,9 @@ function App() {
         <Route path="/ventas/listar" element={<ListarVentas />} />
         <Route path="/ventas/registrar" element={<RegistrarVenta />} />
 
-
         {/* Subrutas de clientes */}
         <Route path="/clientes/listar" element={<ListarClientes />} />
         <Route path="/clientes/registrar" element={<RegistrarCliente />} />
-
       </Routes>
     </Router>
   );

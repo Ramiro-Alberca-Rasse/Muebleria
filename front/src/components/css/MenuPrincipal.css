@@ -159,57 +159,24 @@ body {
   }
 }
 
-/* ====== Mensaje centrado en pantalla ====== */
-.pantalla-centro {
-  position: absolute; /* Para posicionarlo sobre la página */
-  top: 50%; /* Centramos verticalmente */
-  left: 50%; /* Centramos horizontalmente */
-  transform: translate(-50%, -50%); /* Ajustamos para centrar perfectamente */
-  text-align: center; /* Centrado del texto */
-  z-index: 10; /* Encima del resto de los elementos */
-}
 
-.pantalla-centro h1 {
-  font-family: 'Trebuchet MS', sans-serif; /* Fuente moderna y estilizada */
-  font-size: 5rem; /* Tamaño grande para destacar */
-  font-weight: 700; /* Negrita */
-  color: #ffffff; /* Texto blanco */
-  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Sombra para contraste */
-  letter-spacing: 3px; /* Espaciado entre letras */
-  text-transform: uppercase; /* Texto en mayúsculas */
-}
+
+
 
 /* ====== Estilo para el nuevo texto centrado en la parte inferior ====== */
 .texto-inferior {
   font-family: 'Trebuchet MS', sans-serif; /* Fuente moderna y estilizada */
   position: absolute; /* Para posicionarlo sobre la página */
-  bottom: 80px; /* Asegura que esté cerca de la parte inferior */
+  bottom: 50px; /* Asegura que esté cerca de la parte inferior */
   left: 50%; /* Centrado horizontal */
   transform: translateX(-50%); /* Ajuste perfecto al centro */
-  font-size: 3rem; /* Tamaño del texto */
+  font-size: 4rem; /* Tamaño del texto */
   font-weight: bold; /* Texto en negrita */
   color: #3a668c; /* Color azul */
   text-transform: uppercase; /* Texto en mayúsculas */
-  letter-spacing: 1px; /* Espaciado entre letras */
+  letter-spacing: 2px !important; /* Espaciado entre letras */
   z-index: 10; /* Encima del resto de los elementos */
-  letter-spacing: 1px; /* Espaciado entre letras */
-  text-transform: uppercase; /* Texto en mayúsculas */
+  text-align: center; /* Centrado del texto */
 }
 
-/* ====== Estilo para el nuevo texto centrado en la parte inferior ====== */
-.texto-inferior2 {
-  font-family: 'Trebuchet MS', sans-serif; /* Fuente moderna y estilizada */
-  position: absolute; /* Para posicionarlo sobre la página */
-  bottom: 20px; /* Asegura que esté cerca de la parte inferior */
-  left: 50%; /* Centrado horizontal */
-  transform: translateX(-50%); /* Ajuste perfecto al centro */
-  font-size: 3rem; /* Tamaño del texto */
-  font-weight: bold; /* Texto en negrita */
-  color: #3a668c; /* Color azul */
-  text-transform: uppercase; /* Texto en mayúsculas */
-  letter-spacing: 1px; /* Espaciado entre letras */
-  z-index: 10; /* Encima del resto de los elementos */
-  letter-spacing: 1px; /* Espaciado entre letras */
-  text-transform: uppercase; /* Texto en mayúsculas */
-}
 

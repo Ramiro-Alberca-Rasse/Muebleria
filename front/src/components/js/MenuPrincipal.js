@@ -5,10 +5,6 @@ import "../css/MenuPrincipal.css"; // Archivo para los estilos
 const MenuPrincipal = () => {
   return (
     <>
-      <div className="pantalla-centro">
-        <h1>Sitios Muebles</h1>
-      </div>
-
       <nav className="menu-principal">
         {/* Nombre de la empresa centrado */}
         <div className="empresa-nombre">
@@ -18,16 +14,10 @@ const MenuPrincipal = () => {
         {/* Menú de navegación */}
         <ul className="menu-lista">
           <li className="menu-item">
-            <Link to="/muebles">Gestionar Muebles</Link>
+            <Link to="/">Gestionar Muebles</Link>
           </li>
           <li className="menu-item">
-            <Link to="/stock">Gestionar Stocks</Link>
-          </li>
-          <li className="menu-item">
-            <Link to="/ventas">Gestionar Ventas</Link>
-          </li>
-          <li className="menu-item">
-            <Link to="/clientes">Gestionar Clientes</Link>
+            <Link to="/ventas">Gestionar Ventas</Link> {/* Actualiza la ruta */}
           </li>
         </ul>
 
@@ -44,11 +34,7 @@ const MenuPrincipal = () => {
 
       {/* Nuevo texto centrado en la parte inferior */}
       <div className="texto-inferior">
-        Gestion de
-      </div>
-            {/* Nuevo texto centrado en la parte inferior */}
-            <div className="texto-inferior2">
-        Ventas e Inventario
+        Sitios Muebles
       </div>
     </>
   );

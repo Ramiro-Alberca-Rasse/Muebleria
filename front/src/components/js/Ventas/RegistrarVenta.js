@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Row, Col, Table } from 'react-bootstrap';
-import RegistrarCliente from '../../js/Clientes/RegistrarCliente'; // Importar el modal para Registrar cliente
+import RegistrarCliente from './RegistrarCliente'; // Importar el modal para Registrar cliente
 import RegistrarSubVenta from './RegistrarSubVenta'; // Importar el modal para Registrar Subventa
 import api from '../../../services/api';
 
