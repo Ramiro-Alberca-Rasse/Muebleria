@@ -1,9 +1,11 @@
 package PPyL.Muebleria.model;
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -24,6 +26,8 @@ public class VentaMueble {
     private double subTotal;
 
     @ManyToOne
+    @JoinColumn(name = "venta_id")
+    @Nullable
     private Venta venta;
 
     // Getters y setters

@@ -1,7 +1,11 @@
 package PPyL.Muebleria.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -23,13 +27,20 @@ public class Venta {
     private Date fecha;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonBackReference
     private Cliente cliente;
 
 
     private double precioTotal;
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<VentaMueble> ventas;
+
+
+    public Venta() {
+        ventas = new ArrayList<>();
+    }
 
     // Getters y setters
     public Long getId() {

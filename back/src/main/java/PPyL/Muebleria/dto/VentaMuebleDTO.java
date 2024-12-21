@@ -1,12 +1,17 @@
 package PPyL.Muebleria.dto;
 
 import PPyL.Muebleria.model.VentaMueble;
+import jakarta.annotation.Nullable;
 
 public class VentaMuebleDTO {
+
     private Long id;
     private Long idMueble;
     private String nombreMueble;
+
+    @Nullable
     private Long idVenta;
+
     private int cantidad;
     private double subTotal;
 

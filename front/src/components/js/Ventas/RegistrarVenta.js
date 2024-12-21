@@ -7,7 +7,7 @@ import api from '../../../services/api';
 function RegistrarVenta({ show, handleClose }) {
   const [clientes, setClientes] = useState([]);
   const [muebles, setMuebles] = useState([]);
-  const [clienteSeleccionado, setClienteSeleccionado] = useState('');
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(0);
   const [fecha, setFecha] = useState('');
   const [total, setTotal] = useState(0);
   const [showRegistrarCliente, setShowRegistrarCliente] = useState(false);
@@ -42,7 +42,7 @@ function RegistrarVenta({ show, handleClose }) {
   }, [show]);
 
   const resetForm = () => {
-    setClienteSeleccionado('');
+    setClienteSeleccionado(0); // Asegurarse de que sea un entero
     setTotal(0);
     setVentaParcial([]);
   };
@@ -67,16 +67,23 @@ function RegistrarVenta({ show, handleClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
+
     const nuevaVenta = {
-      idCliente: clienteSeleccionado,
+      idCliente: parseInt(clienteSeleccionado, 10),
       fecha,
       precioTotal: total,
       ventasMuebles: ventaParcial.map((subVenta) => ({
+        id: 1,
+        idVenta: 1,
         idMueble: subVenta.mueble.id,
         cantidad: subVenta.cantidad,
         subTotal: subVenta.subtotal,
+        nombreMueble: subVenta.mueble.nombre,
       })),
     };
+
+    console.log('Datos enviados a la API:', nuevaVenta); // Log para mostrar los datos enviados
 
     try {
       const response = await api.post('/ventas', nuevaVenta, {
@@ -85,24 +92,7 @@ function RegistrarVenta({ show, handleClose }) {
         },
       });
 
-      for (const subVenta of ventaParcial) {
-        const subVentaData = {
-          idVenta: response.data.id,
-          idMueble: subVenta.mueble.id,
-          cantidad: subVenta.cantidad,
-          subTotal: subVenta.subtotal,
-        };
-
-        try {
-          await api.post('/ventaMuebles', subVentaData, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-        } catch (subVentaError) {
-          console.error('Error al registrar subventa:', subVentaError);
-        }
-      }
+      console.log('Respuesta de la API:', response.data); // Log para mostrar la respuesta de la API
 
       handleClose();
     } catch (error) {
@@ -144,7 +134,7 @@ function RegistrarVenta({ show, handleClose }) {
                   <Form.Control
                     as="select"
                     value={clienteSeleccionado}
-                    onChange={(e) => setClienteSeleccionado(e.target.value)}
+                    onChange={(e) => setClienteSeleccionado(parseInt(e.target.value, 10))} // Convertir a entero
                     required
                     style={{ borderColor: '#343a40' }}
                   >

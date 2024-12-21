@@ -3,7 +3,11 @@ package PPyL.Muebleria.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +38,8 @@ public class VentaController {
     @Autowired
     private VentaMuebleController ventaMuebleController;
 
+    private static final Logger logger = LoggerFactory.getLogger(VentaController.class);
+
     @GetMapping
     public List<VentaDTO> getAllVentas() {
         return ventaService.getAllVentas().stream()
@@ -47,10 +53,16 @@ public class VentaController {
         return new VentaDTO(venta);
     }
 
-    @PostMapping
-    public Venta createVenta(@RequestBody VentaDTO ventaDTO) {
-
-        return ventaService.createVenta(ventaDTO);
+   @PostMapping
+    public ResponseEntity<Venta> createVenta(@RequestBody VentaDTO ventaDTO) {
+        try {
+            Venta nuevaVenta = ventaService.createVenta(ventaDTO);
+            logger.info("Venta creada con éxito: " + nuevaVenta);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaVenta);
+        } catch (Exception e) {
+            logger.error("Error al crear la venta", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/{id}")

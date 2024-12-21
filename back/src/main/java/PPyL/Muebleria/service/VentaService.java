@@ -2,6 +2,8 @@ package PPyL.Muebleria.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,11 @@ public class VentaService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private VentaMuebleService ventaMuebleService;
+
+    private static final Logger logger = LoggerFactory.getLogger(VentaService.class);
+
     public List<Venta> getAllVentas() {
         return ventaRepository.findAll();
     }
@@ -31,26 +38,43 @@ public class VentaService {
     }
 
     public Venta createVenta(VentaDTO ventaDTO) {
+        logger.info("Iniciando creación de venta con ID cliente: {}", ventaDTO.getIdCliente());
+        
         Venta venta = new Venta();
         // Asignar los valores de ventaDTO a venta
+        logger.debug("Creando objeto venta y asignando los valores.");
 
-        Cliente cliente = clienteRepository.findById(ventaDTO.getIdCliente()).get();
-
-        venta.setCliente(cliente);
-        venta.setFecha(ventaDTO.getFecha());
-        venta.setPrecioTotal(ventaDTO.getPrecioTotal());
-
-        for(VentaMuebleDTO ventaMuebleDTO : ventaDTO.getVentasMuebles()) {
+        try {
+            Cliente cliente = clienteRepository.findById(ventaDTO.getIdCliente()).get();
+            logger.info("Cliente encontrado con ID: {}", cliente.getId());
+            venta.setCliente(cliente);
+            venta.setFecha(ventaDTO.getFecha());
+            venta.setPrecioTotal(ventaDTO.getPrecioTotal());
+            logger.info("Contenido de ventasMuebles en ventaDTO: {}", ventaDTO.getVentasMuebles());
             VentaMueble ventaMueble = new VentaMueble();
-            ventaMueble = ventaMuebleDTO.convertToEntity();
-            venta.addVenta(ventaMueble);
-        }
-        
-        cliente.addVenta(venta);
-        clienteRepository.save(cliente);
 
-        return ventaRepository.save(venta);
+            
+            for (int i = 0; i < ventaDTO.getVentasMuebles().size(); i++) {
+                VentaMuebleDTO ventaMuebleDTO2 = ventaDTO.getVentasMuebles().get(i);
+                logger.info("Procesando mueble para la venta: {}", ventaMuebleDTO2);
+                ventaMueble = ventaMuebleService.createVentaMueble(ventaMuebleDTO2);
+            }
+
+            cliente.addVenta(venta);
+            clienteRepository.save(cliente);
+            logger.info("Cliente con ID: {} actualizado con nueva venta.", cliente.getId());
+
+            Venta savedVenta = ventaRepository.save(venta);
+            logger.info("Venta creada y guardada con ID: {}", savedVenta.getId());
+
+            return savedVenta;
+
+        } catch (Exception e) {
+            logger.error("Error al crear la venta para el cliente con ID: {}", ventaDTO.getIdCliente(), e);
+            throw e; // Re-lanzamos la excepción para que el controlador maneje el error adecuadamente
+        }
     }
+
 
     public Venta updateVenta(Long id, Venta venta) {
         if (ventaRepository.existsById(id)) {
