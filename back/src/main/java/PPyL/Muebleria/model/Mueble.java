@@ -29,19 +29,19 @@ public class Mueble {
     
     @ManyToOne
     @JoinColumn(name = "tipoDeMadera_id")
-    @JsonBackReference
+    @JsonBackReference(value = "mueble-tipoDeMadera")
     private TipoDeMadera tipoDeMadera;
     
     
     @ManyToOne
     @JoinColumn(name = "tipo_id")
-    @JsonBackReference
+    @JsonBackReference(value = "mueble-tipo")
     private Tipo tipo;
 
     
     @ManyToOne
     @JoinColumn(name = "fabricante_id")
-    @JsonBackReference
+    @JsonBackReference(value = "mueble-fabricante")
     private Fabricante fabricante;
 
     private double precio;

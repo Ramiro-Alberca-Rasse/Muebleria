@@ -3,6 +3,7 @@ package PPyL.Muebleria.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import PPyL.Muebleria.dto.ClienteDTO;
 import PPyL.Muebleria.dto.ClienteSimpleDTO;
 import PPyL.Muebleria.model.Cliente;
+import PPyL.Muebleria.repository.ClienteRepository;
 import PPyL.Muebleria.service.ClienteService;
 
 @RestController
@@ -26,6 +28,9 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private ClienteRepository clienteRepository;
+
     @GetMapping
     public List<ClienteSimpleDTO> getAllClientes() {
         return clienteService.getAllClientes().stream()
@@ -34,6 +39,24 @@ public class ClienteController {
                     dto.setId(cliente.getId());
                     dto.setNombre(cliente.getNombre());
                     dto.setApellido(cliente.getApellido());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/info")
+    public List<ClienteDTO> getAllClientesInfo() {
+        return clienteService.getAllClientes().stream()
+                .map(cliente -> {
+                    ClienteDTO dto = new ClienteDTO();
+                    dto.setId(cliente.getId());
+                    dto.setNombreCompleto(cliente.getNombre() + " " + cliente.getApellido());
+                    dto.setNombre(cliente.getNombre());
+                    dto.setApellido(cliente.getApellido());
+                    dto.setDni(cliente.getDni());
+                    dto.setDireccion(cliente.getDireccion());
+                    dto.setTelefono(cliente.getTelefono());
+                    dto.setEmail(cliente.getEmail());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -54,14 +77,18 @@ public class ClienteController {
         return clienteService.createCliente(cliente);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody Cliente clienteDetails) {
-        Cliente updatedCliente = clienteService.updateCliente(id, clienteDetails);
-        if (updatedCliente != null) {
-            return ResponseEntity.ok(updatedCliente);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Cliente updateCliente(@PathVariable Long id, @RequestBody Cliente clienteDetails) {
+        System.out.println("Updating cliente with id: " + id);
+        return clienteRepository.findById(id).map(cliente -> {
+            cliente.setNombre(clienteDetails.getNombre());
+            cliente.setApellido(clienteDetails.getApellido());
+            cliente.setDireccion(clienteDetails.getDireccion());
+            cliente.setTelefono(clienteDetails.getTelefono());
+            cliente.setEmail(clienteDetails.getEmail());
+            cliente.setDni(clienteDetails.getDni());
+            return clienteRepository.save(cliente);
+        }).orElse(null);
     }
 
     @DeleteMapping("/{id}")

@@ -23,7 +23,7 @@ public class Fabricante {
     private String nombre;
 
     @OneToMany(mappedBy = "fabricante", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "mueble-fabricante")
     private List<Mueble> muebles;
 
     public Fabricante() {

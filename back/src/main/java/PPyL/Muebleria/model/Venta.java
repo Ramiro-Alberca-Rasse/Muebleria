@@ -27,16 +27,15 @@ public class Venta {
     private Date fecha;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonBackReference
+    @JsonBackReference(value = "cliente-venta") // Nombre único que coincide con Cliente
     private Cliente cliente;
 
 
     private double precioTotal;
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "venta-mueble") // Otro nombre único
     private List<VentaMueble> ventas;
-
 
     public Venta() {
         ventas = new ArrayList<>();

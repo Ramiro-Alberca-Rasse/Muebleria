@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Card, Row, Col } from 'react-bootstrap';
 import RegistrarVentaModal from './RegistrarVenta'; // Importa el componente modal de registrar ventas
 import ListarVentasModal from './ListarVentas'; // Importa el componente modal de listar ventas
 import RegistrarClienteModal from './RegistrarCliente'; // Importa el componente modal de registrar clientes
+import ListarClientesModal from './ListarClientes'; // Importa el componente modal de listar clientes
 import '../../../components/css/Gestionar.css'; // Asegúrate de importar el archivo CSS
 
 function GestionVentas() {
   const [showRegistrarModal, setShowRegistrarModal] = useState(false); // Estado para abrir el modal de registrar ventas
   const [showListarModal, setShowListarModal] = useState(false); // Estado para abrir el modal de listar ventas
   const [showRegistrarClienteModal, setShowRegistrarClienteModal] = useState(false); // Estado para abrir el modal de registrar clientes
+  const [showListarClientesModal, setShowListarClientesModal] = useState(false); // Estado para abrir el modal de listar clientes
 
   // Función para abrir el modal de registrar ventas
   const handleShowRegistrar = () => setShowRegistrarModal(true);
@@ -28,6 +29,12 @@ function GestionVentas() {
 
   // Función para cerrar el modal de registrar clientes
   const handleCloseRegistrarCliente = () => setShowRegistrarClienteModal(false);
+
+  // Función para abrir el modal de listar clientes
+  const handleShowListarClientes = () => setShowListarClientesModal(true);
+
+  // Función para cerrar el modal de listar clientes
+  const handleCloseListarClientes = () => setShowListarClientesModal(false);
 
   return (
     <div className="container my-4 gestionar-modales">
@@ -71,11 +78,9 @@ function GestionVentas() {
             <Card.Body className="text-center">
               <Card.Title>Listar Clientes</Card.Title>
               <Card.Text>Consulta todos los clientes registrados.</Card.Text>
-              <Link to="/clientes/listar">
-                <Button variant="primary" className="w-100">
-                  Ver Clientes
-                </Button>
-              </Link>
+              <Button variant="primary" className="w-100" onClick={handleShowListarClientes}>
+                Ver Clientes
+              </Button>
             </Card.Body>
           </Card>
         </Col>
@@ -97,6 +102,12 @@ function GestionVentas() {
       <RegistrarClienteModal
         show={showRegistrarClienteModal}
         handleClose={handleCloseRegistrarCliente}
+      />
+
+      {/* Aquí se renderiza el modal de listar clientes */}
+      <ListarClientesModal
+        show={showListarClientesModal}
+        handleClose={handleCloseListarClientes}
       />
     </div>
   );

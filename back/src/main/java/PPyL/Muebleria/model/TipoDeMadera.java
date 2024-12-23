@@ -22,7 +22,7 @@ public class TipoDeMadera {
     private String nombre;
 
     @OneToMany(mappedBy = "tipoDeMadera", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "mueble-tipoDeMadera")
     private List<Mueble> muebles;
 
     public TipoDeMadera() {

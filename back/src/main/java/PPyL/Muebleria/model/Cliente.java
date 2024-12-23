@@ -31,7 +31,7 @@ public class Cliente {
     private String dni;
 
     @OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false)
-    @JsonManagedReference
+    @JsonManagedReference(value = "cliente-venta") // Nombre único
     private List<Venta> ventas;
 
 

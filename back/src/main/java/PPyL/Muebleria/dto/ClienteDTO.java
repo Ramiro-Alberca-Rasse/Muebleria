@@ -2,6 +2,7 @@ package PPyL.Muebleria.dto;
 
 public class ClienteDTO {
     private Long id;
+    private String nombreCompleto;
     private String nombre;
     private String apellido;
     private String dni;
@@ -18,20 +19,12 @@ public class ClienteDTO {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombreCompleto() {
+        return nombreCompleto;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
     }
 
     public String getDni() {
@@ -64,5 +57,21 @@ public class ClienteDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 }

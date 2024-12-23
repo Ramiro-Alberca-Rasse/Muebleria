@@ -1,5 +1,7 @@
 package PPyL.Muebleria.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class VentaMueble {
 
     @ManyToOne
     @JoinColumn(name = "venta_id")
+    @JsonBackReference(value = "venta-mueble") // Nombre único que coincide con Venta
     @Nullable
     private Venta venta;
 
