@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Button, Col, Row, Toast, ToastContainer, Alert } from 'react-bootstrap';
+import { Modal, Form, Button, Col, Row, Toast, ToastContainer, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import api from '../../../services/api';
 import RegistrarTipo from './RegistrarTipo';
 import RegistrarTipoMadera from './RegistrarTipoDeMadera';
@@ -21,8 +21,10 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
   const [showRegistrarTipoMadera, setShowRegistrarTipoMadera] = useState(false);
   const [showRegistrarFabricante, setShowRegistrarFabricante] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showStockWarning, setShowStockWarning] = useState(false);
+  const [isStockChecked, setIsStockChecked] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Cargar los tipos de muebles
   const fetchTipos = async () => {
     try {
       const response = await api.get('/tipos');
@@ -38,7 +40,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
     }
   };
 
-  // Cargar los tipos de madera
   const fetchTiposDeMadera = async () => {
     try {
       const response = await api.get('/tiposdemadera');
@@ -54,7 +55,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
     }
   };
 
-  // Cargar los fabricantes
   const fetchFabricantes = async () => {
     try {
       const response = await api.get('/fabricantes');
@@ -70,7 +70,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
     }
   };
 
-  // Cargar los datos del mueble a editar
   useEffect(() => {
     if (show && mueble) {
       setNombre(mueble.nombre);
@@ -82,6 +81,7 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
       fetchTipos();
       fetchTiposDeMadera();
       fetchFabricantes();
+      setShowStockWarning(false);
     }
   }, [show, mueble]);
 
@@ -105,8 +105,13 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
       tipoId: tipo || null,
     };
 
+    const requestData = {
+      muebleDTO: muebleActualizado,
+      checkbox: isStockChecked
+    };
+
     try {
-      const response = await api.put(`/muebles/${mueble.id}`, muebleActualizado);
+      const response = await api.put(`/muebles/actualizar/${mueble.id}`, requestData);
       if (response.status === 200) {
         setShowSuccess(true);
         setTimeout(() => {
@@ -117,6 +122,11 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
       }
     } catch (error) {
       console.error('Error al actualizar el mueble:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Error al actualizar el mueble');
+      }
       setMensajeExito('');
     }
   };
@@ -124,11 +134,26 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
   const handleCloseModal = () => {
     handleClose();
     setShowSuccessToast(false);
+    setErrorMessage('');
+  };
+
+  const handleStockChange = (e) => {
+    setStock(e.target.value);
+    if (!isStockChecked) {
+      setShowStockWarning(true);
+    } else {
+      setShowStockWarning(false);
+    }
+  };
+
+  const handleStockCheckboxChange = () => {
+    setIsStockChecked(!isStockChecked);
+    setShowStockWarning(false);
   };
 
   return (
     <>
-      <div className={show ? 'modal-backdrop show' : ''}></div> {/* Añadir div para oscurecer el fondo */}
+      <div className={show ? 'modal-backdrop show' : ''}></div>
       <ToastContainer position="top-end" className="p-3">
         <Toast
           onClose={() => setShowSuccessToast(false)}
@@ -141,15 +166,21 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
         </Toast>
       </ToastContainer>
 
-      {showSuccess && (
-        <div className="notification-container">
+      <div className="notification-container-bottom-right">
+        {showSuccess && (
           <Alert variant="primary" className="notification">
             Mueble actualizado con éxito!
           </Alert>
-        </div>
-      )}
+        )}
 
-      <Modal show={show} onHide={handleCloseModal} size="lg" style={{ marginTop: '90px' }}> {/* Añadir estilo para margen superior */}
+        {errorMessage && (
+          <Alert variant="danger" className="notification">
+            {errorMessage}
+          </Alert>
+        )}
+      </div>
+
+      <Modal show={show} onHide={handleCloseModal} size="lg" style={{ marginTop: '90px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Editar Mueble</Modal.Title>
         </Modal.Header>
@@ -164,7 +195,7 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   required
-                  style={{ borderColor: '#343a40' }} // Añadir estilo para borde oscuro
+                  style={{ borderColor: '#343a40' }}
                 />
               </Form.Group>
 
@@ -176,7 +207,7 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
                     value={fabricante}
                     onChange={(e) => setFabricante(e.target.value)}
                     className="me-2"
-                    style={{ borderColor: '#343a40' }} // Añadir estilo para borde oscuro
+                    style={{ borderColor: '#343a40' }}
                   >
                     <option value="">Selecciona un fabricante</option>
                     {fabricantes.map((fab) => (
@@ -206,19 +237,55 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
                   value={precio}
                   onChange={(e) => setPrecio(e.target.value)}
                   required
-                  style={{ borderColor: '#343a40' }} // Añadir estilo para borde oscuro
+                  style={{ borderColor: '#343a40' }}
                 />
               </Form.Group>
 
               <Form.Group as={Col} controlId="formStock">
                 <Form.Label><strong>Stock</strong></Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Ingresa el stock disponible"
-                  value={stock}
-                  onChange={(e) => setStock(e.target.value)}
-                  style={{ borderColor: '#343a40' }} // Añadir estilo para borde oscuro
-                />
+                <div className="d-flex align-items-center">
+                  <Form.Control
+                    type="number"
+                    placeholder="Ingresa el stock disponible"
+                    value={stock}
+                    onChange={handleStockChange}
+                    style={{ borderColor: '#343a40' }}
+                  />
+                  <Form.Check
+                    type="checkbox"
+                    className="ms-2 custom-checkbox"
+                    checked={isStockChecked}
+                    onChange={handleStockCheckboxChange}
+                  />
+                  <style>
+                    {`
+                      .custom-checkbox input[type="checkbox"] {
+                        appearance: none;
+                        width: 20px;
+                        height: 20px;
+                        border: 2px solid #343a40;
+                        border-radius: 4px;
+                        background-color: white;
+                        cursor: pointer;
+                      }
+
+                      .custom-checkbox input[type="checkbox"]:checked {
+                        background-color: #343a40;
+                      }
+                    `}
+                  </style>
+                  <OverlayTrigger
+                    placement="right"
+                    overlay={<Tooltip>Si marca la casilla no se registrará un nuevo cambio de stock; se modificará el stock inicial (en caso de error al crear el mueble).</Tooltip>}
+                  >
+                    <Button variant="primary" size="sm" className="ms-2">info</Button>
+                  </OverlayTrigger>
+                </div>
+                {showStockWarning && (
+                  <Alert variant="warning" className="mt-2">
+                    El cambio en el stock se registrará como una salida o entrada de stock (venta o ingreso).
+                  </Alert>
+                )}
               </Form.Group>
             </Row>
 
@@ -231,7 +298,7 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
                     value={tipo}
                     onChange={(e) => setTipo(e.target.value)}
                     className="me-2"
-                    style={{ borderColor: '#343a40' }} // Añadir estilo para borde oscuro
+                    style={{ borderColor: '#343a40' }}
                   >
                     <option value="">Selecciona un tipo de mueble</option>
                     {tipos.map((cat) => (
@@ -259,12 +326,12 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
                     value={tipoMadera}
                     onChange={(e) => setTipoMadera(e.target.value)}
                     className="me-2"
-                    style={{ borderColor: '#343a40' }} // Añadir estilo para borde oscuro
+                    style={{ borderColor: '#343a40' }}
                   >
                     <option value="">Selecciona el tipo de madera</option>
-                    {tiposDeMadera.map((tipo) => (
-                      <option key={tipo.id} value={tipo.id}>
-                        {tipo.nombre}
+                    {tiposDeMadera.map((tm) => (
+                      <option key={tm.id} value={tm.id}>
+                        {tm.nombre}
                       </option>
                     ))}
                   </Form.Control>
@@ -287,7 +354,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
         </Modal.Body>
       </Modal>
 
-      {/* Modal para Registrar Tipo */}
       <RegistrarTipo
         show={showRegistrarTipo}
         handleClose={() => {
@@ -295,8 +361,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
           fetchTipos();
         }}
       />
-
-      {/* Modal para Registrar Tipo de Madera */}
       <RegistrarTipoMadera
         show={showRegistrarTipoMadera}
         handleClose={() => {
@@ -304,8 +368,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
           fetchTiposDeMadera();
         }}
       />
-
-      {/* Modal para Registrar Fabricante */}
       <RegistrarFabricante
         show={showRegistrarFabricante}
         handleClose={() => {
@@ -313,6 +375,15 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
           fetchFabricantes();
         }}
       />
+
+      <style jsx>{`
+        .notification-container-bottom-right {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 1050;
+        }
+      `}</style>
     </>
   );
 }

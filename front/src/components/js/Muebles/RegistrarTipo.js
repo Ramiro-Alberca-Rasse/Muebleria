@@ -83,7 +83,7 @@ function RegistrarTipo({ show, handleClose}) {
       </Form>
       </Modal>
       {showSuccess && (
-        <div className="notification-container">
+        <div className="notification-container" style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
           <Alert variant="success" className="notification">
             Tipo de mueble registrado con éxito!
           </Alert>

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import PPyL.Muebleria.dto.ActualizarMuebleDTO;
+import PPyL.Muebleria.dto.CambioStockDTO;
 import PPyL.Muebleria.dto.MuebleDTO;
 import PPyL.Muebleria.model.Fabricante;
 import PPyL.Muebleria.model.Mueble;
@@ -25,6 +27,7 @@ import PPyL.Muebleria.model.TipoDeMadera;
 import PPyL.Muebleria.repository.FabricanteRepository;
 import PPyL.Muebleria.repository.TipoDeMaderaRepository;
 import PPyL.Muebleria.repository.TipoRepository;
+import PPyL.Muebleria.service.CambioStockService;
 import PPyL.Muebleria.service.MuebleService;
 
 @RestController
@@ -44,6 +47,12 @@ public class MuebleController {
 
     @Autowired
     private TipoDeMaderaRepository tipoDeMaderaRepository;
+
+    @Autowired
+    private CambioStockController cambioStockController;
+
+    @Autowired
+    private CambioStockService cambioStockService;
 
     @GetMapping
     public List<MuebleDTO> listarMuebles(@RequestParam(required = false) Tipo Tipo) {
@@ -89,11 +98,47 @@ public class MuebleController {
         // Guardar el mueble en la base de datos
         muebleService.crearMueble(mueble);
         logger.info("Mueble agregado exitosamente: {}", mueble);
+        String tipoCambio = "Entrada";
+        CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO, tipoCambio, muebleDTO.getStock());
+        cambioStockDTO.setPrimerCambio(true);
+        cambioStockController.createCambioStock(cambioStockDTO);
+
         return new ResponseEntity<>("Mueble agregado exitosamente", HttpStatus.CREATED);
     }
 
     @PutMapping("/actualizar/{id}")
-    public MuebleDTO actualizarMueble(@PathVariable Long id, @RequestBody MuebleDTO muebleDTO) {
+    public MuebleDTO actualizarMueble(@PathVariable Long id, @RequestBody ActualizarMuebleDTO actualizarMuebleDTO) {
+        boolean checkbox = actualizarMuebleDTO.getCheckbox();
+        MuebleDTO muebleDTO = actualizarMuebleDTO.getMuebleDTO();
+        MuebleDTO muebleDTO2 = muebleService.obtenerMueble(id);
+
+        if (muebleDTO.getStock() != muebleDTO2.getStock()) {
+            if (checkbox == false) {
+
+                if (muebleDTO2.getStock() != muebleDTO.getStock()) {
+                    String tipoCambio;
+                    if (muebleDTO2.getStock() > muebleDTO.getStock()) {
+                        tipoCambio = "Salida";
+                    } else {
+                        tipoCambio = "Entrada";
+                    }
+                    int cantidad = Math.abs(muebleDTO2.getStock() - muebleDTO.getStock());
+                    CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO, tipoCambio, cantidad);
+                    cambioStockController.createCambioStock(cambioStockDTO);   
+                }
+            } else {
+
+                if (cambioStockController.getCantidadDeCambiosByMuebleId(id) > 1) {
+                    throw new RuntimeException("No se puede modificar el stock inicial después de haber realizado otros cambios de stock, desmarque la casilla para continuar");
+                }
+
+                CambioStockDTO cambioStockDTO = cambioStockService.getPrimerCambioStockByMuebleId(id);
+                cambioStockDTO.setCantidad(muebleDTO.getStock());
+                cambioStockDTO.setNuevoStock(muebleDTO.getStock());
+                cambioStockController.updateCambioStock(cambioStockDTO.getId(), cambioStockDTO);
+            }
+        }
+        
         return muebleService.actualizarMueble(id, muebleDTO);
     }
 
@@ -104,6 +149,18 @@ public class MuebleController {
 
     @PutMapping("/stock/{id}")
     public void actualizarStock(@PathVariable Long id, @RequestBody Integer cantidad) {
+        MuebleDTO muebleDTO2 = muebleService.obtenerMueble(id);
+        muebleDTO2.setStock(muebleDTO2.getStock() + cantidad);
+        String tipoCambio = "Entrada";
+        CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO2, tipoCambio, cantidad);
+        cambioStockController.createCambioStock(cambioStockDTO);
+
         muebleService.actualizarStock(id, cantidad);
     }
+
+    @GetMapping("/stock/actual")
+    public List<MuebleDTO> listarMueblesStockActual() {
+        return muebleService.listarMueblesStockActual();
+    }
+
 }

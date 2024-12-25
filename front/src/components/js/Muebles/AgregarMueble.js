@@ -139,7 +139,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
       </ToastContainer>
 
       {showSuccess && (
-        <div className="notification-container">
+        <div className="notification-container" style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
           <Alert variant="success" className="notification">
             Mueble registrado con éxito!
           </Alert>

@@ -57,6 +57,7 @@ public class ClienteController {
                     dto.setDireccion(cliente.getDireccion());
                     dto.setTelefono(cliente.getTelefono());
                     dto.setEmail(cliente.getEmail());
+                    dto.setVentas(cliente.getVentas());
                     return dto;
                 })
                 .collect(Collectors.toList());

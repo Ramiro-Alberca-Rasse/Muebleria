@@ -102,4 +102,12 @@ public class MuebleService {
         mueble.setStock(mueble.getStock() + cantidad);
         muebleRepository.save(mueble);
     }
+
+    public List<MuebleDTO> listarMueblesStockActual() {
+        return muebleRepository.findAll().stream()
+            .map(mueble -> new MuebleDTO(mueble))
+            .collect(Collectors.toList());
+    }
+
+
 }

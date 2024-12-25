@@ -5,11 +5,13 @@ import '../../../components/css/Gestionar.css'; // Asegúrate de importar el arc
 import AgregarStock from './AgregarStock'; // Importar el componente AgregarStock
 import AgregarMuebleModal from './AgregarMueble'; // Importa el componente modal de agregar
 import ListarMueblesModal from './ListarMuebles'; // Importa el componente modal de listar
+import GenerarReportesModal from './GenerarReportes'; // Importar el componente modal de generar reportes
 
 function GestionarMuebles() {
   const [showAgregarModal, setShowAgregarModal] = useState(false); // Estado para abrir el modal de agregar mueble
   const [showListarModal, setShowListarModal] = useState(false); // Estado para abrir el modal de listar muebles
   const [showStockModal, setShowStockModal] = useState(false); // Estado para manejar la visibilidad del modal de stock
+  const [showReportesModal, setShowReportesModal] = useState(false); // Estado para abrir el modal de generar reportes
 
 
   // Fetch muebles cuando se carga el componente
@@ -37,6 +39,12 @@ function GestionarMuebles() {
 
   // Función para cerrar el modal de listar muebles
   const handleCloseListar = () => setShowListarModal(false);
+
+  // Función para abrir el modal de generar reportes
+  const handleShowReportes = () => setShowReportesModal(true);
+
+  // Función para cerrar el modal de generar reportes
+  const handleCloseReportes = () => setShowReportesModal(false);
 
   return (
     <div className="container my-4 gestionar-modales">
@@ -80,7 +88,7 @@ function GestionarMuebles() {
             <Card.Body className="text-center">
               <Card.Title>Generar Reporte</Card.Title>
               <Card.Text>Genera un reporte de stock actual o cambios de stock.</Card.Text>
-              <Button variant="primary" className="w-100">Ver Reportes</Button>
+              <Button variant="primary" className="w-100" onClick={handleShowReportes}>Ver Reportes</Button>
             </Card.Body>
           </Card>
         </Col>
@@ -98,6 +106,9 @@ function GestionarMuebles() {
         handleClose={() => setShowStockModal(false)}
         fetchMuebles={fetchMuebles}
       />
+
+      {/* Aquí se renderiza el modal de generar reportes */}
+      <GenerarReportesModal show={showReportesModal} handleClose={handleCloseReportes} />
     </div>
   );
 }
