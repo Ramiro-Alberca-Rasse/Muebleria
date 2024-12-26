@@ -87,4 +87,8 @@ public class CambioStock {
     public boolean isPrimerCambio() {
         return primerCambio;
     }
+
+    public void setPrimerCambio(boolean primerCambio) {
+        this.primerCambio = primerCambio;
+    }
 }

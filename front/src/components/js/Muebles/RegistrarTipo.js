@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { Modal, Button, Form, Alert, Toast, ToastContainer } from 'react-bootstrap';
+import { createPortal } from 'react-dom';
 import api from '../../../services/api';
 
-
-function RegistrarTipo({ show, handleClose}) {
+function RegistrarTipo({ show, handleClose }) {
   const [categoryName, setCategoryName] = useState('');
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Reseteamos el formulario al cerrar el modal
   useEffect(() => {
     if (!show) {
-      setCategoryName(''); // Resetea el valor del formulario
+      setCategoryName('');
+      setErrorMessage('');
     }
   }, [show]);
 
@@ -24,29 +25,30 @@ function RegistrarTipo({ show, handleClose}) {
     }
 
     try {
-      // Llamar a la API para Registrar la nueva categoría
       const response = await api.post('/tipos/registrar', categoryName, {
         headers: {
           'Content-Type': 'text/plain'
         }
       });
       if (response.status === 201) {
-      // Agregar la nueva categoría al estado de ListarMuebles
-      setShowSuccess(true);
-      setTimeout(() => {
-        setShowSuccess(false);
-        handleClose();
-      }, 7000);
-    }
+        setShowSuccessToast(true);
+        setMensajeExito('Tipo de mueble registrado con éxito');
+        setTimeout(() => {
+          setShowSuccessToast(false);
+          handleClose();
+        }, 3000);
+      }
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setErrorMessage('El tipo de mueble ya existe.');
       } else {
-        setErrorMessage(
-          'Ocurrió un error al registrar el tipo de mueble. Intente nuevamente.'
-        );
+        setErrorMessage('Ocurrió un error al registrar el tipo de mueble. Intente nuevamente.');
       }
     }
+  };
+
+  const ElementoNoOscurecido = ({ children }) => {
+    return createPortal(children, document.body);
   };
 
   return (
@@ -64,31 +66,47 @@ function RegistrarTipo({ show, handleClose}) {
                 placeholder="Ingrese el nombre del tipo"
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
-                isInvalid={!!errorMessage} // Muestra el feedback de error
+                isInvalid={!!errorMessage}
                 style={{ borderColor: errorMessage ? 'darkred' : 'black' }}
               />
               <Form.Control.Feedback type="invalid">
                 {errorMessage}
               </Form.Control.Feedback>
             </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cerrar
-          </Button>
-          <Button variant="primary" type="submit">
-            Guardar
-          </Button>
-        </Modal.Footer>
-      </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Cerrar
+            </Button>
+            <Button variant="primary" type="submit">
+              Guardar
+            </Button>
+          </Modal.Footer>
+        </Form>
       </Modal>
-      {showSuccess && (
-        <div className="notification-container" style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
-          <Alert variant="success" className="notification">
-            Tipo de mueble registrado con éxito!
-          </Alert>
-        </div>
-      )}
+
+      <ElementoNoOscurecido>
+        <ToastContainer position="bottom-end" className="p-3">
+          <Toast
+            onClose={() => setShowSuccessToast(false)}
+            show={showSuccessToast}
+            delay={3000}
+            autohide
+            bg="success"
+          >
+            <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
+          </Toast>
+        </ToastContainer>
+      </ElementoNoOscurecido>
+
+      <style jsx>{`
+        .notification-container-bottom-right {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 1050;
+        }
+      `}</style>
     </>
   );
 }

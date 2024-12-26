@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Col, Row, Toast, ToastContainer, Alert, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { createPortal } from 'react-dom';
 import api from '../../../services/api';
 import RegistrarTipo from './RegistrarTipo';
 import RegistrarTipoMadera from './RegistrarTipoDeMadera';
@@ -113,12 +114,13 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
     try {
       const response = await api.put(`/muebles/actualizar/${mueble.id}`, requestData);
       if (response.status === 200) {
-        setShowSuccess(true);
+        setShowSuccessToast(true);
+        setMensajeExito('Mueble actualizado con éxito');
         setTimeout(() => {
-          setShowSuccess(false);
+          setShowSuccessToast(false);
           handleClose();
           onMuebleUpdated();
-        }, 4000);
+        }, 3000);
       }
     } catch (error) {
       console.error('Error al actualizar el mueble:', error);
@@ -151,35 +153,12 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
     setShowStockWarning(false);
   };
 
+  const ElementoNoOscurecido = ({ children }) => {
+    return createPortal(children, document.body);
+  };
+
   return (
     <>
-      <div className={show ? 'modal-backdrop show' : ''}></div>
-      <ToastContainer position="top-end" className="p-3">
-        <Toast
-          onClose={() => setShowSuccessToast(false)}
-          show={showSuccessToast}
-          delay={3000}
-          autohide
-          bg="success"
-        >
-          <Toast.Body>{mensajeExito}</Toast.Body>
-        </Toast>
-      </ToastContainer>
-
-      <div className="notification-container-bottom-right">
-        {showSuccess && (
-          <Alert variant="primary" className="notification">
-            Mueble actualizado con éxito!
-          </Alert>
-        )}
-
-        {errorMessage && (
-          <Alert variant="danger" className="notification">
-            {errorMessage}
-          </Alert>
-        )}
-      </div>
-
       <Modal show={show} onHide={handleCloseModal} size="lg" style={{ marginTop: '90px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Editar Mueble</Modal.Title>
@@ -353,6 +332,34 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
           </Form>
         </Modal.Body>
       </Modal>
+
+      <ElementoNoOscurecido>
+        <ToastContainer position="bottom-end" className="p-3">
+          <Toast
+            onClose={() => setShowSuccessToast(false)}
+            show={showSuccessToast}
+            delay={3000}
+            autohide
+            bg="success"
+          >
+            <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
+          </Toast>
+        </ToastContainer>
+
+        <div className="notification-container-bottom-right">
+          {showSuccess && (
+            <Alert variant="success" className="notification">
+              Mueble actualizado con éxito!
+            </Alert>
+          )}
+
+          {errorMessage && (
+            <Alert variant="danger" className="notification">
+              {errorMessage}
+            </Alert>
+          )}
+        </div>
+      </ElementoNoOscurecido>
 
       <RegistrarTipo
         show={showRegistrarTipo}

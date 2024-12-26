@@ -76,6 +76,7 @@ public class CambioStockDTO {
     public void setPrimerCambio(boolean primerCambio) {
         this.primerCambio = primerCambio;
     }
+    
 
 
 }

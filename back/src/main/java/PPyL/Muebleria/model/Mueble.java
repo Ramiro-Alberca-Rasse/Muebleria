@@ -1,10 +1,14 @@
 package PPyL.Muebleria.model;
 
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import PPyL.Muebleria.dto.CambioStockDTO;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,6 +54,9 @@ public class Mueble {
 
     @OneToMany
     private Set<Venta> ventas;
+
+    @OneToMany(mappedBy = "mueble", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CambioStock> cambiosStock;
 
     
         // Constructor
@@ -129,6 +136,51 @@ public class Mueble {
         public void addVenta(Venta venta) {
             this.ventas.add(venta);
         }
+
+        public void removeVenta(Venta venta) {
+            this.ventas.remove(venta);
+        }
+
+        public void addCambioStock(CambioStock cambioStock) {
+            this.cambiosStock.add(cambioStock);
+        }
+
+        public void addCambioStockDTO(CambioStockDTO cambioStockDTO) {
+            CambioStock cambioStock = new CambioStock();
+            cambioStock.setId(cambioStockDTO.getId());
+            cambioStock.setMueble(this);
+            cambioStock.setCantidad(cambioStockDTO.getCantidad());
+            cambioStock.setTipoCambio(cambioStockDTO.getTipoCambio());
+            cambioStock.setNuevoStock(cambioStockDTO.getNuevoStock());
+            cambioStock.setPrimerCambio(cambioStockDTO.isPrimerCambio());
+            this.cambiosStock.add(cambioStock);
+        }
+
+        public void removeCambioStock(CambioStock cambioStock) {
+            this.cambiosStock.remove(cambioStock);
+        }
+
+        public void setVentas(Set<Venta> ventas) {
+            this.ventas = ventas;
+        }
+
+        public void setCambiosStock(List<CambioStock> cambiosStock) {
+            this.cambiosStock = cambiosStock;
+        }
+
+        public void setCambiosStockDTO(List<CambioStockDTO> cambiosStock) {
+            this.cambiosStock = cambiosStock.stream().map(cambioStockDTO -> {
+                CambioStock cambioStock = new CambioStock();
+                cambioStock.setId(cambioStockDTO.getId());
+                cambioStock.setMueble(this);
+                cambioStock.setCantidad(cambioStockDTO.getCantidad());
+                cambioStock.setTipoCambio(cambioStockDTO.getTipoCambio());
+                cambioStock.setNuevoStock(cambioStockDTO.getNuevoStock());
+                cambioStock.setPrimerCambio(cambioStockDTO.isPrimerCambio());
+                return cambioStock;
+            }).collect(Collectors.toList());
+        }
+
 
 
 

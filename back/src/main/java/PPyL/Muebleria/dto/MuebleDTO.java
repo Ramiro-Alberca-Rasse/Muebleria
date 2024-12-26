@@ -1,5 +1,7 @@
 package PPyL.Muebleria.dto;
 
+import java.util.List;
+
 import PPyL.Muebleria.model.Mueble;
 
 public class MuebleDTO {
@@ -10,6 +12,7 @@ public class MuebleDTO {
     private Long tipoId;
     private double precio;
     private int stock;
+    private List<CambioStockDTO> cambiosStock;
 
     public MuebleDTO(Mueble mueble) {
         this.id = mueble.getId();
@@ -89,6 +92,21 @@ public class MuebleDTO {
     public void setStock(int stock) {
         this.stock = stock;
     }
+
+    public List<CambioStockDTO> getCambiosStock() {
+        return cambiosStock;
+    }
+
+    public void addCambioStock(CambioStockDTO cambioStock) {
+        this.cambiosStock.add(cambioStock);
+    }
+
+    public void removeCambioStock(CambioStockDTO cambioStock) {
+        this.cambiosStock.remove(cambioStock);
+    }
+
+
+    // toString
 
     @Override
     public String toString() {

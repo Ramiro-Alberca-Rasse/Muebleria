@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Button, Row, Col, Table } from 'react-bootstrap';
+import { Modal, Form, Button, Row, Col, Table, Toast, ToastContainer, Alert } from 'react-bootstrap';
+import { createPortal } from 'react-dom';
 import RegistrarCliente from './RegistrarCliente'; // Importar el modal para Registrar cliente
 import RegistrarSubVenta from './RegistrarSubVenta'; // Importar el modal para Registrar Subventa
 import api from '../../../services/api';
@@ -13,6 +14,9 @@ function RegistrarVenta({ show, handleClose }) {
   const [showRegistrarCliente, setShowRegistrarCliente] = useState(false);
   const [ventaParcial, setVentaParcial] = useState([]);
   const [showRegistrarSubVenta, setShowRegistrarSubVenta] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (show) {
@@ -67,8 +71,6 @@ function RegistrarVenta({ show, handleClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
-
     const nuevaVenta = {
       idCliente: parseInt(clienteSeleccionado, 10),
       fecha,
@@ -94,9 +96,19 @@ function RegistrarVenta({ show, handleClose }) {
 
       console.log('Respuesta de la API:', response.data); // Log para mostrar la respuesta de la API
 
-      handleClose();
+      setShowSuccessToast(true);
+      setMensajeExito('Venta registrada con éxito');
+      setTimeout(() => {
+        setShowSuccessToast(false);
+        handleClose();
+      }, 3000);
     } catch (error) {
       console.error('Error al registrar la venta principal:', error);
+      setErrorMessage('Error al registrar la venta');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+
     }
   };
 
@@ -116,6 +128,10 @@ function RegistrarVenta({ show, handleClose }) {
 
   const handleShowRegistrarSubVenta = () => setShowRegistrarSubVenta(true);
   const handleCloseRegistrarSubVenta = () => setShowRegistrarSubVenta(false);
+
+  const ElementoNoOscurecido = ({ children }) => {
+    return createPortal(children, document.body);
+  };
 
   return (
     <>
@@ -223,6 +239,37 @@ function RegistrarVenta({ show, handleClose }) {
         muebles={muebles}
         agregarVentaParcial={agregarVentaParcial}
       />
+
+      <ElementoNoOscurecido>
+        <ToastContainer position="bottom-end" className="p-3">
+          <Toast
+            onClose={() => setShowSuccessToast(false)}
+            show={showSuccessToast}
+            delay={3000}
+            autohide
+            bg="success"
+          >
+            <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
+          </Toast>
+        </ToastContainer>
+
+        {errorMessage && (
+          <div className="notification-container-bottom-right">
+            <Alert variant="danger" className="notification" style={{ fontSize: '1.2em' }}>
+              {errorMessage}
+            </Alert>
+          </div>
+        )}
+      </ElementoNoOscurecido>
+
+      <style jsx>{`
+        .notification-container-bottom-right {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 1050;
+        }
+      `}</style>
     </>
   );
 }

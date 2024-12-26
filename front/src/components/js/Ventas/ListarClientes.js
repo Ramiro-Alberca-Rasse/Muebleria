@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Button, Form, Table } from 'react-bootstrap';
+import { Modal, Button, Form, Table, Toast, ToastContainer, Alert } from 'react-bootstrap';
+import { createPortal } from 'react-dom';
 import api from '../../../services/api'; // Asegúrate de que esta ruta sea correcta
 import EditarCliente from './EditarCliente'; // Importar el componente EditarCliente
 import DetallesCliente from './DetallesCliente'; // Importar el componente DetallesCliente
@@ -14,6 +15,9 @@ function ListarClientes({ show, handleClose }) {
   const [clienteToDelete, setClienteToDelete] = useState(null);
   const [clienteToView, setClienteToView] = useState(null); // Estado para el cliente a ver detalles
   const [showDetailsModal, setShowDetailsModal] = useState(false); // Estado para mostrar el modal de detalles
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const fetchClientes = useCallback(async () => {
     try {
@@ -40,11 +44,17 @@ function ListarClientes({ show, handleClose }) {
 
   const handleDelete = async () => {
     try {
-      await api.delete(`/clientes/eliminar/${clienteToDelete.id}`);
+      await api.delete(`/clientes/${clienteToDelete.id}`);
       setShowDeleteConfirm(false);
       fetchClientes(); // Refrescar la lista de clientes después de eliminar
+      setShowSuccessToast(true);
+      setMensajeExito('Cliente eliminado con éxito');
+      setTimeout(() => {
+        setShowSuccessToast(false);
+      }, 3000);
     } catch (error) {
       console.error('Error al eliminar el cliente:', error);
+      setErrorMessage('Error al eliminar el cliente');
     }
   };
 
@@ -84,6 +94,10 @@ function ListarClientes({ show, handleClose }) {
     setFilteredClientes(filtered);
   };
 
+  const ElementoNoOscurecido = ({ children }) => {
+    return createPortal(children, document.body);
+  };
+
   return (
     <>
       <Modal show={show} onHide={handleClose} size="lg">
@@ -119,7 +133,7 @@ function ListarClientes({ show, handleClose }) {
                   <td style={{ borderColor: '#343a40' }}>{cliente.email}</td>
                   <td style={{ borderColor: '#343a40' }}>{cliente.telefono}</td>
                   <td style={{ borderColor: '#343a40' }}>
-                    <Button variant="info" size="sm" onClick={() => handleViewDetails(cliente)}>
+                    <Button variant="secondary" size="sm" onClick={() => handleViewDetails(cliente)}>
                       Detalles
                     </Button>
                     <Button variant="primary" size="sm" onClick={() => handleEdit(cliente)} className="ms-2">
@@ -174,6 +188,37 @@ function ListarClientes({ show, handleClose }) {
           cliente={clienteToView}
         />
       )}
+
+      <ElementoNoOscurecido>
+        <ToastContainer position="bottom-end" className="p-3">
+          <Toast
+            onClose={() => setShowSuccessToast(false)}
+            show={showSuccessToast}
+            delay={3000}
+            autohide
+            bg="success"
+          >
+            <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
+          </Toast>
+        </ToastContainer>
+
+        {errorMessage && (
+          <div className="notification-container-bottom-right">
+            <Alert variant="danger" className="notification" style={{ fontSize: '1.2em' }}>
+              {errorMessage}
+            </Alert>
+          </div>
+        )}
+      </ElementoNoOscurecido>
+
+      <style jsx>{`
+        .notification-container-bottom-right {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 1050;
+        }
+      `}</style>
     </>
   );
 }

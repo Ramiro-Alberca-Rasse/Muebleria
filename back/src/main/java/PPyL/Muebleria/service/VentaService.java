@@ -1,6 +1,9 @@
 package PPyL.Muebleria.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +13,13 @@ import org.springframework.stereotype.Service;
 import PPyL.Muebleria.dto.VentaDTO;
 import PPyL.Muebleria.dto.VentaMuebleDTO;
 import PPyL.Muebleria.model.Cliente;
+import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.model.Venta;
 import PPyL.Muebleria.model.VentaMueble;
 import PPyL.Muebleria.repository.ClienteRepository;
+import PPyL.Muebleria.repository.MuebleRepository;
 import PPyL.Muebleria.repository.VentaRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class VentaService {
@@ -27,6 +33,9 @@ public class VentaService {
     @Autowired
     private VentaMuebleService ventaMuebleService;
 
+    @Autowired
+    private MuebleRepository muebleRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(VentaService.class);
 
     public List<Venta> getAllVentas() {
@@ -37,43 +46,63 @@ public class VentaService {
         return ventaRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public Venta createVenta(VentaDTO ventaDTO) {
         logger.info("Iniciando creación de venta con ID cliente: {}", ventaDTO.getIdCliente());
-        
+        logger.info("VentasMuebles en la ventaDTO: {}", ventaDTO.getVentasMuebles());
+    // Crear objeto venta
         Venta venta = new Venta();
-        // Asignar los valores de ventaDTO a venta
-        logger.debug("Creando objeto venta y asignando los valores.");
+    
+    // Verificar y obtener cliente
+        Cliente cliente = clienteRepository.findById(ventaDTO.getIdCliente()).orElseThrow(() -> 
+            new IllegalArgumentException("Cliente no encontrado con ID: " + ventaDTO.getIdCliente()));
+        logger.info("Cliente encontrado con ID: {}", cliente.getId());
 
-        try {
-            Cliente cliente = clienteRepository.findById(ventaDTO.getIdCliente()).get();
-            logger.info("Cliente encontrado con ID: {}", cliente.getId());
-            venta.setCliente(cliente);
-            venta.setFecha(ventaDTO.getFecha());
-            venta.setPrecioTotal(ventaDTO.getPrecioTotal());
-            logger.info("Contenido de ventasMuebles en ventaDTO: {}", ventaDTO.getVentasMuebles());
-            VentaMueble ventaMueble = new VentaMueble();
+        venta.setCliente(cliente);
+        venta.setFecha(ventaDTO.getFecha());
+        venta.setPrecioTotal(ventaDTO.getPrecioTotal());
 
-            
-            for (int i = 0; i < ventaDTO.getVentasMuebles().size(); i++) {
-                VentaMuebleDTO ventaMuebleDTO2 = ventaDTO.getVentasMuebles().get(i);
-                logger.info("Procesando mueble para la venta: {}", ventaMuebleDTO2);
-                ventaMueble = ventaMuebleService.createVentaMueble(ventaMuebleDTO2);
-            }
-
-            cliente.addVenta(venta);
-            clienteRepository.save(cliente);
-            logger.info("Cliente con ID: {} actualizado con nueva venta.", cliente.getId());
-
-            Venta savedVenta = ventaRepository.save(venta);
-            logger.info("Venta creada y guardada con ID: {}", savedVenta.getId());
-
-            return savedVenta;
-
-        } catch (Exception e) {
-            logger.error("Error al crear la venta para el cliente con ID: {}", ventaDTO.getIdCliente(), e);
-            throw e; // Re-lanzamos la excepción para que el controlador maneje el error adecuadamente
+        if (ventaDTO.getVentasMuebles() == null || ventaDTO.getVentasMuebles().isEmpty()) {
+            throw new IllegalArgumentException("La lista de muebles para la venta está vacía o es nula.");
         }
+    
+        logger.debug("Contenido de ventasMuebles en ventaDTO: {}", ventaDTO.getVentasMuebles());
+    
+        Set<Mueble> muebles = new HashSet<>();
+        List<VentaMueble> ventasMuebles = new ArrayList<>();
+
+        for (VentaMuebleDTO ventaMuebleDTO2 : ventaDTO.getVentasMuebles()) {
+            logger.info("Procesando mueble para la venta: {}", ventaMuebleDTO2);
+            VentaMueble ventaMueble = ventaMuebleService.createVentaMueble(ventaMuebleDTO2);
+            logger.info("VentaMueble creado con ID: {}", ventaMueble.getId());
+            ventasMuebles.add(ventaMueble);
+            muebles.add(ventaMueble.getMueble());
     }
+    logger.info("VentasMuebles creadas: {}", ventasMuebles.size());
+    // Asignar ventasMuebles a la venta
+    venta.setVentas(ventasMuebles);
+    Venta savedVenta = ventaRepository.save(venta);
+    logger.info("Venta creada y guardada con ID: {}", savedVenta.getId());
+
+    // Actualizar cliente y muebles
+    cliente.addVenta(savedVenta);
+    clienteRepository.save(cliente);
+    logger.info("Venta asignada al cliente con ID: {}", cliente.getId());
+
+    for (Mueble mueble : muebles) {
+        mueble.addVenta(savedVenta);
+        muebleRepository.save(mueble);
+    }
+
+    // Asignar la venta a cada VentaMueble y actualizar
+    for (VentaMueble ventaMueble : ventasMuebles) {
+        ventaMueble.setVenta(savedVenta);
+        ventaMuebleService.updateVentaMueble(ventaMueble.getId(), ventaMueble);
+    }
+
+    return savedVenta;
+    }
+
 
 
     public Venta updateVenta(Long id, Venta venta) {

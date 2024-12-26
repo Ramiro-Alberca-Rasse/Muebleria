@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import PPyL.Muebleria.dto.MuebleDTO;
+import PPyL.Muebleria.model.CambioStock;
 import PPyL.Muebleria.model.Fabricante;
 import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.model.Tipo;
@@ -59,21 +60,28 @@ public class MuebleService {
             .orElseThrow(() -> new RuntimeException("Mueble no encontrado"));
 
     // Actualizar los datos del mueble utilizando los repositorios
-    Tipo tipo = tipoRepository.findById(muebleDTO.getTipoId())
-            .orElseThrow(() -> new RuntimeException("Tipo no encontrado"));
-    TipoDeMadera tipoDeMadera = tipoDeMaderaRepository.findById(muebleDTO.getTipoMaderaId())
-            .orElseThrow(() -> new RuntimeException("Tipo de madera no encontrado"));
-    Fabricante fabricante = fabricanteRepository.findById(muebleDTO.getFabricanteId())
-            .orElseThrow(() -> new RuntimeException("Fabricante no encontrado"));
+    if (muebleDTO.getFabricanteId() != null) {
+        Fabricante fabricante = fabricanteRepository.findById(muebleDTO.getFabricanteId())
+            .orElseThrow(() -> new RuntimeException("El fabricante no existe"));
+        mueble.setFabricante(fabricante);
+    }
+    
+    if (muebleDTO.getTipoId() != null) {
+        Tipo tipo = tipoRepository.findById(muebleDTO.getTipoId())
+            .orElseThrow(() -> new RuntimeException("El tipo no existe"));
+        mueble.setTipo(tipo);
+    }
 
+    if (muebleDTO.getTipoMaderaId() != null) {
+        TipoDeMadera tipoDeMadera = tipoDeMaderaRepository.findById(muebleDTO.getTipoMaderaId())
+            .orElseThrow(() -> new RuntimeException("El tipo de madera no existe"));
+        mueble.setTipoMadera(tipoDeMadera);
+    }
     // Actualizar las propiedades del mueble
     mueble.setNombre(muebleDTO.getNombre());
     mueble.setPrecio(muebleDTO.getPrecio());
     mueble.setStock(muebleDTO.getStock());
-    mueble.setTipo(tipo);
-    mueble.setTipoMadera(tipoDeMadera);
-    mueble.setFabricante(fabricante);
-
+    
     // Guardar los cambios en el repositorio
     muebleRepository.save(mueble);
 
@@ -81,26 +89,28 @@ public class MuebleService {
     return new MuebleDTO(mueble);
     }
 
-
     public void eliminarMueble(Long id) {
         muebleRepository.deleteById(id);
     }
     
-    public void updateMuebleFromDTO(Mueble mueble, MuebleDTO dto) {
+    public Mueble updateMuebleFromDTO(Mueble mueble, MuebleDTO dto) {
+        mueble.setId(dto.getId());
         mueble.setNombre(dto.getNombre());
         mueble.setPrecio(dto.getPrecio());
         mueble.setStock(dto.getStock());
         mueble.setTipo(tipoRepository.findById(dto.getTipoId()).orElseThrow(() -> new RuntimeException("Tipo no encontrado")));
         mueble.setTipoMadera(tipoDeMaderaRepository.findById(dto.getTipoMaderaId()).orElseThrow(() -> new RuntimeException("Tipo de Madera no encontrado")));
         mueble.setFabricante(fabricanteRepository.findById(dto.getFabricanteId()).orElseThrow(() -> new RuntimeException("Fabricante no encontrado")));
+        mueble.setCambiosStockDTO(dto.getCambiosStock());
         muebleRepository.save(mueble);
+        return mueble;
     }
 
-    public void actualizarStock(Long id, Integer cantidad) {
-        Mueble mueble = muebleRepository.findById(id).orElseThrow(() -> new RuntimeException("Mueble no encontrado"));
+    public void actualizarStock(MuebleDTO muebleDTO, Integer cantidad) {
+        Mueble mueble = new Mueble();
+        Mueble muebleCreado = updateMuebleFromDTO(mueble, muebleDTO);
         
-        mueble.setStock(mueble.getStock() + cantidad);
-        muebleRepository.save(mueble);
+        muebleRepository.save(muebleCreado);
     }
 
     public List<MuebleDTO> listarMueblesStockActual() {

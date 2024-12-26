@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Button, Modal, Form, Alert, Toast, ToastContainer } from 'react-bootstrap';
 import api from '../../../services/api';
 
 function AgregarStockModal({ show, handleClose }) {
@@ -107,13 +107,17 @@ function AgregarStockModal({ show, handleClose }) {
                     </Modal.Footer>
                 </Form>
             </Modal>
-            {showSuccess && (
-                <div className="notification-container" style={{ position: 'fixed', bottom: '10px', right: '10px' }}>
-                    <Alert variant="success" className="notification">
-                        Stock agregado con éxito!
-                    </Alert>
-                </div>
-            )}
+            <ToastContainer position="bottom-end" className="p-3">
+                <Toast
+                    onClose={() => setShowSuccess(false)}
+                    show={showSuccess}
+                    delay={3000}
+                    autohide
+                    bg="success"
+                >
+                    <Toast.Body style={{ fontSize: '1.2em' }}>Stock agregado con éxito!</Toast.Body>
+                </Toast>
+            </ToastContainer>
         </>
     );
 }

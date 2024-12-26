@@ -106,12 +106,13 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
     try {
       const response = await api.post('/muebles/registrar', nuevoMueble);
       if (response.status === 201) {
-        setShowSuccess(true);
+        setShowSuccessToast(true);
+        setMensajeExito('Mueble registrado con éxito');
         handleReset();
         setTimeout(() => {
-          setShowSuccess(false);
+          setShowSuccessToast(false);
           handleClose();
-        }, 4000);
+        }, 3000);
       }
     } catch (error) {
       console.error('Error al agregar el mueble:', error);
@@ -126,7 +127,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
 
   return (
     <>
-      <ToastContainer position="top-end" className="p-3">
+      <ToastContainer position="bottom-end" className="p-3">
         <Toast
           onClose={() => setShowSuccessToast(false)}
           show={showSuccessToast}
@@ -134,7 +135,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
           autohide
           bg="success"
         >
-          <Toast.Body>{mensajeExito}</Toast.Body>
+          <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
         </Toast>
       </ToastContainer>
 

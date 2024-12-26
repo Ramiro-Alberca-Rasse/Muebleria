@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Button, Form, Table } from 'react-bootstrap';
+import { Modal, Button, Form, Table, Toast, ToastContainer, Alert } from 'react-bootstrap';
 import api from '../../../services/api'; // Asegúrate de que esta ruta sea correcta
 import EditarMueble from './EditarMueble'; // Importar el componente EditarMueble
 
@@ -18,6 +18,8 @@ function ListarMuebles({ show, handleClose }) {
   const [showEditModal, setShowEditModal] = useState(false); // Estado para mostrar el modal de edición
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [muebleToDelete, setMuebleToDelete] = useState(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
 
   const fetchMuebles = useCallback(async () => {
     try {
@@ -35,8 +37,8 @@ function ListarMuebles({ show, handleClose }) {
       setFilteredMuebles(mueblesConDetalles);
 
       const uniqueCategories = [
-        ...new Set(mueblesConDetalles.map((mueble) => mueble.tipo ? mueble.tipo.nombre : 'Sin Tipo')),
-      ];
+        ...new Set(mueblesConDetalles.map((mueble) => mueble.tipo ? mueble.tipo.nombre : null)),
+      ].filter(Boolean); // Filtrar valores nulos
       setTipos(uniqueCategories);
     } catch (error) {
       console.error('Error al obtener los muebles:', error);
@@ -113,7 +115,12 @@ function ListarMuebles({ show, handleClose }) {
     try {
       await api.delete(`/muebles/eliminar/${muebleToDelete.id}`);
       setShowDeleteConfirm(false);
+      setShowSuccessToast(true);
+      setMensajeExito('Mueble eliminado con éxito');
       fetchMuebles(); // Refrescar la lista de muebles después de eliminar
+      setTimeout(() => {
+        setShowSuccessToast(false);
+      }, 3000);
     } catch (error) {
       console.error('Error al eliminar el mueble:', error);
     }
@@ -162,7 +169,7 @@ function ListarMuebles({ show, handleClose }) {
     let filtered = muebles;
     if (term) {
       filtered = filtered.filter((mueble) =>
-        mueble.nombre.toLowerCase().includes(term)
+        mueble.nombre.toLowerCase().startsWith(term)
       );
     }
     if (tipo) {
@@ -301,6 +308,18 @@ function ListarMuebles({ show, handleClose }) {
           onMuebleUpdated={handleMuebleUpdated}
         />
       )}
+
+      <ToastContainer position="bottom-end" className="p-3">
+        <Toast
+          onClose={() => setShowSuccessToast(false)}
+          show={showSuccessToast}
+          delay={3000}
+          autohide
+          bg="success"
+        >
+          <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </>
   );
 }

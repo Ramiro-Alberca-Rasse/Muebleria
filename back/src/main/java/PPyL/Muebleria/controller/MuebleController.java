@@ -24,6 +24,7 @@ import PPyL.Muebleria.model.Fabricante;
 import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.model.Tipo;
 import PPyL.Muebleria.model.TipoDeMadera;
+import PPyL.Muebleria.repository.CambioStockRepository;
 import PPyL.Muebleria.repository.FabricanteRepository;
 import PPyL.Muebleria.repository.TipoDeMaderaRepository;
 import PPyL.Muebleria.repository.TipoRepository;
@@ -54,6 +55,9 @@ public class MuebleController {
     @Autowired
     private CambioStockService cambioStockService;
 
+    @Autowired
+    private CambioStockRepository cambioStockRepository;
+
     @GetMapping
     public List<MuebleDTO> listarMuebles(@RequestParam(required = false) Tipo Tipo) {
         if (Tipo == null) {
@@ -76,32 +80,45 @@ public class MuebleController {
     public ResponseEntity<String> addMueble(@RequestBody MuebleDTO muebleDTO) {
         logger.info("Recibido nuevo mueble: {}", muebleDTO);
 
-        // Validar y buscar las relaciones usando las IDs del DTO
-        Fabricante fabricante = fabricanteRepository.findById(muebleDTO.getFabricanteId())
-                .orElseThrow(() -> new RuntimeException("El fabricante no existe"));
-
-        Tipo tipo = tipoRepository.findById(muebleDTO.getTipoId())
-                .orElseThrow(() -> new RuntimeException("El tipo no existe"));
-
-        TipoDeMadera tipoDeMadera = tipoDeMaderaRepository.findById(muebleDTO.getTipoMaderaId())
-                .orElseThrow(() -> new RuntimeException("El tipo de madera no existe"));
-
-        // Crear el objeto Mueble a partir del DTO
         Mueble mueble = new Mueble();
         mueble.setNombre(muebleDTO.getNombre());
         mueble.setPrecio(muebleDTO.getPrecio());
         mueble.setStock(muebleDTO.getStock());
-        mueble.setFabricante(fabricante);
-        mueble.setTipo(tipo);
-        mueble.setTipoMadera(tipoDeMadera);
+        // Validar y buscar las relaciones usando las IDs del DTO
+        if (muebleDTO.getFabricanteId() != null) {
+            Fabricante fabricante = fabricanteRepository.findById(muebleDTO.getFabricanteId())
+                .orElseThrow(() -> new RuntimeException("El fabricante no existe"));
+            mueble.setFabricante(fabricante);
+        }
+        
+        if (muebleDTO.getTipoId() != null) {
+            Tipo tipo = tipoRepository.findById(muebleDTO.getTipoId())
+                .orElseThrow(() -> new RuntimeException("El tipo no existe"));
+            mueble.setTipo(tipo);
+        }
+
+        if (muebleDTO.getTipoMaderaId() != null) {
+            TipoDeMadera tipoDeMadera = tipoDeMaderaRepository.findById(muebleDTO.getTipoMaderaId())
+                .orElseThrow(() -> new RuntimeException("El tipo de madera no existe"));
+            mueble.setTipoMadera(tipoDeMadera);
+        }
+
+        // Crear el objeto Mueble a partir del DTO
+
+        
+
+        
 
         // Guardar el mueble en la base de datos
-        muebleService.crearMueble(mueble);
-        logger.info("Mueble agregado exitosamente: {}", mueble);
+        MuebleDTO muebleCreadoDTO = muebleService.crearMueble(mueble);
+        logger.info("Mueble agregado exitosamente: {}", muebleCreadoDTO);
         String tipoCambio = "Entrada";
         CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO, tipoCambio, muebleDTO.getStock());
         cambioStockDTO.setPrimerCambio(true);
-        cambioStockController.createCambioStock(cambioStockDTO);
+        CambioStockDTO cambioCreadoDTO = cambioStockController.createCambioStock(cambioStockDTO);
+        muebleCreadoDTO.addCambioStock(cambioCreadoDTO);
+        muebleService.actualizarMueble(muebleCreadoDTO.getId(), muebleCreadoDTO);
+
 
         return new ResponseEntity<>("Mueble agregado exitosamente", HttpStatus.CREATED);
     }
@@ -136,7 +153,9 @@ public class MuebleController {
                 cambioStockDTO.setCantidad(muebleDTO.getStock());
                 cambioStockDTO.setNuevoStock(muebleDTO.getStock());
                 cambioStockController.updateCambioStock(cambioStockDTO.getId(), cambioStockDTO);
+                muebleDTO.addCambioStock(cambioStockDTO);
             }
+            
         }
         
         return muebleService.actualizarMueble(id, muebleDTO);
@@ -149,13 +168,15 @@ public class MuebleController {
 
     @PutMapping("/stock/{id}")
     public void actualizarStock(@PathVariable Long id, @RequestBody Integer cantidad) {
-        MuebleDTO muebleDTO2 = muebleService.obtenerMueble(id);
-        muebleDTO2.setStock(muebleDTO2.getStock() + cantidad);
+        MuebleDTO muebleDTO = muebleService.obtenerMueble(id);
+        muebleDTO.setStock(muebleDTO.getStock() + cantidad);
         String tipoCambio = "Entrada";
-        CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO2, tipoCambio, cantidad);
-        cambioStockController.createCambioStock(cambioStockDTO);
+        CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO, tipoCambio, cantidad);
+        CambioStockDTO cambioCreadoDTO = cambioStockController.createCambioStock(cambioStockDTO);
+        muebleDTO.addCambioStock(cambioCreadoDTO);
+        
 
-        muebleService.actualizarStock(id, cantidad);
+        muebleService.actualizarStock(muebleDTO, cantidad);
     }
 
     @GetMapping("/stock/actual")

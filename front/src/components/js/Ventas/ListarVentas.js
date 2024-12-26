@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Table, Button, Form, Row, Col } from 'react-bootstrap';
+import { Modal, Table, Button, Form, Row, Col, Toast, ToastContainer, Alert } from 'react-bootstrap';
+import { createPortal } from 'react-dom';
 import api from '../../../services/api';
 import DetallesVenta from './DetallesVenta';
 
@@ -15,6 +16,9 @@ function ListarVentas({ show, handleClose }) {
   const [muebleSeleccionado, setMuebleSeleccionado] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [ventaToDelete, setVentaToDelete] = useState(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchVentas = async () => {
@@ -63,8 +67,14 @@ function ListarVentas({ show, handleClose }) {
         setVentas(ventas.filter((venta) => venta.id !== ventaToDelete.id));
         setShowDeleteConfirm(false);
         setVentaToDelete(null);
+        setShowSuccessToast(true);
+        setMensajeExito('Venta eliminada con éxito');
+        setTimeout(() => {
+          setShowSuccessToast(false);
+        }, 3000);
       } catch (error) {
         console.error('Error al eliminar la venta:', error);
+        setErrorMessage('Error al eliminar la venta');
       }
     }
   };
@@ -101,6 +111,10 @@ function ListarVentas({ show, handleClose }) {
     tableCustom: { border: '2px solid #343a40' },
     tableCell: { borderColor: '#343a40' },
     tableRowHover: { backgroundColor: '#f8f9fa' },
+  };
+
+  const ElementoNoOscurecido = ({ children }) => {
+    return createPortal(children, document.body);
   };
 
   return (
@@ -243,6 +257,37 @@ function ListarVentas({ show, handleClose }) {
           venta={ventaSeleccionada}
         />
       )}
+
+      <ElementoNoOscurecido>
+        <ToastContainer position="bottom-end" className="p-3">
+          <Toast
+            onClose={() => setShowSuccessToast(false)}
+            show={showSuccessToast}
+            delay={3000}
+            autohide
+            bg="success"
+          >
+            <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
+          </Toast>
+        </ToastContainer>
+
+        {errorMessage && (
+          <div className="notification-container-bottom-right">
+            <Alert variant="danger" className="notification" style={{ fontSize: '1.2em' }}>
+              {errorMessage}
+            </Alert>
+          </div>
+        )}
+      </ElementoNoOscurecido>
+
+      <style jsx>{`
+        .notification-container-bottom-right {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 1050;
+        }
+      `}</style>
     </>
   );
 }
