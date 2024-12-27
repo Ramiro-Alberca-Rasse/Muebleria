@@ -53,15 +53,16 @@ public class VentaController {
         return new VentaDTO(venta);
     }
 
-   @PostMapping
-    public ResponseEntity<Venta> createVenta(@RequestBody VentaDTO ventaDTO) {
+    @PostMapping
+    public ResponseEntity<?> createVenta(@RequestBody VentaDTO ventaDTO) {
         try {
             Venta nuevaVenta = ventaService.createVenta(ventaDTO);
             logger.info("Venta creada con éxito: " + nuevaVenta);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevaVenta);
         } catch (Exception e) {
             logger.error("Error al crear la venta", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            String errorMessage = e.getMessage() != null ? e.getMessage() : "Error interno del servidor";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
 

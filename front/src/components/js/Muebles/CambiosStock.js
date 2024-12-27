@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Table, Form } from 'react-bootstrap';
+import { Modal, Table, Form, Button } from 'react-bootstrap';
 import api from '../../../services/api';
-
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const CambiosStock = ({ show, handleClose }) => {
     const [cambios, setCambios] = useState([]);
@@ -9,15 +10,22 @@ const CambiosStock = ({ show, handleClose }) => {
     const [selectedMueble, setSelectedMueble] = useState('');
 
     useEffect(() => {
-        // Obtener la lista de muebles
-        api.get('/muebles')
-            .then(response => setMuebles(response.data))
-            .catch(error => console.error('Error fetching muebles:', error));
-    }, []);
+        if (show) {
+            // Obtener la lista de muebles
+            api.get('/muebles')
+                .then(response => setMuebles(response.data))
+                .catch(error => console.error('Error fetching muebles:', error));
+        }
+    }, [show]);
 
     const handleMuebleChange = (event) => {
         const muebleId = event.target.value;
         setSelectedMueble(muebleId);
+
+        if (muebleId === '') {
+            setCambios([]);
+            return;
+        }
 
         // Obtener los cambios de stock del mueble seleccionado
         api.get(`/cambioStock/mueble/${muebleId}`)
@@ -25,9 +33,32 @@ const CambiosStock = ({ show, handleClose }) => {
             .catch(error => console.error('Error fetching cambios de stock:', error));
     };
 
+    const handleModalClose = () => {
+        setSelectedMueble('');
+        setCambios([]);
+        handleClose();
+    };
+
+    const handleGeneratePDF = () => {
+        const doc = new jsPDF();
+        doc.text('Reporte de Cambios de Stock', 14, 16);
+        doc.autoTable({
+            head: [['Nombre Mueble', 'Tipo de Cambio', 'Cantidad', 'Nuevo Stock']],
+            body: cambios.map(cambio => [
+                cambio.nombreMueble,
+                cambio.tipoCambio,
+                cambio.cantidad,
+                cambio.nuevoStock
+            ]),
+            startY: 20,
+            styles: { cellPadding: 2, fontSize: 10 }
+        });
+        doc.save('reporte_cambios_stock.pdf');
+    };
+
     return (
         <>
-            <Modal show={show} onHide={handleClose} size="lg">
+            <Modal show={show} onHide={handleModalClose} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Cambios de Stock</Modal.Title>
                 </Modal.Header>
@@ -67,6 +98,14 @@ const CambiosStock = ({ show, handleClose }) => {
                         </tbody>
                     </Table>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleGeneratePDF} style={{ float: 'right', marginLeft: '10px' }}>
+                        Generar PDF
+                    </Button>
+                    <Button variant="secondary" onClick={handleModalClose} style={{ float: 'right' }}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </>
     );

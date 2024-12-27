@@ -47,15 +47,19 @@ function StockActualModal({ show, handleClose }) {
     const doc = new jsPDF();
     doc.text('Reporte de Stock Actual', 14, 16);
     doc.autoTable({
+      startY: 20,
       head: [['Mueble', 'Stock']],
       body: stock.map(mueble => [mueble.nombre, mueble.stock]),
+      theme: 'grid',
+      headStyles: { fillColor: [52, 58, 64] },
+      styles: { cellPadding: 3, fontSize: 10 },
     });
     doc.save('reporte_stock_actual.pdf');
   };
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} size="lg" centered>
+      <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Reporte de Stock Actual</Modal.Title>
         </Modal.Header>

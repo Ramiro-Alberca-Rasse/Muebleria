@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Button, Alert, Toast, ToastContainer } from 'react-bootstrap';
+import { Modal, Form, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { createPortal } from 'react-dom';
 import api from '../../../services/api';
 
@@ -34,8 +34,12 @@ function RegistrarTipoDeMadera({ show, handleClose }) {
         setMensajeExito('Tipo de madera registrado con éxito');
         setTimeout(() => {
           setShowSuccessToast(false);
-          handleClose();
+
         }, 3000);
+
+        setTimeout(() =>{
+          handleClose();
+        }, 0);
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {

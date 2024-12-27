@@ -1,5 +1,6 @@
 package PPyL.Muebleria.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -116,6 +117,7 @@ public class MuebleController {
         CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO, tipoCambio, muebleDTO.getStock());
         cambioStockDTO.setPrimerCambio(true);
         CambioStockDTO cambioCreadoDTO = cambioStockController.createCambioStock(cambioStockDTO);
+        muebleCreadoDTO.setCambiosStock(new ArrayList<>());
         muebleCreadoDTO.addCambioStock(cambioCreadoDTO);
         muebleService.actualizarMueble(muebleCreadoDTO.getId(), muebleCreadoDTO);
 
@@ -153,6 +155,7 @@ public class MuebleController {
                 cambioStockDTO.setCantidad(muebleDTO.getStock());
                 cambioStockDTO.setNuevoStock(muebleDTO.getStock());
                 cambioStockController.updateCambioStock(cambioStockDTO.getId(), cambioStockDTO);
+                muebleDTO.setCambiosStock(new ArrayList<>());
                 muebleDTO.addCambioStock(cambioStockDTO);
             }
             

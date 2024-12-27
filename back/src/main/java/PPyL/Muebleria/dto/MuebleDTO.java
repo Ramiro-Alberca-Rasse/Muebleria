@@ -105,6 +105,10 @@ public class MuebleDTO {
         this.cambiosStock.remove(cambioStock);
     }
 
+    public void setCambiosStock(List<CambioStockDTO> cambiosStock) {
+        this.cambiosStock = cambiosStock;
+    }
+
 
     // toString
 

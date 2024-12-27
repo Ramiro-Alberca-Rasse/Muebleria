@@ -181,6 +181,10 @@ public class Mueble {
             }).collect(Collectors.toList());
         }
 
+        public List<CambioStock> getCambiosStock() {
+            return this.cambiosStock;
+        }
+
 
 
 

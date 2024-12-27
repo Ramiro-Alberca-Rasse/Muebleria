@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert, Toast, ToastContainer } from 'react-bootstrap';
+import { Modal, Button, Form, Toast, ToastContainer } from 'react-bootstrap';
 import { createPortal } from 'react-dom';
 import api from '../../../services/api';
 
@@ -35,8 +35,12 @@ function RegistrarTipo({ show, handleClose }) {
         setMensajeExito('Tipo de mueble registrado con éxito');
         setTimeout(() => {
           setShowSuccessToast(false);
-          handleClose();
+
         }, 3000);
+
+        setTimeout(() =>{
+          handleClose();
+        }, 0);
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {

@@ -103,12 +103,21 @@ function RegistrarVenta({ show, handleClose }) {
         handleClose();
       }, 3000);
     } catch (error) {
-      console.error('Error al registrar la venta principal:', error);
-      setErrorMessage('Error al registrar la venta');
+      console.error('Error al registrar la venta principal:', error); // Añadir más detalles del error para el debugging
+      if (error.response) {
+        console.error('Detalles del error:', error.response);
+        console.error('Error data:', error.response.data); // Log para mostrar error.response.data
+        setErrorMessage(error.response.data || 'Error al registrar la venta');
+      } else if (error.request) {
+        console.error('La solicitud fue hecha, pero no se recibió respuesta:', error.request);
+        setErrorMessage('No se recibió respuesta del servidor');
+      } else {
+        console.error('Error al configurar la solicitud:', error.message);
+        setErrorMessage('Error al configurar la solicitud');
+      }
       setTimeout(() => {
         setErrorMessage('');
       }, 3000);
-
     }
   };
 
@@ -135,8 +144,7 @@ function RegistrarVenta({ show, handleClose }) {
 
   return (
     <>
-      <div className={show ? 'modal-backdrop show' : ''}></div> {/* Añadir div para oscurecer el fondo */}
-      <Modal show={show} onHide={handleClose} style={{ marginTop: '100px' }}>
+      <Modal show={show} onHide={handleClose} style={{ marginTop: '' }}>
         <Modal.Header closeButton>
           <Modal.Title>Registrar Venta</Modal.Title>
         </Modal.Header>

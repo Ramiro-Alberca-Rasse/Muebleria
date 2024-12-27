@@ -3,6 +3,8 @@ package PPyL.Muebleria.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +36,18 @@ public class VentaMuebleController {
     }
 
     @PostMapping
-    public VentaMueble createVentaMueble(@RequestBody VentaMuebleDTO ventaMuebleDTO) {
-        return ventaMuebleService.createVentaMueble(ventaMuebleDTO);
+    public ResponseEntity<?> createVenta(@RequestBody VentaMuebleDTO ventaMuebleDTO) {
+        try {
+            VentaMueble ventaMueble = ventaMuebleService.createVentaMueble(ventaMuebleDTO);
+            return ResponseEntity.ok(ventaMueble);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Loggear el error para más detalles
+            e.printStackTrace(); // O usar un logger como SLF4J para registrar el error
+            String errorMessage = e.getMessage() != null ? e.getMessage() : "Error interno del servidor";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + errorMessage);
+        }
     }
 
     @PutMapping("/{id}")

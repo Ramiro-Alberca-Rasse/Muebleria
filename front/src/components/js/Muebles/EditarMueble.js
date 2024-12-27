@@ -118,9 +118,14 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
         setMensajeExito('Mueble actualizado con éxito');
         setTimeout(() => {
           setShowSuccessToast(false);
+          setErrorMessage('');
+
+        }, 3000);
+
+        setTimeout(() =>{
           handleClose();
           onMuebleUpdated();
-        }, 3000);
+        }, 0);
       }
     } catch (error) {
       console.error('Error al actualizar el mueble:', error);
@@ -137,6 +142,7 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
     handleClose();
     setShowSuccessToast(false);
     setErrorMessage('');
+    setIsStockChecked(false); // Resetear el checkbox
   };
 
   const handleStockChange = (e) => {
@@ -255,14 +261,14 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
                   </style>
                   <OverlayTrigger
                     placement="right"
-                    overlay={<Tooltip>Si marca la casilla no se registrará un nuevo cambio de stock; se modificará el stock inicial (en caso de error al crear el mueble).</Tooltip>}
+                    overlay={<Tooltip>Si marca la casilla no se registrará un nuevo cambio de stock; se modificará el stock inicial (solo usar en caso de error al crear el mueble).</Tooltip>}
                   >
                     <Button variant="primary" size="sm" className="ms-2">info</Button>
                   </OverlayTrigger>
                 </div>
                 {showStockWarning && (
                   <Alert variant="warning" className="mt-2">
-                    El cambio en el stock se registrará como una salida o entrada de stock (venta o ingreso).
+                    El cambio en el stock se registrará como una salida o entrada de stock (venta o ingreso). No se recomienda modificar el stock desde aqui porque podria provocar confuciones en los reportes. 
                   </Alert>
                 )}
               </Form.Group>

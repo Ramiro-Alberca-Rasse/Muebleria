@@ -111,8 +111,12 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
         handleReset();
         setTimeout(() => {
           setShowSuccessToast(false);
-          handleClose();
+
         }, 3000);
+
+        setTimeout(() =>{
+          handleClose();
+        }, 0);
       }
     } catch (error) {
       console.error('Error al agregar el mueble:', error);

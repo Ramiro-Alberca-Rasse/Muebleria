@@ -43,43 +43,41 @@ public class VentaMuebleService {
 
 
     public VentaMueble createVentaMueble(VentaMuebleDTO ventaMuebleDTO) {
-
-    VentaMueble ventaMueble = new VentaMueble();
-    
-    // Obtener el mueble
-    Mueble mueble = muebleRepository.findById(ventaMuebleDTO.getIdMueble()).orElse(null);
-    if (mueble == null) {
-        throw new IllegalArgumentException("Mueble not found");
-    }
-    
-
-    // Validar stock disponible
-    if (mueble.getStock() < ventaMuebleDTO.getCantidad()) {
-        throw new IllegalArgumentException("Not enough stock available");
-    }
-
-    logger.info("Creating ventaMueble with mueble: {}", mueble.getNombre());
-    // Asignar los valores
-    ventaMueble.setMueble(mueble);
-    ventaMueble.setCantidad(ventaMuebleDTO.getCantidad());
-    ventaMueble.setSubTotal(ventaMuebleDTO.getSubTotal());
-
-    
-
-    // Actualizar el stock
-    mueble.setStock(mueble.getStock() - ventaMuebleDTO.getCantidad());
-    muebleRepository.save(mueble);
-
-    logger.info("Stock updated for mueble: {}", mueble.getNombre());
-
-    // Registrar el cambio de stock
-    String tipoCambio = "Salida";
-    CambioStock cambioStock = new CambioStock(mueble, ventaMueble.getCantidad(), tipoCambio, mueble.getStock());
-    cambioStockRepository.save(cambioStock);
-    
-    logger.info("Stock change registered for mueble: {}", mueble.getNombre());
-    // Guardar la venta de mueble
-    return ventaMuebleRepository.save(ventaMueble);
+        VentaMueble ventaMueble = new VentaMueble();
+        
+        // Obtener el mueble
+        Mueble mueble = muebleRepository.findById(ventaMuebleDTO.getIdMueble()).orElse(null);
+        if (mueble == null) {
+            throw new IllegalArgumentException("Mueble no encontrado");
+        }
+        
+        // Validar stock disponible
+        if (mueble.getStock() < ventaMuebleDTO.getCantidad()) {
+            throw new IllegalArgumentException("No hay suficiente stock disponible");
+        }
+        
+        logger.info("Creating ventaMueble with mueble: {}", mueble.getNombre());
+        
+        // Asignar los valores
+        ventaMueble.setMueble(mueble);
+        ventaMueble.setCantidad(ventaMuebleDTO.getCantidad());
+        ventaMueble.setSubTotal(ventaMuebleDTO.getSubTotal());
+        
+        // Actualizar el stock
+        mueble.setStock(mueble.getStock() - ventaMuebleDTO.getCantidad());
+        muebleRepository.save(mueble);
+        
+        logger.info("Stock updated for mueble: {}", mueble.getNombre());
+        
+        // Registrar el cambio de stock
+        String tipoCambio = "Salida";
+        CambioStock cambioStock = new CambioStock(mueble, ventaMueble.getCantidad(), tipoCambio, mueble.getStock());
+        cambioStockRepository.save(cambioStock);
+        
+        logger.info("Stock change registered for mueble: {}", mueble.getNombre());
+        
+        // Guardar la venta de mueble
+        return ventaMuebleRepository.save(ventaMueble);
     }
 
 
