@@ -33,6 +33,7 @@ import PPyL.Muebleria.repository.TipoDeMaderaRepository;
 import PPyL.Muebleria.repository.TipoRepository;
 import PPyL.Muebleria.service.CambioStockService;
 import PPyL.Muebleria.service.MuebleService;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/muebles")
@@ -79,6 +80,7 @@ public class MuebleController {
         return muebleService.obtenerMueble(id);
     }
 
+    @Transactional 
     @PostMapping("/registrar")
     public ResponseEntity<String> addMueble(@RequestBody MuebleDTO muebleDTO) {
         logger.info("Recibido nuevo mueble: {}", muebleDTO);
@@ -116,9 +118,13 @@ public class MuebleController {
         MuebleDTO muebleCreadoDTO = muebleService.crearMueble(mueble);
         logger.info("Mueble agregado exitosamente: {}", muebleCreadoDTO);
         String tipoCambio = "Entrada";
-        CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleDTO, tipoCambio, muebleDTO.getStock());
+
+        CambioStockDTO cambioStockDTO = new CambioStockDTO(muebleCreadoDTO, tipoCambio, muebleCreadoDTO.getStock());
+
         cambioStockDTO.setPrimerCambio(true);
+
         CambioStockDTO cambioCreadoDTO = cambioStockController.createCambioStock(cambioStockDTO);
+
         muebleCreadoDTO.setCambiosStock(new ArrayList<>());
         muebleCreadoDTO.addCambioStock(cambioCreadoDTO);
         muebleService.actualizarMueble(muebleCreadoDTO.getId(), muebleCreadoDTO);

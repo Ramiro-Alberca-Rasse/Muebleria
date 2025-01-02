@@ -10,7 +10,7 @@ public class CambioStockDTO {
     private int nuevoStock;
     private int cantidad;
     private boolean primerCambio = false;
-    private Long ventaMuebleId;
+    private Long ventaMuebleId = null; 
 
     public CambioStockDTO() {
     }

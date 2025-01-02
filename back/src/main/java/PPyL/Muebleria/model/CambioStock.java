@@ -35,6 +35,7 @@ public class CambioStock {
     // Constructor
     public CambioStock(Mueble mueble, int cantidad, String tipoCambio, int nuevoStock, boolean primerCambio, VentaMueble ventaMueble) {
         this.mueble = mueble;
+        
         this.cantidad = cantidad;
         this.setTipoCambio(tipoCambio);
         this.NuevoStock = nuevoStock;

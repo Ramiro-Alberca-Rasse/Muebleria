@@ -1,19 +1,19 @@
 package PPyL.Muebleria.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import PPyL.Muebleria.dto.CambioStockDTO;
 import PPyL.Muebleria.model.CambioStock;
 import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.repository.CambioStockRepository;
 import PPyL.Muebleria.repository.MuebleRepository;
 import PPyL.Muebleria.repository.VentaMuebleRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CambioStockService {
@@ -30,28 +30,48 @@ public class CambioStockService {
     private static final Logger logger = LoggerFactory.getLogger(CambioStockService.class);
 
     public List<CambioStockDTO> getAllCambioStock() {
-        return cambioStockRepository.findAll().stream()
-                .map(CambioStockDTO::new)
-                .collect(Collectors.toList());
-    }
+        logger.info("Fetching all CambioStock records");
+        List<CambioStockDTO> cambioStockDTOList = cambioStockRepository.findAll().stream()
+            .map(CambioStockDTO::new)
+            .collect(Collectors.toList());
+        logger.info("Fetched {} CambioStock records", cambioStockDTOList.size());
+        return cambioStockDTOList;
+        }
 
-    public CambioStockDTO createCambioStock(CambioStockDTO cambioStockDTO) {
-        CambioStock cambioStock = new CambioStock(
-                // ...existing code...
-                muebleRepository.findByNombre(cambioStockDTO.getNombreMueble()).get(),
-                cambioStockDTO.getCantidad(),
-                cambioStockDTO.getTipoCambio(),
-                cambioStockDTO.getNuevoStock(),
-                cambioStockDTO.isPrimerCambio(),
-                ventaMuebleRepository.findById(cambioStockDTO.getVentaMuebleId()).get()
+        public CambioStockDTO createCambioStock(CambioStockDTO cambioStockDTO) {
+        if (cambioStockDTO.getVentaMuebleId() == null) {
 
-        );
-        
-        cambioStockRepository.save(cambioStock);
-        return new CambioStockDTO(cambioStock);
-    }
+            CambioStock cambioStock = new CambioStock(
+            muebleRepository.findByNombre(cambioStockDTO.getNombreMueble()).get(),
+            cambioStockDTO.getCantidad(),
+            cambioStockDTO.getTipoCambio(),
+            cambioStockDTO.getNuevoStock(),
+            cambioStockDTO.isPrimerCambio()
+            );
 
-    public CambioStockDTO getCambioStockById(Long id) {
+            cambioStockRepository.save(cambioStock);
+
+            return new CambioStockDTO(cambioStock);
+        } else {
+
+            CambioStock cambioStock = new CambioStock(
+            muebleRepository.findByNombre(cambioStockDTO.getNombreMueble()).get(),
+            cambioStockDTO.getCantidad(),
+            cambioStockDTO.getTipoCambio(),
+            cambioStockDTO.getNuevoStock(),
+            cambioStockDTO.isPrimerCambio(),
+            ventaMuebleRepository.findById(cambioStockDTO.getVentaMuebleId()).get()
+            );
+
+
+            cambioStockRepository.save(cambioStock);
+
+            return new CambioStockDTO(cambioStock);
+        }
+        }
+
+        public CambioStockDTO getCambioStockById(Long id) {
+        logger.info("Fetching CambioStock record with ID: {}", id);
         CambioStock cambioStock = cambioStockRepository.findById(id).orElseThrow();
         return new CambioStockDTO(cambioStock);
     }
