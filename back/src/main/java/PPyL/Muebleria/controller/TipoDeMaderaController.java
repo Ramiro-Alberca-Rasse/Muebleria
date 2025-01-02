@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,5 +58,15 @@ public class TipoDeMaderaController {
         return tipoDeMaderaRepository.findById(id)
             .map(madera -> ResponseEntity.ok(new TipoDeMaderaDTO(madera.getId(), madera.getNombre())))
             .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTipoDeMadera(@PathVariable Long id) {
+        if (tipoDeMaderaRepository.existsById(id)) {
+            tipoDeMaderaRepository.deleteById(id);
+            return new ResponseEntity<>("Tipo de madera eliminado exitosamente", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Tipo de madera no encontrado", HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -7,6 +7,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
   const [selectedMueble, setSelectedMueble] = useState('');  // Mueble seleccionado
   const [cantidad, setCantidad] = useState('');  // Cantidad vacía por defecto
   const [subtotal, setSubtotal] = useState(0);  // Subtotal calculado
+  const [muebleBusqueda, setMuebleBusqueda] = useState(''); // Estado para el término de búsqueda
 
   // Cargar los muebles desde la API cuando se abre el modal
   useEffect(() => {
@@ -37,6 +38,10 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
     }
   }, [selectedMueble, cantidad, muebles]);
 
+  const mueblesFiltrados = muebles.filter((mueble) =>
+    mueble.nombre.toLowerCase().startsWith(muebleBusqueda.toLowerCase())
+  );
+
   // Maneja la adición de la subventa
   const handleAddSubventa = () => {
     const muebleSeleccionado = muebles.find((mueble) => mueble.id === Number(selectedMueble));
@@ -49,34 +54,63 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} style={{ marginTop: '140px' }}>
       <Modal.Header closeButton>
         <Modal.Title>Registrar Subventa</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Form.Group controlId="Mueble">
-            <Form.Label>Mueble</Form.Label>
+            <Form.Label><strong>Mueble</strong></Form.Label>
             <Form.Control
-              as="select"
-              value={selectedMueble}
-              onChange={(e) => setSelectedMueble(e.target.value)}
-              required
+              type="text"
+              placeholder="Buscar mueble"
+              value={muebleBusqueda}
+              onChange={(e) => {
+                setMuebleBusqueda(e.target.value);
+                setSelectedMueble('');
+                if (e.target.value === '') {
+                    setSelectedMueble('');
+                }
+              }}
               style={{ borderColor: '#343a40' }}
-            >
-              <option value="">Selecciona un mueble</option>
-              {muebles.map((mueble) => (
-                <option key={mueble.id} value={mueble.id}>
-                  {mueble.nombre} - ${mueble.precio}
-                </option>
-              ))}
-            </Form.Control>
+            />
+            {!selectedMueble && (
+              <div
+                style={{
+                  maxHeight: '150px',
+                  overflowY: 'auto',
+                  border: '1px solid #343a40',
+                  marginTop: '5px',
+                }}
+              >
+                {mueblesFiltrados.map((mueble) => (
+                  <div
+                    key={mueble.id}
+                    onClick={() => {
+                      setSelectedMueble(mueble.id);
+                      setMuebleBusqueda(mueble.nombre);
+                    }}
+                    style={{
+                      padding: '5px',
+                      cursor: 'pointer',
+                      backgroundColor: selectedMueble === mueble.id ? '#f0f0f0' : 'white',
+                    }}
+                  >
+                    {mueble.nombre} - ${mueble.precio}
+                  </div>
+                ))}
+                {mueblesFiltrados.length === 0 && (
+                  <div style={{ padding: '5px', color: '#888' }}>No hay coincidencias</div>
+                )}
+              </div>
+            )}
           </Form.Group>
 
           <Row>
             <Col xs={6}>
               <Form.Group controlId="Cantidad" className="mt-3">
-                <Form.Label>Cantidad</Form.Label>
+                <Form.Label><strong>Cantidad</strong></Form.Label>
                 <Form.Control
                   type="number"
                   value={cantidad}
@@ -90,7 +124,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
             </Col>
             <Col xs={6}>
               <Form.Group controlId="Subtotal" className="mt-3">
-                <Form.Label>Subtotal</Form.Label>
+                <Form.Label><strong>Subtotal</strong></Form.Label>
                 <Form.Control type="number" value={subtotal} readOnly disabled style={{ borderColor: '#343a40' }} />
               </Form.Group>
             </Col>
@@ -104,5 +138,6 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
     </Modal>
   );
 }
+
 
 export default RegistrarSubVenta;

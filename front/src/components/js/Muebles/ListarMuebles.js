@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Button, Form, Table, Toast, ToastContainer, Alert } from 'react-bootstrap';
+import { Modal, Button, Form, Table, Toast, ToastContainer } from 'react-bootstrap';
 import api from '../../../services/api'; // Asegúrate de que esta ruta sea correcta
 import EditarMueble from './EditarMueble'; // Importar el componente EditarMueble
-
 
 function ListarMuebles({ show, handleClose }) {
   const [muebles, setMuebles] = useState([]);
@@ -20,6 +19,8 @@ function ListarMuebles({ show, handleClose }) {
   const [muebleToDelete, setMuebleToDelete] = useState(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [mensajeError, setMensajeError] = useState('');
 
   const fetchMuebles = useCallback(async () => {
     try {
@@ -123,6 +124,16 @@ function ListarMuebles({ show, handleClose }) {
       }, 3000);
     } catch (error) {
       console.error('Error al eliminar el mueble:', error);
+      setShowDeleteConfirm(false);
+
+      // Verificar si el error es por ventas realizadas
+      if (error.response && error.response.status === 409) {
+        setMensajeError('No se puede eliminar un mueble con ventas realizadas.');
+      } else {
+        setMensajeError('Ocurrió un error al intentar eliminar el mueble.');
+      }
+
+      setShowErrorToast(true);
     }
   };
 
@@ -283,23 +294,6 @@ function ListarMuebles({ show, handleClose }) {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmar Eliminación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          ¿Estás seguro de que deseas eliminar el mueble "{muebleToDelete?.nombre}"?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
-            Cancelar
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Eliminar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
       {muebleToEdit && (
         <EditarMueble
           show={showEditModal}
@@ -319,7 +313,33 @@ function ListarMuebles({ show, handleClose }) {
         >
           <Toast.Body style={{ fontSize: '1.2em' }}>{mensajeExito}</Toast.Body>
         </Toast>
+        <Toast
+          onClose={() => setShowErrorToast(false)}
+          show={showErrorToast}
+          delay={3000}
+          autohide
+          bg="danger"
+        >
+          <Toast.Body style={{ fontSize: '1.2em', color: 'white' }}>{mensajeError}</Toast.Body>
+        </Toast>
       </ToastContainer>
+
+      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} dialogClassName="custom-modal" style={{ marginTop: '20px' }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Estás seguro de que deseas eliminar el mueble "{muebleToDelete?.nombre}"?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Eliminar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

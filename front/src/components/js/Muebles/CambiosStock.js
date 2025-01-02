@@ -8,6 +8,7 @@ const CambiosStock = ({ show, handleClose }) => {
     const [cambios, setCambios] = useState([]);
     const [muebles, setMuebles] = useState([]);
     const [selectedMueble, setSelectedMueble] = useState('');
+    const [muebleBusqueda, setMuebleBusqueda] = useState(''); // Estado para el término de búsqueda
 
     useEffect(() => {
         if (show) {
@@ -18,8 +19,7 @@ const CambiosStock = ({ show, handleClose }) => {
         }
     }, [show]);
 
-    const handleMuebleChange = (event) => {
-        const muebleId = event.target.value;
+    const handleMuebleChange = (muebleId) => {
         setSelectedMueble(muebleId);
 
         if (muebleId === '') {
@@ -33,8 +33,9 @@ const CambiosStock = ({ show, handleClose }) => {
             .catch(error => console.error('Error fetching cambios de stock:', error));
     };
 
-    const handleModalClose = () => {
+    const handleModalCloseAndReset = () => {
         setSelectedMueble('');
+        setMuebleBusqueda('');
         setCambios([]);
         handleClose();
     };
@@ -56,26 +57,66 @@ const CambiosStock = ({ show, handleClose }) => {
         doc.save('reporte_cambios_stock.pdf');
     };
 
+    const mueblesFiltrados = muebleBusqueda.length > 0 
+        ? muebles.filter((mueble) =>
+            mueble.nombre.toLowerCase().startsWith(muebleBusqueda.toLowerCase())
+        )
+        : muebles;
+
     return (
         <>
-            <Modal show={show} onHide={handleModalClose} size="lg">
+            <Modal show={show} onHide={handleModalCloseAndReset} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Cambios de Stock</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Group controlId="muebleSelect" className="mb-4">
                         <Form.Label><strong>Mueble</strong></Form.Label>
-                        <Form.Control 
-                            as="select" 
-                            value={selectedMueble} 
-                            onChange={handleMuebleChange} 
+                        <Form.Control
+                            type="text"
+                            placeholder="Buscar mueble"
+                            value={muebleBusqueda}
+                            onChange={(e) => {
+                                setMuebleBusqueda(e.target.value);
+                                setSelectedMueble('');
+                                if (e.target.value === '') {
+                                    setSelectedMueble('');
+                                    setCambios([]);
+                                }
+                            }}
                             style={{ borderColor: '#343a40' }}
-                        >
-                            <option value="">Seleccione un mueble</option>
-                            {muebles.map(mueble => (
-                                <option key={mueble.id} value={mueble.id}>{mueble.nombre}</option>
-                            ))}
-                        </Form.Control>
+                        />
+                        {!selectedMueble && (
+                            <div
+                                style={{
+                                    maxHeight: '150px',
+                                    overflowY: 'auto',
+                                    border: '1px solid #343a40',
+                                    marginTop: '5px',
+                                }}
+                            >
+                                {mueblesFiltrados.map((mueble) => (
+                                    <div
+                                        key={mueble.id}
+                                        onClick={() => {
+                                            handleMuebleChange(mueble.id);
+                                            setMuebleBusqueda(mueble.nombre);
+                                            setSelectedMueble(mueble.id);
+                                        }}
+                                        style={{
+                                            padding: '5px',
+                                            cursor: 'pointer',
+                                            backgroundColor: selectedMueble === mueble.id ? '#f0f0f0' : 'white',
+                                        }}
+                                    >
+                                        {mueble.nombre}
+                                    </div>
+                                ))}
+                                {mueblesFiltrados.length === 0 && (
+                                    <div style={{ padding: '5px', color: '#888' }}>No hay coincidencias</div>
+                                )}
+                            </div>
+                        )}
                     </Form.Group>
                     <Table striped bordered hover style={{ borderColor: '#343a40' }}>
                         <thead>
@@ -102,7 +143,7 @@ const CambiosStock = ({ show, handleClose }) => {
                     <Button variant="primary" onClick={handleGeneratePDF} style={{ float: 'right', marginLeft: '10px' }}>
                         Generar PDF
                     </Button>
-                    <Button variant="secondary" onClick={handleModalClose} style={{ float: 'right' }}>
+                    <Button variant="secondary" onClick={handleModalCloseAndReset} style={{ float: 'right' }}>
                         Cerrar
                     </Button>
                 </Modal.Footer>

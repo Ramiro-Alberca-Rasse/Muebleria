@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Toast, ToastContainer } from 'react-bootstrap';
 import { createPortal } from 'react-dom';
 import api from '../../../services/api';
+import '../../css/Fabricante.css';
 
 function RegistrarFabricante({ show, handleClose }) {
   const [nombre, setNombre] = useState('');
@@ -52,7 +53,7 @@ function RegistrarFabricante({ show, handleClose }) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} style={{ borderColor: 'darkgray', borderWidth: '2px' }}>
+      <Modal show={show} onHide={handleClose} style={{ marginTop: '20px' }} className="custom-modal">
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title><strong>Registrar Fabricante</strong></Modal.Title>
@@ -99,6 +100,9 @@ function RegistrarFabricante({ show, handleClose }) {
       </ElementoNoOscurecido>
 
       <style jsx>{`
+        .custom-modal .modal-content {
+          border: 2px solid black;
+        }
         .notification-container-bottom-right {
           position: fixed;
           bottom: 20px;

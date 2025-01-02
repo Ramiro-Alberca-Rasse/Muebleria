@@ -29,4 +29,8 @@ public class TipoService {
     public Tipo crearTipo(Tipo tipo) {
         return tipoRepository.save(tipo);
     }
+
+    public void deleteTipo(Long id) {
+        tipoRepository.deleteById(id);
+    }
 }

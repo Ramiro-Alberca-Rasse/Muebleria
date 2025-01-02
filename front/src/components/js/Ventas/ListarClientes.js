@@ -22,6 +22,7 @@ function ListarClientes({ show, handleClose }) {
   const fetchClientes = useCallback(async () => {
     try {
       const response = await api.get('/clientes/info');
+      console.log('Clientes obtenidos:', response.data); // Log para depuración
       setClientes(response.data);
       setFilteredClientes(response.data);
     } catch (error) {
@@ -127,7 +128,7 @@ function ListarClientes({ show, handleClose }) {
               </tr>
             </thead>
             <tbody>
-              {filteredClientes.map((cliente) => (
+              {Array.isArray(filteredClientes) && filteredClientes.map((cliente) => (
                 <tr key={cliente.id}>
                   <td style={{ borderColor: '#343a40' }}>{cliente.nombreCompleto} </td>
                   <td style={{ borderColor: '#343a40' }}>{cliente.email}</td>
@@ -151,23 +152,6 @@ function ListarClientes({ show, handleClose }) {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmar Eliminación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          ¿Estás seguro de que deseas eliminar el cliente "{clienteToDelete?.nombre} {clienteToDelete?.apellido}"?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
-            Cancelar
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Eliminar
           </Button>
         </Modal.Footer>
       </Modal>
@@ -211,7 +195,29 @@ function ListarClientes({ show, handleClose }) {
         )}
       </ElementoNoOscurecido>
 
+      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} dialogClassName="custom-modal" style={{ marginTop: '20px' }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Estás seguro de que deseas eliminar el cliente "{clienteToDelete?.nombre} {clienteToDelete?.apellido}"?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Eliminar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <style jsx>{`
+        .custom-modal .modal-content {
+          border: 2px solid black;
+          border-radius: 0;
+          
+        }
         .notification-container-bottom-right {
           position: fixed;
           bottom: 20px;

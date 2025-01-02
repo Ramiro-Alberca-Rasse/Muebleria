@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import PPyL.Muebleria.dto.VentaMuebleDTO;
@@ -58,5 +59,10 @@ public class VentaMuebleController {
     @DeleteMapping("/{id}")
     public void deleteVentaMueble(@PathVariable Long id) {
         ventaMuebleService.deleteVentaMueble(id);
+    }
+
+    @PutMapping("/notificacion")
+    public void updateNotificacion(@RequestParam int notificacion) {
+        ventaMuebleService.setNotificacion(notificacion);
     }
 }

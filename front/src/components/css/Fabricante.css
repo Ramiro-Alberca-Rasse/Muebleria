@@ -1,0 +1,7 @@
+/* ...existing code... */
+
+.modal-top {
+    z-index: 1100; /* Valor más alto para el modal que debe sobresalir */
+  }
+  
+  /* ...existing code... */

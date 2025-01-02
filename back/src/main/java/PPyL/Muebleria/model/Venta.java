@@ -86,6 +86,10 @@ public class Venta {
         this.precioTotal = precioTotal;
     }
 
+    public VentaMueble getVenta(int i) {
+        return ventas.get(i);
+    }
+
     @Override
     public String toString() {
         return "Venta{" +

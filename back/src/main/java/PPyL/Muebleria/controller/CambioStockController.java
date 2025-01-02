@@ -1,11 +1,20 @@
 package PPyL.Muebleria.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import PPyL.Muebleria.dto.CambioStockDTO;
 import PPyL.Muebleria.service.CambioStockService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/cambioStock")
@@ -48,4 +57,8 @@ public class CambioStockController {
     public int getCantidadDeCambiosByMuebleId(@PathVariable Long id) {
         return cambioStockService.getCantidadDeCambiosByMuebleId(id);
     } 
+
+    public CambioStockDTO getCambioStockByMuebleIdAndVentaMuebleId(Long muebleId, Long ventaMuebleId) {
+        return cambioStockService.getCambioStockByMuebleIdAndVentaMuebleId(muebleId, ventaMuebleId);
+    }
 }

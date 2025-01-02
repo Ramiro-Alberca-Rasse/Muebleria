@@ -57,7 +57,7 @@ function RegistrarTipo({ show, handleClose }) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} style={{ borderColor: 'darkgray', borderWidth: '2px' }}>
+      <Modal show={show} onHide={handleClose} style={{ borderColor: 'darkgray', borderWidth: '2px', marginTop: '20px' }} className="custom-modal">
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title><strong>Registrar Nuevo Tipo de Mueble</strong></Modal.Title>
@@ -104,6 +104,9 @@ function RegistrarTipo({ show, handleClose }) {
       </ElementoNoOscurecido>
 
       <style jsx>{`
+              .custom-modal .modal-content {
+          border: 2px solid black;
+        }
         .notification-container-bottom-right {
           position: fixed;
           bottom: 20px;

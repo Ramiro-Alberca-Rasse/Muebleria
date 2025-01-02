@@ -5,9 +5,12 @@ import PPyL.Muebleria.model.CambioStock;
 import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.repository.CambioStockRepository;
 import PPyL.Muebleria.repository.MuebleRepository;
+import PPyL.Muebleria.repository.VentaMuebleRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +23,11 @@ public class CambioStockService {
 
     @Autowired
     private MuebleRepository muebleRepository;
+
+    @Autowired
+    private VentaMuebleRepository ventaMuebleRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(CambioStockService.class);
 
     public List<CambioStockDTO> getAllCambioStock() {
         return cambioStockRepository.findAll().stream()
@@ -34,7 +42,9 @@ public class CambioStockService {
                 cambioStockDTO.getCantidad(),
                 cambioStockDTO.getTipoCambio(),
                 cambioStockDTO.getNuevoStock(),
-                cambioStockDTO.isPrimerCambio()
+                cambioStockDTO.isPrimerCambio(),
+                ventaMuebleRepository.findById(cambioStockDTO.getVentaMuebleId()).get()
+
         );
         
         cambioStockRepository.save(cambioStock);
@@ -65,10 +75,11 @@ public class CambioStockService {
 
     public List<CambioStockDTO> getCambioStockByMuebleId(Long id) {
         Mueble mueble = muebleRepository.findById(id).orElseThrow(() -> new RuntimeException("Mueble no encontrado"));
-        List<CambioStock> cambiosStock = mueble.getCambiosStock();
-        return cambiosStock.stream()
+        List<CambioStock> cambiosStocks = mueble.getCambiosStock();
+        List<CambioStockDTO> cambiosStocksDTO = cambiosStocks.stream()
                 .map(CambioStockDTO::new)
                 .collect(Collectors.toList());
+        return cambiosStocksDTO;
     }
 
     public CambioStockDTO getPrimerCambioStockByMuebleId(Long id) {
@@ -79,4 +90,11 @@ public class CambioStockService {
     public int getCantidadDeCambiosByMuebleId(Long id) {
         return cambioStockRepository.findByMuebleId(id).size();
     }
+
+    public CambioStockDTO getCambioStockByMuebleIdAndVentaMuebleId(Long muebleId, Long ventaMuebleId) {
+        CambioStock cambioStock = cambioStockRepository.findByMuebleIdAndVentaMuebleId(muebleId, ventaMuebleId);
+        return new CambioStockDTO(cambioStock);
+    }
+
+
 }

@@ -12,4 +12,6 @@ public interface CambioStockRepository extends JpaRepository<CambioStock, Long> 
     List<CambioStock> findByMuebleId(Long id);
     CambioStock findByMuebleIdAndPrimerCambioTrue(Long id);
 
+    CambioStock findByMuebleIdAndVentaMuebleId(Long muebleId, Long ventaMuebleId);
+
 }

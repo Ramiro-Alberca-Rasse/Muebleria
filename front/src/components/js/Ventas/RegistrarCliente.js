@@ -9,7 +9,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
-  const [dni, setDni] = useState('');
+  const [CUIT, setCUIT] = useState('');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -20,13 +20,18 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
     setDireccion('');
     setTelefono('');
     setEmail('');
-    setDni('');
+    setCUIT('');
+  };
+
+  const handleCloseAndReset = () => {
+    handleReset();
+    handleClose();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const nuevoCliente = { nombre, apellido, direccion, telefono, email, dni };
+    const nuevoCliente = { nombre, apellido, direccion, telefono, email, CUIT };
 
     try {
       const response = await api.post('/clientes', nuevoCliente);
@@ -48,7 +53,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
     setDireccion('');
     setTelefono('');
     setEmail('');
-    setDni('');
+    setCUIT('');
 
     // Cerrar el modal
     handleClose();
@@ -60,7 +65,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleCloseAndReset}>
         <Modal.Header closeButton>
           <Modal.Title>Registrar Cliente</Modal.Title>
         </Modal.Header>
@@ -118,13 +123,13 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
                 style={{ borderColor: '#343a40' }}
               />
             </Form.Group>
-            <Form.Group controlId="dniCliente" className="mt-3">
-              <Form.Label><strong>DNI</strong></Form.Label>
+            <Form.Group controlId="uitCliente" className="mt-3">
+              <Form.Label><strong>CUIT</strong></Form.Label>
               <Form.Control
                 type="text"
-                placeholder="DNI del cliente"
-                value={dni}
-                onChange={(e) => setDni(e.target.value)}
+                placeholder="CUIT del cliente"
+                value={CUIT}
+                onChange={(e) => setCUIT(e.target.value)}
                 style={{ borderColor: '#343a40' }}
               />
             </Form.Group>

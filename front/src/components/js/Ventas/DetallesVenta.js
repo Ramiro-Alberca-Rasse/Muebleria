@@ -31,7 +31,7 @@ const DetallesVenta = ({ show, handleClose, venta }) => {
     }
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} style={{ marginTop: '20px' }} dialogClassName="custom-modal">
             <Modal.Header closeButton>
                 <Modal.Title>Detalles de la Venta</Modal.Title>
             </Modal.Header>
@@ -75,6 +75,11 @@ const DetallesVenta = ({ show, handleClose, venta }) => {
                     Cerrar
                 </Button>
             </Modal.Footer>
+            <style jsx>{`
+                .custom-modal .modal-content {
+                    border: 2px solid black;
+                }
+            `}</style>
         </Modal>
     );
 };

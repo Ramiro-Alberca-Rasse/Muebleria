@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/MenuPrincipal.css"; // Archivo para los estilos
+import Ajustes from "./Ajustes"; // Importar el componente Ajustes
+import NotificarStock from "./Muebles/NotificarStock"; // Importar el componente NotificarStock
 
 const MenuPrincipal = () => {
+  const [mostrarAjustes, setMostrarAjustes] = useState(false);
+
+  const abrirAjustes = () => {
+    setMostrarAjustes(true);
+  };
+
+  const cerrarAjustes = () => {
+    setMostrarAjustes(false);
+  };
+
   return (
     <>
       <nav className="menu-principal">
@@ -25,9 +37,7 @@ const MenuPrincipal = () => {
         <div className="notificaciones">
           Notificaciones
           <div className="menu-notificaciones">
-            <ul>
-              <li>No hay notificaciones</li>
-            </ul>
+            <NotificarStock />
           </div>
         </div>
       </nav>
@@ -36,6 +46,11 @@ const MenuPrincipal = () => {
       <div className="texto-inferior">
         Sitios Muebles
       </div>
+      {/* Botón de ajustes en la parte inferior derecha */}
+      <div className="ajustes-boton" style={{ position: "fixed", bottom: "10px", right: "10px" }}>
+        <button onClick={abrirAjustes}>Ajustes</button>
+      </div>
+      {mostrarAjustes && <Ajustes cerrarAjustes={cerrarAjustes} />}
     </>
   );
 };

@@ -1,5 +1,7 @@
 package PPyL.Muebleria.model;
 
+import org.springframework.lang.Nullable;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,19 +27,34 @@ public class CambioStock {
     private int NuevoStock;
     private boolean primerCambio = false;
 
+    @ManyToOne
+    @JoinColumn(name = "ventaMuebleId", nullable = true)
+    @Nullable
+    private VentaMueble ventaMueble;
+
     // Constructor
+    public CambioStock(Mueble mueble, int cantidad, String tipoCambio, int nuevoStock, boolean primerCambio, VentaMueble ventaMueble) {
+        this.mueble = mueble;
+        this.cantidad = cantidad;
+        this.setTipoCambio(tipoCambio);
+        this.NuevoStock = nuevoStock;
+        this.primerCambio = primerCambio;
+        this.ventaMueble = ventaMueble;
+    }
+
     public CambioStock(Mueble mueble, int cantidad, String tipoCambio, int nuevoStock, boolean primerCambio) {
         this.mueble = mueble;
         this.cantidad = cantidad;
-        this.tipoCambio = tipoCambio;
+        this.setTipoCambio(tipoCambio);
         this.NuevoStock = nuevoStock;
         this.primerCambio = primerCambio;
+
     }
     
 
     // Constructor with primerCambio defaulting to false
-    public CambioStock(Mueble mueble, int cantidad, String tipoCambio, int nuevoStock) {
-        this(mueble, cantidad, tipoCambio, nuevoStock, false);
+    public CambioStock(Mueble mueble, int cantidad, String tipoCambio, int nuevoStock, VentaMueble ventaMueble) {
+        this(mueble, cantidad, tipoCambio, nuevoStock, false, ventaMueble);
     }
 
     public CambioStock() {
@@ -65,6 +82,21 @@ public class CambioStock {
     }
 
     public void setTipoCambio(String tipoCambio) {
+        if ("Salida".equals(tipoCambio)) {
+            if (this.ventaMueble != null) {
+                throw new IllegalArgumentException("ventaMueble debe ser nulo cuando tipoCambio es 'Salida'");
+            }
+        } else if ("Entrada".equals(tipoCambio)) {
+            if (this.ventaMueble != null) {
+                throw new IllegalArgumentException("ventaMueble debe ser nulo cuando tipoCambio es 'Entrada'");
+            }
+        } else if ("Venta".equals(tipoCambio)) {
+            if (this.ventaMueble == null) {
+                throw new IllegalArgumentException("ventaMueble no puede ser nulo cuando tipoCambio es 'Venta'");
+            }
+        } else {
+            throw new IllegalArgumentException("tipoCambio solo puede ser 'Salida' o 'Entrada' o 'Venta");
+        }
         this.tipoCambio = tipoCambio;
     }
 
@@ -91,4 +123,13 @@ public class CambioStock {
     public void setPrimerCambio(boolean primerCambio) {
         this.primerCambio = primerCambio;
     }
+
+    public VentaMueble getVentaMueble() {
+        return ventaMueble;
+    }
+
+    public void setVentaMueble(VentaMueble ventaMueble) {
+        this.ventaMueble = ventaMueble;
+    }
+
 }

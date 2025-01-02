@@ -19,6 +19,8 @@ function ListarVentas({ show, handleClose }) {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [clienteBusqueda, setClienteBusqueda] = useState(''); // Estado para el término de búsqueda de cliente
+  const [muebleBusqueda, setMuebleBusqueda] = useState(''); // Estado para el término de búsqueda de mueble
 
   useEffect(() => {
     const fetchVentas = async () => {
@@ -94,6 +96,16 @@ function ListarVentas({ show, handleClose }) {
     setVentaSeleccionada(null);
   };
 
+  const handleCloseAndReset = () => {
+    setFechaInicio(new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]);
+    setFechaFin(new Date().toISOString().split('T')[0]);
+    setClienteSeleccionado('');
+    setMuebleSeleccionado('');
+    setClienteBusqueda('');
+    setMuebleBusqueda('');
+    handleClose();
+  };
+
   const styles = {
     filterRow: { marginBottom: '20px' },
     formControlCustom: {
@@ -117,9 +129,17 @@ function ListarVentas({ show, handleClose }) {
     return createPortal(children, document.body);
   };
 
+  const clientesFiltrados = clientes.filter((cliente) =>
+    `${cliente.nombre} ${cliente.apellido}`.toLowerCase().startsWith(clienteBusqueda.toLowerCase())
+  );
+
+  const mueblesFiltrados = muebles.filter((mueble) =>
+    mueble.nombre.toLowerCase().startsWith(muebleBusqueda.toLowerCase())
+  );
+
   return (
     <>
-      <Modal show={show} onHide={handleClose} size="lg">
+      <Modal show={show} onHide={handleCloseAndReset} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Lista de Ventas</Modal.Title>
         </Modal.Header>
@@ -154,36 +174,96 @@ function ListarVentas({ show, handleClose }) {
                 <Form.Group controlId="cliente">
                   <Form.Label style={styles.formLabelCustom}>Cliente</Form.Label>
                   <Form.Control
-                    as="select"
-                    value={clienteSeleccionado}
-                    onChange={(e) => setClienteSeleccionado(e.target.value)}
+                    type="text"
+                    placeholder="Buscar cliente"
+                    value={clienteBusqueda}
+                    onChange={(e) => {
+                      setClienteBusqueda(e.target.value);
+                      setClienteSeleccionado('');
+                      if (e.target.value === '') {
+                        setClienteSeleccionado('');
+                      }
+                    }}
                     style={styles.formControlCustom}
-                  >
-                    <option value="">Todos</option>
-                    {clientes.map((cliente) => (
-                      <option key={cliente.id} value={cliente.id}>
-                        {cliente.nombre} {cliente.apellido}
-                      </option>
-                    ))}
-                  </Form.Control>
+                  />
+                  {!clienteSeleccionado && (
+                    <div
+                      style={{
+                        maxHeight: '150px',
+                        overflowY: 'auto',
+                        border: '1px solid #343a40',
+                        marginTop: '5px',
+                      }}
+                    >
+                      {clientesFiltrados.map((cliente) => (
+                        <div
+                          key={cliente.id}
+                          onClick={() => {
+                            setClienteSeleccionado(cliente.id);
+                            setClienteBusqueda(`${cliente.nombre} ${cliente.apellido}`);
+                          }}
+                          style={{
+                            padding: '5px',
+                            cursor: 'pointer',
+                            backgroundColor: clienteSeleccionado === cliente.id ? '#f0f0f0' : 'white',
+                          }}
+                        >
+                          {cliente.nombre} {cliente.apellido}
+                        </div>
+                      ))}
+                      {clientesFiltrados.length === 0 && (
+                        <div style={{ padding: '5px', color: '#888' }}>No hay coincidencias</div>
+                      )}
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group controlId="mueble">
                   <Form.Label style={styles.formLabelCustom}>Mueble</Form.Label>
                   <Form.Control
-                    as="select"
-                    value={muebleSeleccionado}
-                    onChange={(e) => setMuebleSeleccionado(e.target.value)}
+                    type="text"
+                    placeholder="Buscar mueble"
+                    value={muebleBusqueda}
+                    onChange={(e) => {
+                      setMuebleBusqueda(e.target.value);
+                      setMuebleSeleccionado('');
+                      if (e.target.value === '') {
+                        setMuebleSeleccionado('');
+                      }
+                    }}
                     style={styles.formControlCustom}
-                  >
-                    <option value="">Todos</option>
-                    {muebles.map((mueble) => (
-                      <option key={mueble.id} value={mueble.id}>
-                        {mueble.nombre}
-                      </option>
-                    ))}
-                  </Form.Control>
+                  />
+                  {!muebleSeleccionado && (
+                    <div
+                      style={{
+                        maxHeight: '150px',
+                        overflowY: 'auto',
+                        border: '1px solid #343a40',
+                        marginTop: '5px',
+                      }}
+                    >
+                      {mueblesFiltrados.map((mueble) => (
+                        <div
+                          key={mueble.id}
+                          onClick={() => {
+                            setMuebleSeleccionado(mueble.id);
+                            setMuebleBusqueda(mueble.nombre);
+                          }}
+                          style={{
+                            padding: '5px',
+                            cursor: 'pointer',
+                            backgroundColor: muebleSeleccionado === mueble.id ? '#f0f0f0' : 'white',
+                          }}
+                        >
+                          {mueble.nombre}
+                        </div>
+                      ))}
+                      {mueblesFiltrados.length === 0 && (
+                        <div style={{ padding: '5px', color: '#888' }}>No hay coincidencias</div>
+                      )}
+                    </div>
+                  )}
                 </Form.Group>
               </Col>
             </Row>
@@ -207,7 +287,7 @@ function ListarVentas({ show, handleClose }) {
                   <td>{venta.precioTotal}</td>
                   <td>
                     <Button
-                      variant="primary"
+                      variant="secondary"
                       size="sm"
                       onClick={() => handleShowDetalles(venta)}
                     >
@@ -227,13 +307,13 @@ function ListarVentas({ show, handleClose }) {
           </Table>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCloseAndReset}>
             Cerrar
           </Button>
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)}>
+      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} dialogClassName="custom-modal" style={{ marginTop: '20px' }}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmar Eliminación</Modal.Title>
         </Modal.Header>
@@ -281,6 +361,9 @@ function ListarVentas({ show, handleClose }) {
       </ElementoNoOscurecido>
 
       <style jsx>{`
+              .custom-modal .modal-content {
+          border: 2px solid black;
+        }
         .notification-container-bottom-right {
           position: fixed;
           bottom: 20px;

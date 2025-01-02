@@ -10,6 +10,7 @@ public class CambioStockDTO {
     private int nuevoStock;
     private int cantidad;
     private boolean primerCambio = false;
+    private Long ventaMuebleId;
 
     public CambioStockDTO() {
     }
@@ -17,17 +18,28 @@ public class CambioStockDTO {
     public CambioStockDTO(CambioStock cambioStock) {
         this.id = cambioStock.getId();
         this.nombreMueble = cambioStock.getMueble().getNombre();
-        this.tipoCambio = cambioStock.getTipoCambio();
+        this.setTipoCambio(cambioStock.getTipoCambio());
         this.nuevoStock = cambioStock.getNuevoStock();
         this.cantidad = cambioStock.getCantidad();
+        this.primerCambio = cambioStock.isPrimerCambio();
+        this.ventaMuebleId = cambioStock.getVentaMueble() != null ? cambioStock.getVentaMueble().getId() : null;
+    }
+
+    public CambioStockDTO(MuebleDTO muebleDTO, String tipoCambio, int cantidad, Long ventaMuebleId) {
+        this.nombreMueble = muebleDTO.getNombre();
+        this.setTipoCambio(tipoCambio);
+        this.nuevoStock = muebleDTO.getStock();
+        this.cantidad = cantidad;
+        this.ventaMuebleId = ventaMuebleId;
     }
 
     public CambioStockDTO(MuebleDTO muebleDTO, String tipoCambio, int cantidad) {
         this.nombreMueble = muebleDTO.getNombre();
-        this.tipoCambio = tipoCambio;
+        this.setTipoCambio(tipoCambio);
         this.nuevoStock = muebleDTO.getStock();
         this.cantidad = cantidad;
     }
+
 
     public Long getId() {
         return id;
@@ -50,6 +62,21 @@ public class CambioStockDTO {
     }
 
     public void setTipoCambio(String tipoCambio) {
+        if ("Salida".equals(tipoCambio)) {
+            if (this.ventaMuebleId != null) {
+                throw new IllegalArgumentException("ventaMueble debe ser nulo cuando tipoCambio es 'Salida'");
+            }
+        } else if ("Entrada".equals(tipoCambio)) {
+            if (this.ventaMuebleId != null) {
+                throw new IllegalArgumentException("ventaMueble debe ser nulo cuando tipoCambio es 'Entrada'");
+            }
+        } else if ("Venta".equals(tipoCambio)) {
+            if (this.ventaMuebleId == null) {
+                throw new IllegalArgumentException("ventaMueble no puede ser nulo cuando tipoCambio es 'Venta'");
+            }
+        } else {
+            throw new IllegalArgumentException("tipoCambio solo puede ser 'Salida' o 'Entrada' o 'Venta");
+        }
         this.tipoCambio = tipoCambio;
     }
 
@@ -76,7 +103,16 @@ public class CambioStockDTO {
     public void setPrimerCambio(boolean primerCambio) {
         this.primerCambio = primerCambio;
     }
+
+    public Long getVentaMuebleId() {
+        return ventaMuebleId;
+    }
+
+    public void setVentaMuebleId(Long ventaMuebleId) {
+        this.ventaMuebleId = ventaMuebleId;
+    }
     
+
 
 
 }

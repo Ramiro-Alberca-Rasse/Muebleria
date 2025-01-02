@@ -29,4 +29,8 @@ public class TipoDeMaderaService {
     public TipoDeMadera crearTipoDeMadera(TipoDeMadera tipoDeMadera) {
         return tipoDeMaderaRepository.save(tipoDeMadera);
     }
+
+    public void deleteTipoDeMadera(Long id) {
+        tipoDeMaderaRepository.deleteById(id);
+    }
 }

@@ -24,7 +24,7 @@ public class ClienteService {
     }
 
     public Cliente createCliente(ClienteDTO cliente) {
-        Cliente newCliente = new Cliente(cliente.getNombre(), cliente.getApellido(), cliente.getDireccion(), cliente.getTelefono(), cliente.getEmail(), cliente.getDni());
+        Cliente newCliente = new Cliente(cliente.getNombre(), cliente.getApellido(), cliente.getDireccion(), cliente.getTelefono(), cliente.getEmail(), cliente.getCUIT());
         return clienteRepository.save(newCliente);
     }
 
@@ -35,7 +35,7 @@ public class ClienteService {
             cliente.setDireccion(clienteDetails.getDireccion());
             cliente.setTelefono(clienteDetails.getTelefono());
             cliente.setEmail(clienteDetails.getEmail());
-            cliente.setDni(clienteDetails.getDni());
+            cliente.setCUIT(clienteDetails.getCUIT());
             return clienteRepository.save(cliente);
         }).orElse(null);
     }

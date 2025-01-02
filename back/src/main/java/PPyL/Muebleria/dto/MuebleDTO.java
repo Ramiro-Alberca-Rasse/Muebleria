@@ -10,6 +10,9 @@ public class MuebleDTO {
     private Long tipoMaderaId;
     private Long fabricanteId;
     private Long tipoId;
+    private String tipoMadera;
+    private String fabricante;
+    private String tipo;
     private double precio;
     private int stock;
     private List<CambioStockDTO> cambiosStock;
@@ -22,10 +25,14 @@ public class MuebleDTO {
         this.tipoId = mueble.getTipo() != null ? mueble.getTipo().getId() : null;
         this.precio = mueble.getPrecio();
         this.stock = mueble.getStock();
+        this.tipoMadera = mueble.getTipoMadera() != null ? mueble.getTipoMadera().getNombre() : null;
+        this.fabricante = mueble.getFabricante() != null ? mueble.getFabricante().getNombre() : null;
+        this.tipo = mueble.getTipo() != null ? mueble.getTipo().getNombre() : null;
     }
 
     public MuebleDTO() {
     }
+
 
     public Mueble toEntity() {
         Mueble mueble = new Mueble();
@@ -107,6 +114,30 @@ public class MuebleDTO {
 
     public void setCambiosStock(List<CambioStockDTO> cambiosStock) {
         this.cambiosStock = cambiosStock;
+    }
+
+    public String getTipoMadera() {
+        return tipoMadera;
+    }
+
+    public void setTipoMadera(String tipoMadera) {
+        this.tipoMadera = tipoMadera;
+    }
+
+    public String getFabricante() {
+        return fabricante;
+    }
+
+    public void setFabricante(String fabricante) {
+        this.fabricante = fabricante;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
 

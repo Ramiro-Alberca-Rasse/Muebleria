@@ -28,7 +28,8 @@ public class Cliente {
     private String direccion;
     private String telefono;
     private String email;
-    private String dni;
+    
+    private String CUIT;
 
     @OneToMany(mappedBy = "cliente", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false)
     @JsonManagedReference(value = "cliente-venta") // Nombre único
@@ -39,13 +40,13 @@ public class Cliente {
     public Cliente() {}
 
     // Constructor con parámetros
-    public Cliente(String nombre, String apellido, String direccion, String telefono, String email, String dni) {
+    public Cliente(String nombre, String apellido, String direccion, String telefono, String email, String CUIT) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.direccion = direccion;
         this.telefono = telefono;
         this.email = email;
-        this.dni = dni;
+        this.CUIT = CUIT;
     }
 
     // Getters y Setters
@@ -97,12 +98,12 @@ public class Cliente {
         this.email = email;
     }
 
-    public String getDni() {
-        return dni;
+    public String getCUIT() {
+        return CUIT;
     }
 
-    public void setDni(String dni) {
-        this.dni = dni;
+    public void setCUIT(String CUIT) {
+        this.CUIT = CUIT;
     }
 
     public List<Venta> getVentas() {

@@ -36,6 +36,7 @@ function GestionVentas() {
   // Función para cerrar el modal de listar clientes
   const handleCloseListarClientes = () => setShowListarClientesModal(false);
 
+  
   return (
     <div className="container my-4 gestionar-modales">
       <h2 className="text-center mb-4 titulo-blanco">Gestionar Ventas</h2>

@@ -6,6 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -164,10 +166,26 @@ public class MuebleController {
         return muebleService.actualizarMueble(id, muebleDTO);
     }
 
-    @DeleteMapping("/eliminar/{id}")
-    public void eliminarMueble(@PathVariable Long id) {
+@DeleteMapping("/eliminar/{id}")
+public ResponseEntity<String> eliminarMueble(@PathVariable Long id) {
+    try {
         muebleService.eliminarMueble(id);
+        return ResponseEntity.noContent().build(); // Devuelve un código 204 si todo salió bien
+    } catch (DataIntegrityViolationException ex) {
+        // Manejo del caso donde el mueble está referenciado en otras tablas
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("El mueble no puede ser eliminado porque está asociado a ventas u otros registros.");
+    } catch (EmptyResultDataAccessException ex) {
+        // Manejo del caso donde no se encuentra el mueble a eliminar
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("El mueble con ID " + id + " no existe.");
+    } catch (Exception ex) {
+        // Cualquier otra excepción no esperada
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ocurrió un error inesperado al intentar eliminar el mueble.");
     }
+}
+
 
     @PutMapping("/stock/{id}")
     public void actualizarStock(@PathVariable Long id, @RequestBody Integer cantidad) {
@@ -179,12 +197,14 @@ public class MuebleController {
         muebleDTO.addCambioStock(cambioCreadoDTO);
         
 
-        muebleService.actualizarStock(muebleDTO, cantidad);
+        muebleService.actualizarStock(muebleDTO);
     }
 
     @GetMapping("/stock/actual")
     public List<MuebleDTO> listarMueblesStockActual() {
         return muebleService.listarMueblesStockActual();
     }
+
+    
 
 }

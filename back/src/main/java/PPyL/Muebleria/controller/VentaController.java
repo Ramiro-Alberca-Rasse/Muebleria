@@ -17,26 +17,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import PPyL.Muebleria.dto.CambioStockDTO;
+import PPyL.Muebleria.dto.MuebleDTO;
 import PPyL.Muebleria.dto.VentaDTO;
+import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.model.Venta;
 import PPyL.Muebleria.model.VentaMueble;
+import PPyL.Muebleria.service.MuebleService;
 import PPyL.Muebleria.service.VentaService;
 
 @RestController
 @RequestMapping("/api/ventas")
 public class VentaController {
-/* 
-    @Autowired
-    private ClienteController clienteController;
 
     @Autowired
-    private MuebleController muebleController; */
+    private MuebleController muebleController;
 
     @Autowired
     private VentaService ventaService;
 
     @Autowired
     private VentaMuebleController ventaMuebleController;
+
+    @Autowired
+    private CambioStockController cambioStockController;
+
+    @Autowired
+    private MuebleService muebleService;
 
     private static final Logger logger = LoggerFactory.getLogger(VentaController.class);
 
@@ -75,9 +82,19 @@ public class VentaController {
     public void deleteVenta(@PathVariable Long id) {
         Venta venta = ventaService.getVentaById(id);
 
-        for(VentaMueble subventa : venta.getVentas()) {
+        for(int i = 0 ; i < venta.getVentas().size(); i++) {
+            logger.info("VentaMueble: " + venta.getVenta(i));
+            VentaMueble subventa = venta.getVenta(i);
+            Mueble mueble = subventa.getMueble();
+            mueble.setStock(mueble.getStock() - subventa.getCantidad());
+            MuebleDTO muebleDTO = new MuebleDTO(mueble);
+            CambioStockDTO cambiostockDTO = cambioStockController.getCambioStockByMuebleIdAndVentaMuebleId(mueble.getId(), subventa.getId());
+            logger.info("CambioStock: " + cambiostockDTO);
+            cambioStockController.deleteCambioStock(cambiostockDTO.getId());
+            muebleService.actualizarStock(muebleDTO);
             ventaMuebleController.deleteVentaMueble(subventa.getId());
         }
+
         
         ventaService.deleteVenta(id);
     }

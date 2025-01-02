@@ -15,4 +15,8 @@ public class FabricanteService {
     public Fabricante crearFabricante(Fabricante fabricante) {
         return fabricanteRepository.save(fabricante);
     }
+
+    public void deleteFabricante(Long id) {
+        fabricanteRepository.deleteById(id);
+    }
 }

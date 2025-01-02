@@ -8,6 +8,7 @@ function AgregarStockModal({ show, handleClose }) {
     const [selectedMuebleId, setSelectedMuebleId] = useState(0);
     const [showSuccess, setShowSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [muebleBusqueda, setMuebleBusqueda] = useState(''); // Estado para el término de búsqueda
 
     useEffect(() => {
         if (show) {
@@ -53,6 +54,10 @@ function AgregarStockModal({ show, handleClose }) {
         }
     };
 
+    const mueblesFiltrados = muebles.filter((mueble) =>
+        mueble.nombre.toLowerCase().startsWith(muebleBusqueda.toLowerCase())
+    );
+
     return (
         <>
             <Modal show={show} onHide={handleClose}>
@@ -64,22 +69,48 @@ function AgregarStockModal({ show, handleClose }) {
                         <Form.Group className="mb-4">
                             <Form.Label><strong>Selecciona un Mueble</strong></Form.Label>
                             <Form.Control
-                                as="select"
-                                value={selectedMuebleId}
-                                onChange={(e) => setSelectedMuebleId(e.target.value)}
-                                isInvalid={!!errorMessage}
-                                style={{ borderColor: errorMessage ? 'darkred' : 'black' }}
-                            >
-                                <option value="">Selecciona un mueble</option>
-                                {Array.isArray(muebles) && muebles.map((mueble) => (
-                                    <option key={mueble.id} value={mueble.id}>
-                                        {mueble.nombre}
-                                    </option>
-                                ))}
-                            </Form.Control>
-                            <Form.Control.Feedback type="invalid">
-                                {errorMessage}
-                            </Form.Control.Feedback>
+                                type="text"
+                                placeholder="Buscar mueble"
+                                value={muebleBusqueda}
+                                onChange={(e) => {
+                                    setMuebleBusqueda(e.target.value);
+                                    setSelectedMuebleId('');
+                                    if (e.target.value === '') {
+                                        setSelectedMuebleId('');
+                                    }
+                                }}
+                                style={{ borderColor: '#343a40' }}
+                            />
+                            {!selectedMuebleId && (
+                                <div
+                                    style={{
+                                        maxHeight: '150px',
+                                        overflowY: 'auto',
+                                        border: '1px solid #343a40',
+                                        marginTop: '5px',
+                                    }}
+                                >
+                                    {mueblesFiltrados.map((mueble) => (
+                                        <div
+                                            key={mueble.id}
+                                            onClick={() => {
+                                                setSelectedMuebleId(mueble.id);
+                                                setMuebleBusqueda(mueble.nombre);
+                                            }}
+                                            style={{
+                                                padding: '5px',
+                                                cursor: 'pointer',
+                                                backgroundColor: selectedMuebleId === mueble.id ? '#f0f0f0' : 'white',
+                                            }}
+                                        >
+                                            {mueble.nombre}
+                                        </div>
+                                    ))}
+                                    {mueblesFiltrados.length === 0 && (
+                                        <div style={{ padding: '5px', color: '#888' }}>No hay coincidencias</div>
+                                    )}
+                                </div>
+                            )}
                         </Form.Group>
                         <Form.Group className="mb-4">
                             <Form.Label><strong>Cantidad</strong></Form.Label>

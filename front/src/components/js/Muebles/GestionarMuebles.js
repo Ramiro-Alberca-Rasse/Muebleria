@@ -19,6 +19,7 @@ function GestionarMuebles() {
     fetchMuebles();
   }, []);
 
+  
   const fetchMuebles = async () => {
     try {
       await api.get('/muebles'); // Ajusta la ruta si es necesario

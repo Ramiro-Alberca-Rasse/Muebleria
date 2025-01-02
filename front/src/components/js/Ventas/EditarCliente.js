@@ -4,18 +4,41 @@ import { createPortal } from 'react-dom';
 import api from '../../../services/api';
 
 function EditarCliente({ show, handleClose, cliente, onClienteUpdated }) {
-  const [formData, setFormData] = useState({
+  const [initialFormData, setInitialFormData] = useState({
     id: cliente.id,
     nombre: cliente.nombre || '',
     apellido: cliente.apellido || '',
     direccion: cliente.direccion || '',
     telefono: cliente.telefono || '',
     email: cliente.email || '',
-    dni: cliente.dni || ''
+    cuit: cliente.cuit || '',
   });
+
+  const [formData, setFormData] = useState(initialFormData);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    setInitialFormData({
+      id: cliente.id,
+      nombre: cliente.nombre || '',
+      apellido: cliente.apellido || '',
+      direccion: cliente.direccion || '',
+      telefono: cliente.telefono || '',
+      email: cliente.email || '',
+      cuit: cliente.cuit || '',
+    });
+    setFormData({
+      id: cliente.id,
+      nombre: cliente.nombre || '',
+      apellido: cliente.apellido || '',
+      direccion: cliente.direccion || '',
+      telefono: cliente.telefono || '',
+      email: cliente.email || '',
+      cuit: cliente.cuit || '',
+    });
+  }, [cliente]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,11 +50,13 @@ function EditarCliente({ show, handleClose, cliente, onClienteUpdated }) {
       direccion: formData.direccion || '',
       telefono: formData.telefono || '',
       email: formData.email || '',
-      dni: formData.dni || ''
+      cuit: formData.cuit || '',
     };
 
+    console.log('Datos a enviar:', datosAEnviar.cuit); // Mostrar los datos que se envían
+
     try {
-      const response = await api.put(`/clientes/update/${formData.id}`, datosAEnviar);
+      const response = await api.put(`/clientes/update/${formData.id}/${formData.cuit}`, datosAEnviar);
       onClienteUpdated();
       setShowSuccessToast(true);
       setMensajeExito('Cliente actualizado con éxito');
@@ -53,13 +78,22 @@ function EditarCliente({ show, handleClose, cliente, onClienteUpdated }) {
     }));
   };
 
+  const resetForm = () => {
+    setFormData(initialFormData);
+  };
+
+  const handleCloseWithReset = () => {
+    resetForm();
+    handleClose();
+  };
+
   const ElementoNoOscurecido = ({ children }) => {
     return createPortal(children, document.body);
   };
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleCloseWithReset} dialogClassName="custom-modal">
         <Modal.Header closeButton>
           <Modal.Title>Editar Cliente</Modal.Title>
         </Modal.Header>
@@ -122,13 +156,13 @@ function EditarCliente({ show, handleClose, cliente, onClienteUpdated }) {
                 style={{ borderColor: '#343a40' }}
               />
             </Form.Group>
-            <Form.Group controlId="dniCliente" className="mt-3">
-              <Form.Label><strong>DNI</strong></Form.Label>
+            <Form.Group controlId="cuitCliente" className="mt-3">
+              <Form.Label><strong>CUIT</strong></Form.Label>
               <Form.Control
                 type="text"
-                name="dni"
-                placeholder="DNI del cliente"
-                value={formData.dni}
+                name="cuit"
+                placeholder="cuit del cliente"
+                value={formData.cuit}
                 onChange={handleChange}
                 style={{ borderColor: '#343a40' }}
               />
@@ -163,6 +197,9 @@ function EditarCliente({ show, handleClose, cliente, onClienteUpdated }) {
       </ElementoNoOscurecido>
 
       <style jsx>{`
+                    .custom-modal .modal-content {
+          border: 2px solid black;
+        }
         .notification-container-bottom-right {
           position: fixed;
           bottom: 20px;

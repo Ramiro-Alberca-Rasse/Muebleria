@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import PPyL.Muebleria.dto.MuebleDTO;
-import PPyL.Muebleria.model.CambioStock;
 import PPyL.Muebleria.model.Fabricante;
 import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.model.Tipo;
@@ -89,9 +90,17 @@ public class MuebleService {
     return new MuebleDTO(mueble);
     }
 
-    public void eliminarMueble(Long id) {
-        muebleRepository.deleteById(id);
+public void eliminarMueble(Long id) {
+    if (!muebleRepository.existsById(id)) {
+        throw new EmptyResultDataAccessException("No se encontró un mueble con el ID " + id, 1);
     }
+    try {
+        muebleRepository.deleteById(id);
+    } catch (DataIntegrityViolationException ex) {
+        throw new DataIntegrityViolationException("No se puede eliminar el mueble porque está asociado a otros registros.");
+    }
+}
+
     
     public Mueble updateMuebleFromDTO(Mueble mueble, MuebleDTO dto) {
         mueble.setId(dto.getId());
@@ -106,7 +115,7 @@ public class MuebleService {
         return mueble;
     }
 
-    public void actualizarStock(MuebleDTO muebleDTO, Integer cantidad) {
+    public void actualizarStock(MuebleDTO muebleDTO) {
         Mueble mueble = new Mueble();
         Mueble muebleCreado = updateMuebleFromDTO(mueble, muebleDTO);
         

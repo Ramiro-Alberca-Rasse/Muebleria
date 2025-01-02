@@ -2,18 +2,16 @@ package PPyL.Muebleria.dto;
 
 import java.util.List;
 
-import PPyL.Muebleria.model.Venta;
-
 public class ClienteDTO {
     private Long id;
     private String nombreCompleto;
     private String nombre;
     private String apellido;
-    private String dni;
+    private String CUIT;
     private String direccion;
     private String telefono;
     private String email;
-    private List<Venta> ventas;
+    private List<VentaDTO> ventas;
 
     // Getters y Setters
     public Long getId() {
@@ -32,12 +30,12 @@ public class ClienteDTO {
         this.nombreCompleto = nombreCompleto;
     }
 
-    public String getDni() {
-        return dni;
+    public String getCUIT() {
+        return CUIT;
     }
 
-    public void setDni(String dni) {
-        this.dni = dni;
+    public void setCUIT(String CUIT) {
+        this.CUIT = CUIT;
     }
 
     public String getDireccion() {
@@ -80,15 +78,17 @@ public class ClienteDTO {
         this.apellido = apellido;
     }
 
-    public List<Venta> getVentas() {
+    public List<VentaDTO> getVentas() {
         return ventas;
     }
 
-    public void setVentas(List<Venta> ventas) {
+    public void setVentas(List<VentaDTO> ventas) {
         this.ventas = ventas;
     }
 
-    public void addVenta(Venta venta) {
+    public void addVenta(VentaDTO venta) {
         this.ventas.add(venta);
     }
+
+    
 }

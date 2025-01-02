@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Table, Button } from 'react-bootstrap';
-import api from '../../../services/api'; // Asegúrate de que la ruta sea correcta
+import api from '../../../services/api';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import EditarMueble from './EditarMueble'; // Importar el componente EditarMueble
+import  EditarMueble  from './EditarMueble'; // Importar como exportación nombrada
+import { DetallesMueble } from './DetallesMueble'; // Importar como exportación nombrada
 
 function StockActualModal({ show, handleClose }) {
   const [stock, setStock] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
   const [showEditarMueble, setShowEditarMueble] = useState(false);
   const [muebleSeleccionado, setMuebleSeleccionado] = useState(null);
+  const [showDetallesMueble, setShowDetallesMueble] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -19,7 +21,7 @@ function StockActualModal({ show, handleClose }) {
 
   const fetchStock = async () => {
     try {
-      const response = await api.get('/muebles/stock/actual'); // Ajusta la ruta si es necesario
+      const response = await api.get('/muebles/stock/actual');
       setStock(response.data);
     } catch (error) {
       console.error('Error al obtener el stock actual:', error);
@@ -27,13 +29,9 @@ function StockActualModal({ show, handleClose }) {
   };
 
   const handleSort = () => {
-    const sortedStock = [...stock].sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return a.stock - b.stock;
-      } else {
-        return b.stock - a.stock;
-      }
-    });
+    const sortedStock = [...stock].sort((a, b) =>
+      sortOrder === 'asc' ? a.stock - b.stock : b.stock - a.stock
+    );
     setStock(sortedStock);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
@@ -43,13 +41,18 @@ function StockActualModal({ show, handleClose }) {
     setShowEditarMueble(true);
   };
 
+  const handleDetallesClick = (mueble) => {
+    setMuebleSeleccionado(mueble);
+    setShowDetallesMueble(true);
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text('Reporte de Stock Actual', 14, 16);
     doc.autoTable({
       startY: 20,
       head: [['Mueble', 'Stock']],
-      body: stock.map(mueble => [mueble.nombre, mueble.stock]),
+      body: stock.map((mueble) => [mueble.nombre, mueble.stock]),
       theme: 'grid',
       headStyles: { fillColor: [52, 58, 64] },
       styles: { cellPadding: 3, fontSize: 10 },
@@ -81,8 +84,21 @@ function StockActualModal({ show, handleClose }) {
                   <td style={{ borderColor: '#343a40' }}>{mueble.nombre}</td>
                   <td style={{ borderColor: '#343a40' }}>{mueble.stock}</td>
                   <td style={{ borderColor: '#343a40' }}>
-                    <Button variant="secondary" size="sm">Detalles</Button>
-                    <Button variant="primary" size="sm" className="ms-2" onClick={() => handleEditarClick(mueble)}>Editar</Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => handleDetallesClick(mueble)}
+                    >
+                      Detalles
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="ms-2"
+                      onClick={() => handleEditarClick(mueble)}
+                    >
+                      Editar
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -93,7 +109,9 @@ function StockActualModal({ show, handleClose }) {
           <Button variant="primary" onClick={generatePDF}>
             Generar PDF
           </Button>
-          <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Cerrar
+          </Button>
         </Modal.Footer>
       </Modal>
       <EditarMueble
@@ -101,6 +119,11 @@ function StockActualModal({ show, handleClose }) {
         handleClose={() => setShowEditarMueble(false)}
         mueble={muebleSeleccionado}
         onMuebleUpdated={fetchStock}
+      />
+      <DetallesMueble
+        show={showDetallesMueble}
+        handleClose={() => setShowDetallesMueble(false)}
+        mueble={muebleSeleccionado}
       />
     </>
   );

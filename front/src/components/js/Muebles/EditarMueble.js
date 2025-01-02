@@ -21,7 +21,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
   const [showRegistrarTipo, setShowRegistrarTipo] = useState(false);
   const [showRegistrarTipoMadera, setShowRegistrarTipoMadera] = useState(false);
   const [showRegistrarFabricante, setShowRegistrarFabricante] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [showStockWarning, setShowStockWarning] = useState(false);
   const [isStockChecked, setIsStockChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -165,7 +164,7 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
 
   return (
     <>
-      <Modal show={show} onHide={handleCloseModal} size="lg" style={{ marginTop: '90px' }}>
+      <Modal show={show} onHide={handleCloseModal} size="lg" style={{ marginTop: '100px' }} dialogClassName="custom-modal">
         <Modal.Header closeButton>
           <Modal.Title>Editar Mueble</Modal.Title>
         </Modal.Header>
@@ -244,6 +243,9 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
                   />
                   <style>
                     {`
+                      .custom-modal .modal-content {
+                        border: 2px solid black;
+                      }
                       .custom-checkbox input[type="checkbox"] {
                         appearance: none;
                         width: 20px;
@@ -353,12 +355,6 @@ function EditarMueble({ show, handleClose, mueble, onMuebleUpdated }) {
         </ToastContainer>
 
         <div className="notification-container-bottom-right">
-          {showSuccess && (
-            <Alert variant="success" className="notification">
-              Mueble actualizado con éxito!
-            </Alert>
-          )}
-
           {errorMessage && (
             <Alert variant="danger" className="notification">
               {errorMessage}
