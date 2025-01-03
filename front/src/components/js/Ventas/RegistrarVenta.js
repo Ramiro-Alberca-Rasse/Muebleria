@@ -8,7 +8,6 @@ import RegistrarSubVenta from './RegistrarSubVenta';
 
 function RegistrarVenta({ show, handleClose }) {
   const [clientes, setClientes] = useState([]);
-  const [muebles, setMuebles] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [clienteBusqueda, setClienteBusqueda] = useState(''); // Estado para el término de búsqueda
   const [fecha, setFecha] = useState('');
@@ -20,7 +19,6 @@ function RegistrarVenta({ show, handleClose }) {
   const [mensajeExito, setMensajeExito] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [moveLeft, setMoveLeft] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -29,17 +27,16 @@ function RegistrarVenta({ show, handleClose }) {
 
       const fetchData = async () => {
         try {
-          const [clientesResponse, mueblesResponse] = await Promise.all([
+          const [clientesResponse] = await Promise.all([
             api.get('/clientes'),
-            api.get('/muebles'),
           ]);
 
           setClientes(Array.isArray(clientesResponse.data) ? clientesResponse.data : []);
-          setMuebles(Array.isArray(mueblesResponse.data) ? mueblesResponse.data : []);
+
         } catch (error) {
           console.error('Error al cargar los datos:', error);
           setClientes([]);
-          setMuebles([]);
+
         }
       };
 
@@ -59,6 +56,7 @@ function RegistrarVenta({ show, handleClose }) {
   const handleClienteSeleccion = (cliente) => {
     setClienteSeleccionado(cliente);
     setClienteBusqueda(`${cliente.nombre} ${cliente.apellido}`); // Actualizamos el texto en el input
+    console.log('Cliente seleccionado CUIT:', cliente); // Log del taxId del cliente seleccionado
   };
 
   const clientesFiltrados = clientes.filter((cliente) =>
@@ -82,48 +80,23 @@ function RegistrarVenta({ show, handleClose }) {
     setTotal(totalCalculado);
   };
 
-  const handleConfirmarVenta = (paymentMethod, billingInfo) => {
+  const handleConfirmarVenta = async (paymentMethod, billingInfo) => {
     console.log('Método de pago:', paymentMethod);
     console.log('Información de facturación:', billingInfo);
-    handleSubmit();
+
   };
 
   const handleSubmit = async (e) => {
-    if (e) e.preventDefault();
-
-    const nuevaVenta = {
-      idCliente: clienteSeleccionado.id,
-      fecha,
-      precioTotal: total,
-      ventasMuebles: ventaParcial.map((subVenta) => ({
-        id: 1,
-        idVenta: 1,
-        idMueble: subVenta.mueble.id,
-        cantidad: subVenta.cantidad,
-        subTotal: subVenta.subtotal,
-        nombreMueble: subVenta.mueble.nombre,
-      })),
-    };
-
-    try {
-      const response = await api.post('/ventas', nuevaVenta, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      setMensajeExito('Venta registrada con éxito');
-      setTimeout(() => {
-        setMensajeExito('');
-        handleClose();
-      }, 3000);
-    } catch (error) {
-      console.error('Error al registrar la venta:', error);
-      setErrorMessage(error.response?.data || 'Error al registrar la venta');
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 3000);
-    }
+    const idCliente = clienteSeleccionado?.id;
+    const fecha = fecha;
+    const ventasMuebles = ventaParcial.map((subVenta) => ({
+      id: 1,
+      idVenta: 1,
+      idMueble: subVenta.mueble.id,
+      cantidad: subVenta.cantidad,
+      subTotal: subVenta.subtotal,
+      nombreMueble: subVenta.mueble.nombre,
+  }));
   };
 
   const handleShowRegistrarCliente = () => setShowRegistrarCliente(true);
@@ -140,13 +113,13 @@ function RegistrarVenta({ show, handleClose }) {
   const handleCloseRegistrarSubVenta = () => setShowRegistrarSubVenta(false);
 
   const handleShowConfirmarVenta = () => {
-    setMoveLeft(true);
     setShowConfirmarVenta(true);
   };
 
+
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} className="registrar-venta-modal">
         <Modal.Header closeButton>
           <Modal.Title>Registrar Venta</Modal.Title>
         </Modal.Header>
@@ -277,11 +250,26 @@ function RegistrarVenta({ show, handleClose }) {
         handleClose={() => setShowConfirmarVenta(false)}
         handleConfirm={handleConfirmarVenta}
         cliente={clienteSeleccionado}
+        precioTotal={total} // Pasar el total al componente ConfirmarVenta
+        idCliente={clienteSeleccionado?.id} // Pasar idCliente
+        fecha={fecha} // Pasar fechaVenta
+        ventasMuebles={ventaParcial.map((subVenta) => ({
+            id: 1,
+            idVenta: 1,
+            idMueble: subVenta.mueble.id,
+            cantidad: subVenta.cantidad,
+            subTotal: subVenta.subtotal,
+            nombreMueble: subVenta.mueble.nombre,
+        }))} // Pasar ventasMuebles
       />
 
       <RegistrarCliente show={showRegistrarCliente} handleClose={handleCloseRegistrarCliente} />
 
-      <RegistrarSubVenta show={showRegistrarSubVenta} handleClose={handleCloseRegistrarSubVenta} />
+      <RegistrarSubVenta 
+        show={showRegistrarSubVenta} 
+        handleClose={handleCloseRegistrarSubVenta} 
+        agregarVentaParcial={agregarVentaParcial}  // Pasamos la función aquí
+      />
     </>
   );
 }

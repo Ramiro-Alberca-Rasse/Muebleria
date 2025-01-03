@@ -37,6 +37,9 @@ public class Venta {
     @JsonManagedReference(value = "venta-mueble") // Otro nombre único
     private List<VentaMueble> ventas;
 
+
+    private String metodoPago;
+
     public Venta() {
         ventas = new ArrayList<>();
     }
@@ -90,6 +93,30 @@ public class Venta {
         return ventas.get(i);
     }
 
+    public void setVenta(int i, VentaMueble venta) {
+        ventas.set(i, venta);
+    }
+
+    public void removeVenta(int i) {
+        ventas.remove(i);
+    }
+
+    public void removeVenta(VentaMueble venta) {
+        ventas.remove(venta);
+    }
+
+    public void clearVentas() {
+        ventas.clear();
+    }
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+    
     @Override
     public String toString() {
         return "Venta{" +

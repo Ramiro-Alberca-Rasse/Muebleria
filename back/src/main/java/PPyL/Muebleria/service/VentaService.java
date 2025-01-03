@@ -61,6 +61,7 @@ public class VentaService {
         venta.setCliente(cliente);
         venta.setFecha(ventaDTO.getFecha());
         venta.setPrecioTotal(ventaDTO.getPrecioTotal());
+        venta.setMetodoPago(ventaDTO.getMetodoPago());
 
         if (ventaDTO.getVentasMuebles() == null || ventaDTO.getVentasMuebles().isEmpty()) {
             throw new IllegalArgumentException("La lista de muebles para la venta está vacía o es nula.");

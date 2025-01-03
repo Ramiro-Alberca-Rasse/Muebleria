@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
+import { Modal, Form, Button, Row, Col, Alert } from 'react-bootstrap'; // Importar Alert
 import api from '../../../services/api';  // Importa el servicio de la API
 
-function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
+function RegistrarSubVenta({ show, handleClose, agregarVentaParcial, ventasParciales }) { // Añadir ventasParciales como prop
   const [muebles, setMuebles] = useState([]);  // Estado para almacenar los muebles
   const [selectedMueble, setSelectedMueble] = useState('');  // Mueble seleccionado
   const [cantidad, setCantidad] = useState('');  // Cantidad vacía por defecto
   const [subtotal, setSubtotal] = useState(0);  // Subtotal calculado
   const [muebleBusqueda, setMuebleBusqueda] = useState(''); // Estado para el término de búsqueda
+  const [error, setError] = useState(''); // Estado para el mensaje de error
 
   // Cargar los muebles desde la API cuando se abre el modal
   useEffect(() => {
@@ -23,6 +24,8 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
       setSelectedMueble('');
       setCantidad('');  // Aseguramos que la cantidad esté vacía
       setSubtotal(0);  // El subtotal también debe ser 0 al inicio
+      setMuebleBusqueda('');  // Limpiar el término de búsqueda
+      setError('');  // Restablecer el mensaje de error
     }
   }, [show]);  // Se ejecuta cada vez que el modal se abre
 
@@ -48,8 +51,15 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
     const cantidadNumero = cantidad ? Number(cantidad) : 0;
 
     if (muebleSeleccionado && cantidadNumero > 0) {
-      agregarVentaParcial(muebleSeleccionado, cantidadNumero, subtotal);
-      handleClose();  // Cierra el modal después de agregar la subventa
+      if (ventasParciales && ventasParciales.some((venta) => venta.mueble.id === muebleSeleccionado.id)) {
+        console.log('El mueble ya está en la venta.');
+        setError('El mueble ya está en la venta.');
+      } else {
+        agregarVentaParcial(muebleSeleccionado, cantidadNumero, subtotal);
+        handleClose();  // Cierra el modal después de agregar la subventa
+      }
+    } else {
+      setError('Debe seleccionar un mueble y una cantidad válida.');
     }
   };
 
@@ -69,6 +79,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
               onChange={(e) => {
                 setMuebleBusqueda(e.target.value);
                 setSelectedMueble('');
+                setError('');  // Restablecer el mensaje de error al cambiar el mueble
                 if (e.target.value === '') {
                     setSelectedMueble('');
                 }
@@ -89,7 +100,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
                     key={mueble.id}
                     onClick={() => {
                       setSelectedMueble(mueble.id);
-                      setMuebleBusqueda(mueble.nombre);
+                      setMuebleBusqueda(mueble.nombre + " " + "- Stock: " + mueble.stock);
                     }}
                     style={{
                       padding: '5px',
@@ -97,7 +108,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
                       backgroundColor: selectedMueble === mueble.id ? '#f0f0f0' : 'white',
                     }}
                   >
-                    {mueble.nombre} - ${mueble.precio}
+                    {mueble.nombre} - Stock: {mueble.stock}
                   </div>
                 ))}
                 {mueblesFiltrados.length === 0 && (
@@ -115,6 +126,15 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
                   type="number"
                   value={cantidad}
                   onChange={(e) => setCantidad(e.target.value)} // Guardamos el valor como cadena
+                    onBlur={() => {
+                    const muebleSeleccionado = muebles.find((mueble) => mueble.id === Number(selectedMueble));
+                    if (muebleSeleccionado && Number(cantidad) > muebleSeleccionado.stock) {
+                      setError('La cantidad no puede ser mayor al stock disponible.');
+                      setCantidad('');
+                    } else {
+                      setError('');
+                    }
+                    }}
                   min="1"
                   placeholder="Ingresar cantidad"  // Aquí agregamos el texto de fondo
                   required
@@ -130,6 +150,7 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
             </Col>
           </Row>
 
+          {error && <Alert variant="danger" className="mt-3">{error}</Alert>} {/* Mostrar mensaje de error */}
           <Button variant="success" onClick={handleAddSubventa} className="mt-3 w-100">
             Agregar Subventa
           </Button>
@@ -138,6 +159,5 @@ function RegistrarSubVenta({ show, handleClose, agregarVentaParcial }) {
     </Modal>
   );
 }
-
 
 export default RegistrarSubVenta;

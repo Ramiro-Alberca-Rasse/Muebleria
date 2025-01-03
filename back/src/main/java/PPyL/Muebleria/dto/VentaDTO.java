@@ -14,6 +14,7 @@ public class VentaDTO {
     private Date fecha;
     private double precioTotal;
     private List<VentaMuebleDTO> ventasMuebles;
+    private String metodoPago;
 
     public VentaDTO() {
     }
@@ -28,6 +29,7 @@ public class VentaDTO {
         this.ventasMuebles = venta.getVentas().stream()
                 .map(ventaMueble -> new VentaMuebleDTO(ventaMueble))
                 .collect(Collectors.toList());
+        this.metodoPago = venta.getMetodoPago();
     }
     // Getters y Setters
     public Long getId() {
@@ -84,5 +86,14 @@ public class VentaDTO {
 
     public void setApellidoCliente(String apellidoCliente) {
         this.apellidoCliente = apellidoCliente;
+    }
+
+
+    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
     }
 }

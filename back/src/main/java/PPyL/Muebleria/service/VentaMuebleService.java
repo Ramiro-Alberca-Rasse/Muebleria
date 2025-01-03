@@ -33,7 +33,7 @@ public class VentaMuebleService {
     @Autowired
     private VentaRepository ventaRepository;
 
-    private int notificacion;
+    private int notificacion = 1;
 
     private static final Logger logger = LoggerFactory.getLogger(VentaService.class);
 
@@ -65,11 +65,11 @@ public class VentaMuebleService {
         return emitter;
     }
 
-    private void notificarClientes(String mensaje) {
+    public void notificarStockBajo(Mueble mueble) {
         List<SseEmitter> deadEmitters = new ArrayList<>();
         emitters.forEach(emitter -> {
             try {
-                emitter.send(SseEmitter.event().name("notificacion").data(mensaje));
+                emitter.send(SseEmitter.event().name("notificacion").data(mueble));
             } catch (Exception e) {
                 deadEmitters.add(emitter);
             }
@@ -113,9 +113,9 @@ public class VentaMuebleService {
         CambioStock cambioStock = new CambioStock(mueble, ventaMueble.getCantidad(), tipoCambio, mueble.getStock(), false, ventaMuebleCreada);
         cambioStockRepository.save(cambioStock);
 
-        if (mueble.getStock() <= notificacion) {
-            notificarClientes("El stock del mueble " + mueble.getNombre() + " está bajo.");
-    }
+/*         if (mueble.getStock() <= notificacion) {
+            notificarStockBajo(mueble);
+    } */
         
         return ventaMuebleCreada;
     }

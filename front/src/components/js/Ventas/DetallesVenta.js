@@ -49,6 +49,10 @@ const DetallesVenta = ({ show, handleClose, venta }) => {
                     <p>${detallesVenta.precioTotal.toFixed(2)}</p>
                 </div>
                 <div className="mb-3">
+                    <h5>Metodo Pago:</h5>
+                    <p>{detallesVenta.metodoPago}</p>
+                </div>
+                <div className="mb-3">
                     <h5>Subventas:</h5>
                     <table className="table table-striped table-bordered" style={{ borderColor: '#343a40' }}>
                         <thead className="thead-dark">

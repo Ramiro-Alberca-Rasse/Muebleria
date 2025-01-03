@@ -6,7 +6,8 @@ const NotificarStock = () => {
   useEffect(() => {
     const eventSource = new EventSource("http://localhost:8080/api/notificaciones");
     eventSource.onmessage = (event) => {
-      const nuevaNotificacion = JSON.parse(event.data);
+      const mueble = JSON.parse(event.data);
+      const nuevaNotificacion = `El stock del mueble ${mueble.nombre} está bajo.`;
       setNotificaciones((prevNotificaciones) => [...prevNotificaciones, nuevaNotificacion]);
     };
 
@@ -22,7 +23,7 @@ const NotificarStock = () => {
       ) : (
         <ul>
           {notificaciones.map((notificacion, index) => (
-            <li key={index}>{notificacion.mensaje}</li>
+            <li key={index}>{notificacion}</li>
           ))}
         </ul>
       )}

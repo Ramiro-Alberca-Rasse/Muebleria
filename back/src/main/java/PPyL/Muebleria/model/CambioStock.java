@@ -37,10 +37,10 @@ public class CambioStock {
         this.mueble = mueble;
         
         this.cantidad = cantidad;
-        this.setTipoCambio(tipoCambio);
         this.NuevoStock = nuevoStock;
         this.primerCambio = primerCambio;
         this.ventaMueble = ventaMueble;
+        this.setTipoCambio(tipoCambio);
     }
 
     public CambioStock(Mueble mueble, int cantidad, String tipoCambio, int nuevoStock, boolean primerCambio) {
@@ -54,8 +54,18 @@ public class CambioStock {
     
 
     // Constructor with primerCambio defaulting to false
-    public CambioStock(Mueble mueble, int cantidad, String tipoCambio, int nuevoStock, VentaMueble ventaMueble) {
+    public CambioStock(Mueble mueble, int cantidad, int nuevoStock, VentaMueble ventaMueble, String tipoCambio) {
         this(mueble, cantidad, tipoCambio, nuevoStock, false, ventaMueble);
+    }
+
+    // Constructor with all parameters
+    public CambioStock(Mueble mueble, int cantidad, int nuevoStock, boolean primerCambio, VentaMueble ventaMueble, String tipoCambio) {
+        this.mueble = mueble;
+        this.cantidad = cantidad;
+        this.NuevoStock = nuevoStock;
+        this.primerCambio = primerCambio;
+        this.ventaMueble = ventaMueble;
+        this.setTipoCambio(tipoCambio);
     }
 
     public CambioStock() {
