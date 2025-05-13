@@ -97,8 +97,20 @@ public class CambioStockService {
         Mueble mueble = muebleRepository.findById(id).orElseThrow(() -> new RuntimeException("Mueble no encontrado"));
         List<CambioStock> cambiosStocks = mueble.getCambiosStock();
         List<CambioStockDTO> cambiosStocksDTO = cambiosStocks.stream()
-                .map(CambioStockDTO::new)
-                .collect(Collectors.toList());
+            .map(cambioStock -> {
+                CambioStockDTO dto = new CambioStockDTO();
+                dto.setId(cambioStock.getId());
+                dto.setVentaMuebleId(cambioStock.getVentaMueble() != null ? cambioStock.getVentaMueble().getId() : null);
+                dto.setNombreMueble(cambioStock.getMueble().getNombre());
+                logger.info("BBBBBBBBBBBBBBBBBB");
+                logger.info("VentaMueble: {}", cambioStock.getVentaMueble() != null ? cambioStock.getVentaMueble().toString() : "null");
+                dto.setTipoCambio(cambioStock.getTipoCambio());
+                dto.setNuevoStock(cambioStock.getNuevoStock());
+                dto.setCantidad(cambioStock.getCantidad());
+                dto.setPrimerCambio(cambioStock.isPrimerCambio());
+                return dto;
+            }).collect(Collectors.toList());
+
         return cambiosStocksDTO;
     }
 

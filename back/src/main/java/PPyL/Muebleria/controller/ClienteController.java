@@ -3,6 +3,8 @@ package PPyL.Muebleria.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,6 @@ import PPyL.Muebleria.dto.VentaMuebleDTO;
 import PPyL.Muebleria.model.Cliente;
 import PPyL.Muebleria.repository.ClienteRepository;
 import PPyL.Muebleria.service.ClienteService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("api/clientes")

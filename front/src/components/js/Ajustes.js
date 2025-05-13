@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
-import EliminarPartesMueble from "./EliminarFabricante";
-import EliminarTipoDeMueble from "./EliminarTipoDeMueble";
-import EliminarTipoDeMadera from "./EliminarTipoDeMadera";
-import ConfigurarNotificaciones from "./ConfigurarNotificaciones"; // Importar el nuevo componente
+import EliminarPartesMueble from "./Muebles/EliminarFabricante";
+import EliminarTipoDeMueble from "./Muebles/EliminarTipoDeMueble";
+import EliminarTipoDeMadera from "./Muebles/EliminarTipoDeMadera";
+import ConfigurarNotificaciones from "./Muebles/ConfigurarNotificaciones"; // Importar el nuevo componente
 
 const Ajustes = ({ cerrarAjustes }) => {
   const [showEliminarPartes, setShowEliminarPartes] = useState(false);
   const [showEliminarTipoDeMueble, setShowEliminarTipoDeMueble] = useState(false);
   const [showEliminarTipoDeMadera, setShowEliminarTipoDeMadera] = useState(false);
-  const [showConfigurarNotificaciones, setShowConfigurarNotificaciones] = useState(false);
+/*   const [showConfigurarNotificaciones, setShowConfigurarNotificaciones] = useState(false); */
 
   const handleShowEliminarPartes = () => setShowEliminarPartes(true);
   const handleCloseEliminarPartes = () => setShowEliminarPartes(false);
@@ -19,9 +19,9 @@ const Ajustes = ({ cerrarAjustes }) => {
 
   const handleShowEliminarTipoDeMadera = () => setShowEliminarTipoDeMadera(true);
   const handleCloseEliminarTipoDeMadera = () => setShowEliminarTipoDeMadera(false);
-
+/* 
   const handleShowConfigurarNotificaciones = () => setShowConfigurarNotificaciones(true);
-  const handleCloseConfigurarNotificaciones = () => setShowConfigurarNotificaciones(false);
+  const handleCloseConfigurarNotificaciones = () => setShowConfigurarNotificaciones(false); */
 
   return (
     <>
@@ -41,9 +41,9 @@ const Ajustes = ({ cerrarAjustes }) => {
             <Button variant="danger" onClick={handleShowEliminarTipoDeMadera}>
               Eliminar Tipo de Madera
             </Button>
-            <Button variant="primary" onClick={handleShowConfigurarNotificaciones}>
+{/*             <Button variant="primary" onClick={handleShowConfigurarNotificaciones}>
               Configurar Notificaciones
-            </Button>
+            </Button> */}
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -56,7 +56,7 @@ const Ajustes = ({ cerrarAjustes }) => {
       <EliminarPartesMueble show={showEliminarPartes} cerrarModal={handleCloseEliminarPartes} />
       <EliminarTipoDeMueble show={showEliminarTipoDeMueble} cerrarModal={handleCloseEliminarTipoDeMueble} />
       <EliminarTipoDeMadera show={showEliminarTipoDeMadera} cerrarModal={handleCloseEliminarTipoDeMadera} />
-      <ConfigurarNotificaciones show={showConfigurarNotificaciones} cerrarModal={handleCloseConfigurarNotificaciones} />
+      {/* <ConfigurarNotificaciones show={showConfigurarNotificaciones} cerrarModal={handleCloseConfigurarNotificaciones} /> */}
     </>
   );
 };

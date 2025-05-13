@@ -27,7 +27,6 @@ import PPyL.Muebleria.model.Fabricante;
 import PPyL.Muebleria.model.Mueble;
 import PPyL.Muebleria.model.Tipo;
 import PPyL.Muebleria.model.TipoDeMadera;
-import PPyL.Muebleria.repository.CambioStockRepository;
 import PPyL.Muebleria.repository.FabricanteRepository;
 import PPyL.Muebleria.repository.TipoDeMaderaRepository;
 import PPyL.Muebleria.repository.TipoRepository;
@@ -59,8 +58,7 @@ public class MuebleController {
     @Autowired
     private CambioStockService cambioStockService;
 
-    @Autowired
-    private CambioStockRepository cambioStockRepository;
+
 
     @GetMapping
     public List<MuebleDTO> listarMuebles(@RequestParam(required = false) Tipo Tipo) {

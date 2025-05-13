@@ -9,7 +9,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
-  const [CUIT, setCUIT] = useState('');
+  const [cuit, setCuit] = useState('');
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -20,7 +20,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
     setDireccion('');
     setTelefono('');
     setEmail('');
-    setCUIT('');
+    setCuit('');
   };
 
   const handleCloseAndReset = () => {
@@ -31,7 +31,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const nuevoCliente = { nombre, apellido, direccion, telefono, email, CUIT };
+    const nuevoCliente = { nombre, apellido, direccion, telefono, email, cuit };
 
     try {
       const response = await api.post('/clientes', nuevoCliente);
@@ -53,7 +53,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
     setDireccion('');
     setTelefono('');
     setEmail('');
-    setCUIT('');
+    setCuit('');
 
     // Cerrar el modal
     handleClose();
@@ -72,7 +72,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="nombreCliente">
-              <Form.Label><strong>Nombre</strong></Form.Label>
+              <Form.Label><strong>Nombre*</strong></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Nombre del cliente"
@@ -83,7 +83,7 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               />
             </Form.Group>
             <Form.Group controlId="apellidoCliente" className="mt-3">
-              <Form.Label><strong>Apellido</strong></Form.Label>
+              <Form.Label><strong>Apellido*</strong></Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Apellido del cliente"
@@ -127,9 +127,9 @@ function RegistrarCliente({ show, handleClose, handleSave }) {
               <Form.Label><strong>CUIT</strong></Form.Label>
               <Form.Control
                 type="text"
-                placeholder="CUIT del cliente"
-                value={CUIT}
-                onChange={(e) => setCUIT(e.target.value)}
+                placeholder="cuit del cliente"
+                value={cuit}
+                onChange={(e) => setCuit(e.target.value)}
                 style={{ borderColor: '#343a40' }}
               />
             </Form.Group>

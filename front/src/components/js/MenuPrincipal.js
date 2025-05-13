@@ -1,11 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "../css/MenuPrincipal.css"; // Archivo para los estilos
-import Ajustes from "./Ajustes"; // Importar el componente Ajustes
-import NotificarStock from "./Muebles/NotificarStock"; // Importar el componente NotificarStock
+import "../css/MenuPrincipal.css";
+import Ajustes from "./Ajustes";
+import Notificaciones from "./Muebles/Notificaciones";
+import api from '../../services/api';
 
 const MenuPrincipal = () => {
   const [mostrarAjustes, setMostrarAjustes] = useState(false);
+  const [mostrarNotificaciones, setMostrarNotificaciones] = useState(false);
+  const [tieneNotificaciones, setTieneNotificaciones] = useState(false);
+
+  useEffect(() => {
+    verificarNotificaciones();
+  
+    const interval = setInterval(verificarNotificaciones, 10000);
+    return () => clearInterval(interval); // Limpieza del intervalo
+  }, [tieneNotificaciones]); // Agregamos tieneNotificaciones como dependencia
+
+  const verificarNotificaciones = async () => {
+    try {
+      const response = await api.get("/notificaciones/hayNotificaciones");
+      const hayNotificaciones = response.data; // Axios almacena los datos en response.data
+      if (hayNotificaciones !== tieneNotificaciones) {
+        setTieneNotificaciones(hayNotificaciones);
+      }
+    } catch (error) {
+      console.error("Error al verificar notificaciones:", error.message);
+    }
+  };
+
+  const abrirNotificaciones = () => {
+    setMostrarNotificaciones(true); 
+  };
+
+  const cerrarNotificaciones = () => {
+    setMostrarNotificaciones(false);
+    verificarNotificaciones()
+  };
 
   const abrirAjustes = () => {
     setMostrarAjustes(true);
@@ -18,38 +49,50 @@ const MenuPrincipal = () => {
   return (
     <>
       <nav className="menu-principal">
-        {/* Nombre de la empresa centrado */}
         <div className="empresa-nombre">
           <Link to="/">Sitios Muebles</Link>
         </div>
 
-        {/* Menú de navegación */}
         <ul className="menu-lista">
           <li className="menu-item">
             <Link to="/">Gestionar Muebles</Link>
           </li>
           <li className="menu-item">
-            <Link to="/ventas">Gestionar Ventas</Link> {/* Actualiza la ruta */}
+            <Link to="/ventas">Gestionar Ventas</Link>
           </li>
         </ul>
 
-        {/* Botón de notificaciones */}
-        <div className="notificaciones">
-          Notificaciones
-          <div className="menu-notificaciones">
-            <NotificarStock />
-          </div>
+        <div className="notificaciones-boton" style={{ position: "relative" }}>
+          <button onClick={abrirNotificaciones}>Notificaciones</button>
+          {tieneNotificaciones && (
+            <span
+              style={{
+                position: "absolute",
+                top: "5px",
+                right: "5px",
+                width: "10px",
+                height: "10px",
+                backgroundColor: "red",
+                borderRadius: "50%",
+              }}
+            ></span>
+          )}
         </div>
+
+        {mostrarNotificaciones && (
+          <Notificaciones cerrarNotificaciones={cerrarNotificaciones} />
+        )}
       </nav>
 
-      {/* Nuevo texto centrado en la parte inferior */}
-      <div className="texto-inferior">
-        Sitios Muebles
-      </div>
-      {/* Botón de ajustes en la parte inferior derecha */}
-      <div className="ajustes-boton" style={{ position: "fixed", bottom: "10px", right: "10px" }}>
+      <div className="texto-inferior">Sitios Muebles</div>
+
+      <div
+        className="ajustes-boton"
+        style={{ position: "fixed", bottom: "10px", right: "10px" }}
+      >
         <button onClick={abrirAjustes}>Ajustes</button>
       </div>
+
       {mostrarAjustes && <Ajustes cerrarAjustes={cerrarAjustes} />}
     </>
   );

@@ -1,22 +1,21 @@
 package PPyL.Muebleria.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import PPyL.Muebleria.controller.NotificacionController;
 import PPyL.Muebleria.dto.VentaMuebleDTO;
 import PPyL.Muebleria.model.CambioStock;
 import PPyL.Muebleria.model.Mueble;
+import PPyL.Muebleria.model.Notificacion;
 import PPyL.Muebleria.model.VentaMueble;
 import PPyL.Muebleria.repository.CambioStockRepository;
 import PPyL.Muebleria.repository.MuebleRepository;
 import PPyL.Muebleria.repository.VentaMuebleRepository;
-import PPyL.Muebleria.repository.VentaRepository;
 
 @Service
 public class VentaMuebleService {
@@ -31,13 +30,12 @@ public class VentaMuebleService {
     private CambioStockRepository cambioStockRepository;
 
     @Autowired
-    private VentaRepository ventaRepository;
+    private NotificacionController notificacionController;
 
-    private int notificacion = 1;
+    private int notificacion = 2;
 
     private static final Logger logger = LoggerFactory.getLogger(VentaService.class);
 
-    private List<SseEmitter> emitters = new ArrayList<>();
 
     //getters
     public int getNotificacion() {
@@ -57,25 +55,11 @@ public class VentaMuebleService {
         return ventaMuebleRepository.findById(id).orElse(null);
     }
 
-    public SseEmitter subscribe() {
-        SseEmitter emitter = new SseEmitter();
-        emitters.add(emitter);
-        emitter.onCompletion(() -> emitters.remove(emitter));
-        emitter.onTimeout(() -> emitters.remove(emitter));
-        return emitter;
-    }
-
     public void notificarStockBajo(Mueble mueble) {
-        List<SseEmitter> deadEmitters = new ArrayList<>();
-        emitters.forEach(emitter -> {
-            try {
-                emitter.send(SseEmitter.event().name("notificacion").data(mueble));
-            } catch (Exception e) {
-                deadEmitters.add(emitter);
-            }
-        });
-        emitters.removeAll(deadEmitters);
-    }
+        String mensaje = "Stock de " + mueble.getNombre() + " llegó a " +  mueble.getStock();
+        Notificacion notificacion = new Notificacion(mensaje, mueble);
+        notificacionController.createNotificacion(notificacion);
+    } 
 
     public VentaMueble createVentaMueble(VentaMuebleDTO ventaMuebleDTO) {
         VentaMueble ventaMueble = new VentaMueble();
@@ -113,9 +97,9 @@ public class VentaMuebleService {
         CambioStock cambioStock = new CambioStock(mueble, ventaMueble.getCantidad(), tipoCambio, mueble.getStock(), false, ventaMuebleCreada);
         cambioStockRepository.save(cambioStock);
 
-/*         if (mueble.getStock() <= notificacion) {
+        if (mueble.getStock() <= notificacion) {
             notificarStockBajo(mueble);
-    } */
+    }
         
         return ventaMuebleCreada;
     }

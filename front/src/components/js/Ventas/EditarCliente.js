@@ -100,7 +100,7 @@ function EditarCliente({ show, handleClose, cliente, onClienteUpdated }) {
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="nombreCliente">
-              <Form.Label><strong>Nombre</strong></Form.Label>
+              <Form.Label><strong>Nombre*</strong></Form.Label>
               <Form.Control
                 type="text"
                 name="nombre"
@@ -112,7 +112,7 @@ function EditarCliente({ show, handleClose, cliente, onClienteUpdated }) {
               />
             </Form.Group>
             <Form.Group controlId="apellidoCliente" className="mt-3">
-              <Form.Label><strong>Apellido</strong></Form.Label>
+              <Form.Label><strong>Apellido*</strong></Form.Label>
               <Form.Control
                 type="text"
                 name="apellido"

@@ -1,5 +1,6 @@
 package PPyL.Muebleria.service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,18 @@ public class VentaService {
 
     public List<Venta> getAllVentas() {
         return ventaRepository.findAll();
+    }
+
+    public List<Venta> getVentas(Long idCliente, Long idMueble, Date fechaInicio, Date fechaFin) {
+        if (idCliente != 0 && idMueble != 0) {
+            return ventaRepository.findByClienteIdAndVentasMuebleIdAndFechaBetween(idCliente, idMueble, fechaInicio, fechaFin);
+        } else if (idCliente != 0) {
+            return ventaRepository.findByClienteIdAndFechaBetween(idCliente, fechaInicio, fechaFin);
+        } else if (idMueble != 0) {
+            return ventaRepository.findByVentasMuebleIdAndFechaBetween(idMueble, fechaInicio, fechaFin);
+        } else {
+            return ventaRepository.findByFechaBetween(fechaInicio, fechaFin);
+        }
     }
 
     public Venta getVentaById(Long id) {

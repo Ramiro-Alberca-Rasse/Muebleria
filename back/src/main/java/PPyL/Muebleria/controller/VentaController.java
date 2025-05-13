@@ -1,5 +1,6 @@
 package PPyL.Muebleria.controller;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import PPyL.Muebleria.dto.CambioStockDTO;
@@ -31,9 +33,6 @@ import PPyL.Muebleria.service.VentaService;
 public class VentaController {
 
     @Autowired
-    private MuebleController muebleController;
-
-    @Autowired
     private VentaService ventaService;
 
     @Autowired
@@ -48,6 +47,13 @@ public class VentaController {
     private static final Logger logger = LoggerFactory.getLogger(VentaController.class);
 
     @GetMapping
+    public List<VentaDTO> getVentas(@RequestParam Long idCliente, @RequestParam Long idMueble, @RequestParam Date fechaInicio, @RequestParam Date fechaFin) {
+        return ventaService.getVentas(idCliente, idMueble, fechaInicio, fechaFin).stream()
+            .map(venta -> new VentaDTO(venta))
+            .collect(Collectors.toList());
+    }
+    
+    @GetMapping("/all")
     public List<VentaDTO> getAllVentas() {
         return ventaService.getAllVentas().stream()
                 .map(venta -> new VentaDTO(venta))
@@ -86,11 +92,12 @@ public class VentaController {
             logger.info("VentaMueble: " + venta.getVenta(i));
             VentaMueble subventa = venta.getVenta(i);
             Mueble mueble = subventa.getMueble();
-            mueble.setStock(mueble.getStock() - subventa.getCantidad());
+            mueble.setStock(mueble.getStock() +subventa.getCantidad());
             MuebleDTO muebleDTO = new MuebleDTO(mueble);
             CambioStockDTO cambiostockDTO = cambioStockController.getCambioStockByMuebleIdAndVentaMuebleId(mueble.getId(), subventa.getId());
             logger.info("CambioStock: " + cambiostockDTO);
             cambioStockController.deleteCambioStock(cambiostockDTO.getId());
+            logger.info("AAAAAAAAAAAAAAAAAAA");
             muebleService.actualizarStock(muebleDTO);
             ventaMuebleController.deleteVentaMueble(subventa.getId());
         }

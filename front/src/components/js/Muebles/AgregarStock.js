@@ -47,7 +47,7 @@ function AgregarStockModal({ show, handleClose }) {
             setTimeout(() => {
                 setShowSuccess(false);
                 handleClose();
-            }, 3000);
+            }, 1500);
         } catch (error) {
             console.error('Error al actualizar el stock:', error);
             setErrorMessage('Ocurrió un error al actualizar el stock. Por favor, inténtalo de nuevo.');

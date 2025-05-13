@@ -55,7 +55,7 @@ public class CambioStock {
 
     // Constructor with primerCambio defaulting to false
     public CambioStock(Mueble mueble, int cantidad, int nuevoStock, VentaMueble ventaMueble, String tipoCambio) {
-        this(mueble, cantidad, tipoCambio, nuevoStock, false, ventaMueble);
+        this(mueble, cantidad, nuevoStock, false, ventaMueble, tipoCambio);
     }
 
     // Constructor with all parameters

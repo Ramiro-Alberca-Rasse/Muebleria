@@ -1,42 +1,29 @@
 import React, { useState } from 'react';
 import { Button, Card, Row, Col } from 'react-bootstrap';
-import RegistrarVentaModal from './RegistrarVenta'; // Importa el componente modal de registrar ventas
-import ListarVentasModal from './ListarVentas'; // Importa el componente modal de listar ventas
-import RegistrarClienteModal from './RegistrarCliente'; // Importa el componente modal de registrar clientes
-import ListarClientesModal from './ListarClientes'; // Importa el componente modal de listar clientes
-import '../../../components/css/Gestionar.css'; // Asegúrate de importar el archivo CSS
+import RegistrarVentaModal from './RegistrarVenta';
+import RegistrarClienteModal from './RegistrarCliente';
+import Listar from './Listar';
+import ReporteVentas from './ReporteVentas';
+import '../../../components/css/Gestionar.css';
 
 function GestionVentas() {
-  const [showRegistrarModal, setShowRegistrarModal] = useState(false); // Estado para abrir el modal de registrar ventas
-  const [showListarModal, setShowListarModal] = useState(false); // Estado para abrir el modal de listar ventas
-  const [showRegistrarClienteModal, setShowRegistrarClienteModal] = useState(false); // Estado para abrir el modal de registrar clientes
-  const [showListarClientesModal, setShowListarClientesModal] = useState(false); // Estado para abrir el modal de listar clientes
+  const [showRegistrarModal, setShowRegistrarModal] = useState(false);
+  const [showRegistrarClienteModal, setShowRegistrarClienteModal] = useState(false);
+  const [showListarModal, setShowListarModal] = useState(false);
+  const [showReporteVentasModal, setShowReporteVentasModal] = useState(false);
 
-  // Función para abrir el modal de registrar ventas
   const handleShowRegistrar = () => setShowRegistrarModal(true);
-
-  // Función para cerrar el modal de registrar ventas
   const handleCloseRegistrar = () => setShowRegistrarModal(false);
 
-  // Función para abrir el modal de listar ventas
-  const handleShowListar = () => setShowListarModal(true);
-
-  // Función para cerrar el modal de listar ventas
-  const handleCloseListar = () => setShowListarModal(false);
-
-  // Función para abrir el modal de registrar clientes
   const handleShowRegistrarCliente = () => setShowRegistrarClienteModal(true);
-
-  // Función para cerrar el modal de registrar clientes
   const handleCloseRegistrarCliente = () => setShowRegistrarClienteModal(false);
 
-  // Función para abrir el modal de listar clientes
-  const handleShowListarClientes = () => setShowListarClientesModal(true);
+  const handleShowListar = () => setShowListarModal(true);
+  const handleCloseListar = () => setShowListarModal(false);
 
-  // Función para cerrar el modal de listar clientes
-  const handleCloseListarClientes = () => setShowListarClientesModal(false);
+  const handleShowReporteVentas = () => setShowReporteVentasModal(true);
+  const handleCloseReporteVentas = () => setShowReporteVentasModal(false);
 
-  
   return (
     <div className="container my-4 gestionar-modales">
       <h2 className="text-center mb-4 titulo-blanco">Gestionar Ventas</h2>
@@ -55,17 +42,6 @@ function GestionVentas() {
         <Col md={6} className="mb-4 d-flex justify-content-center">
           <Card className="shadow-sm w-100">
             <Card.Body className="text-center">
-              <Card.Title>Listar Ventas</Card.Title>
-              <Card.Text>Consulta todas las ventas realizadas en el sistema.</Card.Text>
-              <Button variant="primary" className="w-100" onClick={handleShowListar}>
-                Ver Ventas
-              </Button>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6} className="mb-4 d-flex justify-content-center">
-          <Card className="shadow-sm w-100">
-            <Card.Body className="text-center">
               <Card.Title>Registrar Cliente</Card.Title>
               <Card.Text>Agrega nuevos clientes al sistema.</Card.Text>
               <Button variant="success" className="w-100" onClick={handleShowRegistrarCliente}>
@@ -77,39 +53,38 @@ function GestionVentas() {
         <Col md={6} className="mb-4 d-flex justify-content-center">
           <Card className="shadow-sm w-100">
             <Card.Body className="text-center">
-              <Card.Title>Listar Clientes</Card.Title>
-              <Card.Text>Consulta todos los clientes registrados.</Card.Text>
-              <Button variant="primary" className="w-100" onClick={handleShowListarClientes}>
-                Ver Clientes
+              <Card.Title>Listar</Card.Title>
+              <Card.Text>Consulta ventas y clientes registrados en el sistema.</Card.Text>
+              <Button variant="primary" className="w-100" onClick={handleShowListar}>
+                Ver Listados
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} className="mb-4 d-flex justify-content-center">
+          <Card className="shadow-sm w-100">
+            <Card.Body className="text-center">
+              <Card.Title>Reporte de Ventas</Card.Title>
+              <Card.Text>Genera reportes detallados de las ventas realizadas.</Card.Text>
+              <Button variant="primary" className="w-100" onClick={handleShowReporteVentas}>
+                Ver Reporte
               </Button>
             </Card.Body>
           </Card>
         </Col>
       </Row>
 
-      {/* Aquí se renderiza el modal de registrar ventas */}
-      <RegistrarVentaModal
-        show={showRegistrarModal}
-        handleClose={handleCloseRegistrar}
-      />
+      {/* Modal para registrar ventas */}
+      <RegistrarVentaModal show={showRegistrarModal} handleClose={handleCloseRegistrar} />
 
-      {/* Aquí se renderiza el modal de listar ventas */}
-      <ListarVentasModal
-        show={showListarModal}
-        handleClose={handleCloseListar}
-      />
+      {/* Modal para registrar clientes */}
+      <RegistrarClienteModal show={showRegistrarClienteModal} handleClose={handleCloseRegistrarCliente} />
 
-      {/* Aquí se renderiza el modal de registrar clientes */}
-      <RegistrarClienteModal
-        show={showRegistrarClienteModal}
-        handleClose={handleCloseRegistrarCliente}
-      />
+      {/* Modal para listar ventas y clientes */}
+      <Listar isOpen={showListarModal} onClose={handleCloseListar} />
 
-      {/* Aquí se renderiza el modal de listar clientes */}
-      <ListarClientesModal
-        show={showListarClientesModal}
-        handleClose={handleCloseListarClientes}
-      />
+      {/* Modal para reporte de ventas */}
+      <ReporteVentas show={showReporteVentasModal} handleClose={handleCloseReporteVentas} />
     </div>
   );
 }

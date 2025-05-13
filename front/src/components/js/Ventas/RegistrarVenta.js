@@ -88,7 +88,8 @@ function RegistrarVenta({ show, handleClose }) {
 
   const handleSubmit = async (e) => {
     const idCliente = clienteSeleccionado?.id;
-    const fecha = fecha;
+    const fechaVenta = new Date(fecha);
+    fechaVenta.setDate(fechaVenta.getDate() + 1); // Sumar un día a la fecha
     const ventasMuebles = ventaParcial.map((subVenta) => ({
       id: 1,
       idVenta: 1,

@@ -14,8 +14,6 @@ function ListarVentas({ show, handleClose }) {
   const [fechaFin, setFechaFin] = useState(new Date().toISOString().split('T')[0]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState('');
   const [muebleSeleccionado, setMuebleSeleccionado] = useState('');
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [ventaToDelete, setVentaToDelete] = useState(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -25,14 +23,14 @@ function ListarVentas({ show, handleClose }) {
   useEffect(() => {
     const fetchVentas = async () => {
       try {
-        const response = await api.get('/ventas', {
-          params: {
-            fechaInicio,
-            fechaFin,
-            cliente: clienteSeleccionado,
-            mueble: muebleSeleccionado,
-          },
-        });
+        const params = {
+          idCliente: clienteSeleccionado || 0,
+          idMueble: muebleSeleccionado || 0,
+          fechaInicio: fechaInicio,
+          fechaFin: fechaFin
+        };
+        console.log('Parámetros enviados:', params);
+        const response = await api.get('/ventas', { params });
         setVentas(response.data);
       } catch (error) {
         console.error('Error al cargar las ventas:', error);
@@ -57,34 +55,12 @@ function ListarVentas({ show, handleClose }) {
       }
     };
 
-    fetchVentas();
-    fetchClientes();
-    fetchMuebles();
-  }, [fechaInicio, fechaFin, clienteSeleccionado, muebleSeleccionado]);
-
-  const handleDelete = async () => {
-    if (ventaToDelete) {
-      try {
-        await api.delete(`/ventas/${ventaToDelete.id}`);
-        setVentas(ventas.filter((venta) => venta.id !== ventaToDelete.id));
-        setShowDeleteConfirm(false);
-        setVentaToDelete(null);
-        setShowSuccessToast(true);
-        setMensajeExito('Venta eliminada con éxito');
-        setTimeout(() => {
-          setShowSuccessToast(false);
-        }, 3000);
-      } catch (error) {
-        console.error('Error al eliminar la venta:', error);
-        setErrorMessage('Error al eliminar la venta');
-      }
+    if (show) {
+      fetchVentas();
+      fetchClientes();
+      fetchMuebles();
     }
-  };
-
-  const handleShowDeleteConfirm = (venta) => {
-    setVentaToDelete(venta);
-    setShowDeleteConfirm(true);
-  };
+  }, [show, fechaInicio, fechaFin, clienteSeleccionado, muebleSeleccionado]);
 
   const handleShowDetalles = (venta) => {
     setVentaSeleccionada(venta);
@@ -129,13 +105,15 @@ function ListarVentas({ show, handleClose }) {
     return createPortal(children, document.body);
   };
 
-  const clientesFiltrados = clientes.filter((cliente) =>
-    `${cliente.nombre} ${cliente.apellido}`.toLowerCase().startsWith(clienteBusqueda.toLowerCase())
-  );
+  const handleClienteSeleccionado = (cliente) => {
+    setClienteSeleccionado(cliente.id);
+    setClienteBusqueda(cliente.nombreCompleto);
+  };
 
-  const mueblesFiltrados = muebles.filter((mueble) =>
-    mueble.nombre.toLowerCase().startsWith(muebleBusqueda.toLowerCase())
-  );
+  const handleMuebleSeleccionado = (mueble) => {
+    setMuebleSeleccionado(mueble.id);
+    setMuebleBusqueda(mueble.nombre);
+  };
 
   return (
     <>
@@ -178,8 +156,8 @@ function ListarVentas({ show, handleClose }) {
                     placeholder="Buscar cliente"
                     value={clienteBusqueda}
                     onChange={(e) => {
-                      setClienteBusqueda(e.target.value);
-                      setClienteSeleccionado('');
+                      const cliente = { id: e.target.id, nombreCompleto: e.target.value};
+                      handleClienteSeleccionado(cliente);
                       if (e.target.value === '') {
                         setClienteSeleccionado('');
                       }
@@ -195,13 +173,10 @@ function ListarVentas({ show, handleClose }) {
                         marginTop: '5px',
                       }}
                     >
-                      {clientesFiltrados.map((cliente) => (
+                      {clientes.map((cliente) => (
                         <div
                           key={cliente.id}
-                          onClick={() => {
-                            setClienteSeleccionado(cliente.id);
-                            setClienteBusqueda(`${cliente.nombre} ${cliente.apellido}`);
-                          }}
+                          onClick={() => handleClienteSeleccionado(cliente)}
                           style={{
                             padding: '5px',
                             cursor: 'pointer',
@@ -211,7 +186,7 @@ function ListarVentas({ show, handleClose }) {
                           {cliente.nombre} {cliente.apellido}
                         </div>
                       ))}
-                      {clientesFiltrados.length === 0 && (
+                      {clientes.length === 0 && (
                         <div style={{ padding: '5px', color: '#888' }}>No hay coincidencias</div>
                       )}
                     </div>
@@ -226,12 +201,12 @@ function ListarVentas({ show, handleClose }) {
                     placeholder="Buscar mueble"
                     value={muebleBusqueda}
                     onChange={(e) => {
-                      setMuebleBusqueda(e.target.value);
-                      setMuebleSeleccionado('');
+                      const mueble = { id: e.target.id, nombre: e.target.value };
+                      handleMuebleSeleccionado(mueble);
                       if (e.target.value === '') {
-                        setMuebleSeleccionado('');
+                          setMuebleSeleccionado('');
                       }
-                    }}
+                  }}
                     style={styles.formControlCustom}
                   />
                   {!muebleSeleccionado && (
@@ -243,13 +218,10 @@ function ListarVentas({ show, handleClose }) {
                         marginTop: '5px',
                       }}
                     >
-                      {mueblesFiltrados.map((mueble) => (
+                      {muebles.map((mueble) => (
                         <div
                           key={mueble.id}
-                          onClick={() => {
-                            setMuebleSeleccionado(mueble.id);
-                            setMuebleBusqueda(mueble.nombre);
-                          }}
+                          onClick={() => handleMuebleSeleccionado(mueble)}
                           style={{
                             padding: '5px',
                             cursor: 'pointer',
@@ -259,7 +231,7 @@ function ListarVentas({ show, handleClose }) {
                           {mueble.nombre}
                         </div>
                       ))}
-                      {mueblesFiltrados.length === 0 && (
+                      {muebles.length === 0 && (
                         <div style={{ padding: '5px', color: '#888' }}>No hay coincidencias</div>
                       )}
                     </div>
@@ -292,13 +264,6 @@ function ListarVentas({ show, handleClose }) {
                       onClick={() => handleShowDetalles(venta)}
                     >
                       Detalles
-                    </Button>{' '}
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleShowDeleteConfirm(venta)}
-                    >
-                      Eliminar
                     </Button>
                   </td>
                 </tr>
@@ -309,23 +274,6 @@ function ListarVentas({ show, handleClose }) {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseAndReset}>
             Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)} dialogClassName="custom-modal" style={{ marginTop: '20px' }}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmar Eliminación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          ¿Estás seguro de que deseas eliminar la venta "{ventaToDelete?.id}"?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
-            Cancelar
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Eliminar
           </Button>
         </Modal.Footer>
       </Modal>

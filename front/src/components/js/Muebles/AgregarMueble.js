@@ -159,7 +159,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
           <Form onSubmit={handleSubmit}>
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formNombre">
-                <Form.Label><strong>Nombre</strong></Form.Label>
+                <Form.Label><strong>Nombre*</strong></Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Ingresa el nombre del mueble"
@@ -201,7 +201,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
 
             <Row className="mb-3">
               <Form.Group as={Col} controlId="formPrecio">
-                <Form.Label><strong>Precio</strong></Form.Label>
+                <Form.Label><strong>Precio*</strong></Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Ingresa el precio"
@@ -213,7 +213,7 @@ function AgregarMueble({ show, handleClose, onMuebleAdded }) {
               </Form.Group>
 
               <Form.Group as={Col} controlId="formStock">
-                <Form.Label><strong>Stock</strong></Form.Label>
+                <Form.Label><strong>Stock*</strong></Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Ingresa el stock disponible"

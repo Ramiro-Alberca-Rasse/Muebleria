@@ -15,7 +15,10 @@ import StockActual from './components/js/Muebles/StockActual'; // Importa el nue
 import CambiosStock from './components/js/Muebles/CambiosStock';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { initMercadoPago } from '@mercadopago/sdk-react';
 
+// Inicializar Mercado Pago con tu clave pública
+initMercadoPago('TEST-491261ad-8b00-40ba-b770-b8f60453b8de');
 function App() {
   return (
     <Router>

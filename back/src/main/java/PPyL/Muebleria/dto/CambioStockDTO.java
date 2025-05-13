@@ -18,19 +18,23 @@ public class CambioStockDTO {
     public CambioStockDTO(CambioStock cambioStock) {
         this.id = cambioStock.getId();
         this.nombreMueble = cambioStock.getMueble().getNombre();
-        this.setTipoCambio(cambioStock.getTipoCambio());
         this.nuevoStock = cambioStock.getNuevoStock();
         this.cantidad = cambioStock.getCantidad();
         this.primerCambio = cambioStock.isPrimerCambio();
-        this.ventaMuebleId = cambioStock.getVentaMueble() != null ? cambioStock.getVentaMueble().getId() : null;
+        this.ventaMuebleId = cambioStock.getVentaMueble() != null 
+        ? cambioStock.getVentaMueble().getId()
+        : null;
+        this.setTipoCambio(cambioStock.getTipoCambio());
+    
+
     }
 
     public CambioStockDTO(MuebleDTO muebleDTO, String tipoCambio, int cantidad, Long ventaMuebleId) {
         this.nombreMueble = muebleDTO.getNombre();
-        this.setTipoCambio(tipoCambio);
         this.nuevoStock = muebleDTO.getStock();
         this.cantidad = cantidad;
         this.ventaMuebleId = ventaMuebleId;
+        this.setTipoCambio(tipoCambio);
     }
 
     public CambioStockDTO(MuebleDTO muebleDTO, String tipoCambio, int cantidad) {

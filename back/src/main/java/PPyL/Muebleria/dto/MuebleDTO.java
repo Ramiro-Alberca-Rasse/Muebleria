@@ -1,7 +1,9 @@
 package PPyL.Muebleria.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import PPyL.Muebleria.model.CambioStock;
 import PPyL.Muebleria.model.Mueble;
 
 public class MuebleDTO {
@@ -28,6 +30,14 @@ public class MuebleDTO {
         this.tipoMadera = mueble.getTipoMadera() != null ? mueble.getTipoMadera().getNombre() : null;
         this.fabricante = mueble.getFabricante() != null ? mueble.getFabricante().getNombre() : null;
         this.tipo = mueble.getTipo() != null ? mueble.getTipo().getNombre() : null;
+        if (mueble.getCambiosStock() != null) {
+            this.cambiosStock = new ArrayList<>();
+            for (CambioStock cambioStock : mueble.getCambiosStock()) {
+                this.cambiosStock.add(new CambioStockDTO(cambioStock));
+            }
+        } else {
+            this.cambiosStock = new ArrayList<>();
+        }
     }
 
     public MuebleDTO() {
@@ -105,7 +115,11 @@ public class MuebleDTO {
     }
 
     public void addCambioStock(CambioStockDTO cambioStock) {
-        this.cambiosStock.add(cambioStock);
+        if (this.cambiosStock == null) {
+            this.cambiosStock = new ArrayList<>();
+        } else {
+            this.cambiosStock.add(cambioStock); 
+        }
     }
 
     public void removeCambioStock(CambioStockDTO cambioStock) {

@@ -203,49 +203,61 @@ function ListarMuebles({ show, handleClose }) {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="search">
-              <Form.Label><strong>Buscar por nombre</strong></Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Buscar..."
-                value={searchTerm}
-                onChange={handleSearch}
-                style={{ borderColor: '#343a40' }}
-              />
-            </Form.Group>
-            <Form.Group controlId="filterByTipo">
-              <Form.Label><strong>Filtrar por tipo de mueble</strong></Form.Label>
-              <Form.Control as="select" value={selectedTipo} onChange={handleFilterByTipo} style={{ borderColor: '#343a40' }}>
-                <option value="">Todos</option>
-                {tipos.map((tipo) => (
-                  <option key={tipo} value={tipo}>
-                    {tipo}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="filterByTipoMadera">
-              <Form.Label><strong>Filtrar por tipo de madera</strong></Form.Label>
-              <Form.Control as="select" value={selectedTipoMadera} onChange={handleFilterByTipoMadera} style={{ borderColor: '#343a40' }}>
-                <option value="">Todos</option>
-                {tiposMadera.map((tipoMadera) => (
-                  <option key={tipoMadera.id} value={tipoMadera.nombre}>
-                    {tipoMadera.nombre}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="filterByFabricante">
-              <Form.Label><strong>Filtrar por fabricante</strong></Form.Label>
-              <Form.Control as="select" value={selectedFabricante} onChange={handleFilterByFabricante} style={{ borderColor: '#343a40' }}>
-                <option value="">Todos</option>
-                {fabricantes.map((fabricante) => (
-                  <option key={fabricante.id} value={fabricante.nombre}>
-                    {fabricante.nombre}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+            <div className="row">
+              <div className="col-md-6">
+                <Form.Group controlId="search">
+                  <Form.Label><strong>Buscar por nombre</strong></Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Buscar..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    style={{ borderColor: '#343a40' }}
+                  />
+                </Form.Group>
+              </div>
+              <div className="col-md-6">
+                <Form.Group controlId="filterByTipo">
+                  <Form.Label><strong>Filtrar por tipo de mueble</strong></Form.Label>
+                  <Form.Control as="select" value={selectedTipo} onChange={handleFilterByTipo} style={{ borderColor: '#343a40' }}>
+                    <option value="">Todos</option>
+                    {tipos.map((tipo) => (
+                      <option key={tipo} value={tipo}>
+                        {tipo}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+              </div>
+            </div>
+            <div className="row mt-3">
+              <div className="col-md-6">
+                <Form.Group controlId="filterByTipoMadera">
+                  <Form.Label><strong>Filtrar por tipo de madera</strong></Form.Label>
+                  <Form.Control as="select" value={selectedTipoMadera} onChange={handleFilterByTipoMadera} style={{ borderColor: '#343a40' }}>
+                    <option value="">Todos</option>
+                    {tiposMadera.map((tipoMadera) => (
+                      <option key={tipoMadera.id} value={tipoMadera.nombre}>
+                        {tipoMadera.nombre}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+              </div>
+              <div className="col-md-6">
+                <Form.Group controlId="filterByFabricante">
+                  <Form.Label><strong>Filtrar por fabricante</strong></Form.Label>
+                  <Form.Control as="select" value={selectedFabricante} onChange={handleFilterByFabricante} style={{ borderColor: '#343a40' }}>
+                    <option value="">Todos</option>
+                    {fabricantes.map((fabricante) => (
+                      <option key={fabricante.id} value={fabricante.nombre}>
+                        {fabricante.nombre}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+              </div>
+            </div>
           </Form>
           <Table striped bordered hover className="mt-3" style={{ borderColor: '#343a40' }}>
             <thead className="thead-dark">
