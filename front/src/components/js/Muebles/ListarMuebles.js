@@ -284,7 +284,7 @@ function ListarMuebles({ show, handleClose }) {
                   <td style={{ borderColor: '#343a40' }}>
                     {mueble.fabricante ? mueble.fabricante.nombre : 'Sin Fabricante'}
                   </td>
-                  <td style={{ borderColor: '#343a40' }}>{mueble.precio}</td>
+                  <td style={{ borderColor: '#343a40' }}>${mueble.precio}</td>
                   <td style={{ borderColor: '#343a40' }}>{mueble.stock}</td>
                   <td style={{ borderColor: '#343a40' }}>
                     <Button variant="danger" size="sm" onClick={() => confirmDelete(mueble)}>

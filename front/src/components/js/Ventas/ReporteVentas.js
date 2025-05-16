@@ -128,6 +128,19 @@ function ListarVentas({ show, handleClose }) {
     return totales;
   };
 
+  const calcularVentasPorDiaSemana = () => {
+    const dias = [
+      'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
+    ];
+    const ventasPorDia = {};
+    ventas.forEach((venta) => {
+      const dia = dias[new Date(venta.fecha).getDay()];
+      if (!ventasPorDia[dia]) ventasPorDia[dia] = 0;
+      ventasPorDia[dia] += 1;
+    });
+    return ventasPorDia;
+  };
+
   const generarPDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(16);
@@ -170,19 +183,17 @@ function ListarVentas({ show, handleClose }) {
     y += 10;
     doc.setFontSize(14);
     doc.text('Totales por Método de Pago:', 10, y);
-    doc.text('Totales por Mueble:', 110, y);
+    doc.text('Totales por Mueble:', 90, y); // <-- Más a la derecha
+    doc.text('Ventas por Día de la Semana:', 150, y);
     y += 6;
   
     const totalesMetodoPago = calcularTotalesPorMetodoPago();
     const totalesMueble = calcularTotalesPorMueble();
-  
-    const maxRows = Math.max(
-      Object.entries(totalesMetodoPago).filter(([_, total]) => total > 0).length,
-      Object.entries(totalesMueble).length
-    );
+    const ventasPorDiaSemana = calcularVentasPorDiaSemana();
   
     let metodoPagoY = y;
     let muebleY = y;
+    let diaSemanaY = y;
   
     Object.entries(totalesMetodoPago)
       .filter(([_, total]) => total > 0)
@@ -192,8 +203,13 @@ function ListarVentas({ show, handleClose }) {
       });
   
     Object.entries(totalesMueble).forEach(([mueble, total]) => {
-      doc.text(`${mueble}: ${total} vendidos`, 110, muebleY);
+      doc.text(`${mueble}: ${total} vendidos`, 90, muebleY); // <-- Más a la derecha
       muebleY += 6;
+    });
+  
+    Object.entries(ventasPorDiaSemana).forEach(([dia, total]) => {
+      doc.text(`${dia}: ${total}`, 150, diaSemanaY);
+      diaSemanaY += 6;
     });
   
     doc.save('ReporteVentas.pdf');
@@ -258,7 +274,7 @@ function ListarVentas({ show, handleClose }) {
                 <tr key={venta.id} style={styles.tableRowHover}>
                   <td>{venta.nombreCliente + ' ' + venta.apellidoCliente}</td>
                   <td>{new Date(venta.fecha).toLocaleDateString()}</td>
-                  <td>{venta.precioTotal}</td>
+                  <td>${venta.precioTotal}</td>
                   <td>{venta.metodoPago}</td>
                   <td>
   {venta.ventasMuebles.map((subventa, index) => (
@@ -284,11 +300,19 @@ function ListarVentas({ show, handleClose }) {
         </p>
       ))}
   </div>
-  <div className="totales-mueble">
+  <div className="totales-mueble me-5">
     <h5>Totales por Mueble:</h5>
     {Object.entries(calcularTotalesPorMueble()).map(([mueble, total]) => (
       <p key={mueble} style={{ fontWeight: 'bold' }}>
         {mueble}: {total} vendidos
+      </p>
+    ))}
+  </div>
+  <div className="ventas-dia-semana">
+    <h5>Ventas por Día de la Semana:</h5>
+    {Object.entries(calcularVentasPorDiaSemana()).map(([dia, total]) => (
+      <p key={dia} style={{ fontWeight: 'bold' }}>
+        {dia}: {total}
       </p>
     ))}
   </div>

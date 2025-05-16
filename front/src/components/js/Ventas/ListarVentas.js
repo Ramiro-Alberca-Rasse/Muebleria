@@ -256,7 +256,7 @@ function ListarVentas({ show, handleClose }) {
                   <td>{venta.id}</td>
                   <td>{venta.nombreCliente + ' ' + venta.apellidoCliente}</td>
                   <td>{new Date(venta.fecha).toLocaleDateString()}</td>
-                  <td>{venta.precioTotal}</td>
+                  <td>${venta.precioTotal}</td>
                   <td>
                     <Button
                       variant="secondary"
