@@ -9,6 +9,9 @@ function ListarVentas({ show, handleClose }) {
   const [ventas, setVentas] = useState([]);
   const [showDetalles, setShowDetalles] = useState(false);
   const [ventaSeleccionada, setVentaSeleccionada] = useState(null);
+  const [fechaInicio, setFechaInicio] = useState(
+    new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
+  );
   const [fechaFin, setFechaFin] = useState(new Date().toISOString().split('T')[0]);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
@@ -22,7 +25,7 @@ function ListarVentas({ show, handleClose }) {
         const params = {
           idCliente: clienteSeleccionado,
           idMueble: muebleSeleccionado,
-          fechaInicio: new Date(new Date(fechaFin).setMonth(new Date(fechaFin).getMonth() - 1)).toISOString().split('T')[0],
+          fechaInicio: fechaInicio,
           fechaFin: fechaFin
         };
         console.log('Parámetros enviados:', params);
@@ -36,7 +39,7 @@ function ListarVentas({ show, handleClose }) {
     if (show) {
       fetchVentas();
     }
-  }, [show, fechaFin, clienteSeleccionado, muebleSeleccionado]);
+  }, [show, fechaInicio, fechaFin, clienteSeleccionado, muebleSeleccionado]);
 
   const handleShowDetalles = (venta) => {
     setVentaSeleccionada(venta);
@@ -49,6 +52,7 @@ function ListarVentas({ show, handleClose }) {
   };
 
   const handleCloseAndReset = () => {
+    setFechaInicio(new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]);
     setFechaFin(new Date().toISOString().split('T')[0]);
     handleClose();
   };
@@ -205,8 +209,19 @@ function ListarVentas({ show, handleClose }) {
           <Form>
             <Row className="justify-content-center" style={styles.filterRow}>
               <Col md={6}>
+                <Form.Group controlId="fechaInicio">
+                  <Form.Label style={styles.formLabelCustom}>Fecha Inicio</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={fechaInicio}
+                    onChange={(e) => setFechaInicio(e.target.value)}
+                    style={styles.formControlCustom}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
                 <Form.Group controlId="fechaFin">
-                  <Form.Label style={styles.formLabelCustom}>Fecha</Form.Label>
+                  <Form.Label style={styles.formLabelCustom}>Fecha Fin</Form.Label>
                   <Form.Control
                     type="date"
                     value={fechaFin}
